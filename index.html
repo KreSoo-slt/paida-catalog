@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>… (стили как ранее) …</head>
+<body>
+  <!-- WhatsApp, шапка, уведомление, поиск как раньше-->
+  <div id="catalog"></div>
+  <div class="admin-panel" id="adminPanel">
+    <div class="admin-note">🔒 Только для админа</div>
+    <h3>Добавить товар</h3>
+    <input id="idInput" placeholder="ID/Артикул">
+    <input id="categoryInput" placeholder="Категория">
+    <input id="nameInput" placeholder="Название">
+    <input id="priceInput" placeholder="Цена">
+    <input id="imgInput" placeholder="Ссылка на фото">
+    <button onclick="addProduct()">Добавить</button>
+    <button onclick="toggleArchive()">Показать/Скрыть архив</button>
+  </div>
+  <script>
+    const adminPassword = "admin2025";
+    let isArchiveVisible = false;
+    let data = [ /* Начальные товары */ ];
+
+    function authorizeAdmin() {
+      const s = localStorage.getItem("isAdmin");
+      if (s === "true") return true;
+      if (confirm("Вы админ?")) {
+        const p = prompt("Введите пароль:");
+        if (p === adminPassword) {
+          localStorage.setItem("isAdmin", "true");
+          return true;
+        }
+      }
+      return false;
+    }
+    const isAdmin = authorizeAdmin();
+    if (isAdmin) document.getElementById("adminPanel").style.display = "block";
+
+    function render() {
+      const catDiv = document.getElementById("catalog");
+      catDiv.innerHTML = "";
+      const grouped = {};
+      data.forEach((item, i) => {
+        if (item.archived && (!isAdmin || !isArchiveVisible)) return;
+        if (!grouped[item.category]) grouped[item.category] = [];
+        grouped[item.category].push({ ...item, index: i });
+      });
+      Object.keys(grouped).forEach(cat => {
+        const h = document.createElement("div"); h.className="category-title"; h.textContent = cat;
+        catDiv.appendChild(h);
+        const cont = document.createElement("div"); cont.className="cards-container";
+        grouped[cat].forEach(item => {
+          const c = document.createElement("div"); c.className="card";
+          c.innerHTML = `
+            <img src="${item.img}" alt="${item.name}">
+            <div class="title">${item.name}</div>
+            <div class="id">ID: ${item.id}</div>
+            <input type="text" value="${item.price}" onchange="updatePrice(${item.index}, this.value)"> ₸
+            ${isAdmin ? `<button onclick="toggleArchive(${item.index})">${item.archived ? "Восстановить" : "Архив"}</button>` : ""}
+          `;
+          cont.appendChild(c);
+        });
+        catDiv.appendChild(cont);
+      });
+    }
+
+    function addProduct() {
+      const obj = {
+        id: document.getElementById("idInput").value.trim(),
+        category: document.getElementById("categoryInput").value.trim() || "Без категории",
+        name: document.getElementById("nameInput").value.trim(),
+        price: document.getElementById("priceInput").value.trim(),
+        img: document.getElementById("imgInput").value.trim() || "https://via.placeholder.com/120",
+        archived: false
+      };
+      if (!obj.name || !obj.price) return alert("Название и цена обязательны.");
+      data.push(obj); render();
+    }
+
+    function updatePrice(i, v) { data[i].price = v; }
+    function toggleArchive(i) { data[i].archived = !data[i].archived; render(); }
+    function toggleArchive() { isArchiveVisible = !isArchiveVisible; render(); }
+
+    document.getElementById("searchInput").oninput = () => {
+      const val = document.getElementById("searchInput").value.toLowerCase();
+      data = data.map((d, i) => ({ ...d, hidden: !d.name.toLowerCase().includes(val) }));
+      render();
+    };
+
+    render();
+  </script>
+</body>
+</html>
