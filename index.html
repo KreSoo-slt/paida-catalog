@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <!-- ... (оставьте предыдущие стили без изменений) ... -->
+</head>
+<body>
+  <!-- ... (оставьте HTML-структуру без изменений) ... -->
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+
+    const supabaseUrl = 'https://qmnnbotyzwftlhwakbnz.supabase.co'
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtbm5ib3R5endmdGxod2FrYm56Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIwOTE3MzYsImV4cCI6MjA2NzY2NzczNn0.QaHkN4M4_Deh4HN4CZ-spv8QKbGKzhrfGwMvr6Pbyv4'
+    const supabase = createClient(supabaseUrl, supabaseKey)
+
+    let isAdmin = false;
+    const password = "erema";
+    let products = [];
+    let archive = [];
+    let selectedCategory = "Все";
+
+    // Загрузка товаров с сортировкой по полю "order"
+    async function fetchProducts() {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .order('order', { ascending: true }); // Сортировка по порядку
+
+      if (error) {
+        console.error('Ошибка загрузки:', error);
+        return;
+      }
+
+      products = data.filter(p => !p.archived);
+      archive = data.filter(p => p.archived);
+      render();
+    }
+
+    // Функция для перемещения товара
+    async function moveProduct(productId, direction) {
+      const currentProduct = products.find(p => p.id === productId);
+      const categoryProducts = products
+        .filter(p => p.category === currentProduct.category)
+        .sort((a, b) => a.order - b.order);
+
+      const currentIndex = categoryProducts.findIndex(p => p.id === productId);
+      
+      if (
+        (direction === 'up' && currentIndex === 0) ||
+        (direction === 'down' && currentIndex === categoryProducts.length - 1)
+      ) return;
+
+      const swapIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+      const swapProduct = categoryProducts[swapIndex];
+
+      // Меняем местами значения order
+      await supabase
+        .from('products')
+        .update({ order: swapProduct.order })
+        .eq('id', currentProduct.id);
+
+      await supabase
+        .from('products')
+        .update({ order: currentProduct.order })
+        .eq('id', swapProduct.id);
+
+      fetchProducts(); // Обновляем список
+    }
+
+    // Остальные функции (render, addProduct, archiveProduct и т.д.) 
+    // оставляем без изменений, но в render добавляем кнопки:
+
+    function render() {
+      // ... (предыдущий код render) ...
+
+      catMap[cat].forEach((p, i) => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <!-- ... (остальное содержимое карточки) ... -->
+          ${isAdmin ? `
+            <div class="move-btns">
+              <button onclick="moveProduct(${p.id}, 'up')">▲ Выше</button>
+              <button onclick="moveProduct(${p.id}, 'down')">▼ Ниже</button>
+            </div>
+          ` : ""}
+        `;
+        wrap.appendChild(card);
+      });
+
+      // ... (остальной код render) ...
+    }
+
+    // Инициализация
+    fetchProducts();
+
+    // Делаем функцию глобальной для обработки кликов
+    window.moveProduct = moveProduct;
+  </script>
+</body>
+</html>
