@@ -1,0 +1,30 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Paida All — Каталог</title>
+</head>
+<body>
+  <h1>Каталог товаров (Supabase подключение)</h1>
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+
+    const supabaseUrl = 'https://qmnnbotyzwftlhwakbnz.supabase.co'
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtbm5ib3R5endmdGxod2FrYm56Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIwOTE3MzYsImV4cCI6MjA2NzY2NzczNn0.QaHkN4M4_Deh4HN4CZ-spv8QKbGKzhrfGwMvr6Pbyv4'
+    const supabase = createClient(supabaseUrl, supabaseKey)
+
+    async function fetchProducts() {
+      const { data, error } = await supabase.from('products').select('*')
+      if (error) {
+        document.body.innerHTML += '<p>Ошибка подключения к базе данных: ' + error.message + '</p>'
+        return
+      }
+      document.body.innerHTML += '<pre>' + JSON.stringify(data, null, 2) + '</pre>'
+    }
+
+    fetchProducts()
+  </script>
+</body>
+</html>
