@@ -5,91 +5,244 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Paida All — Каталог</title>
   <style>
-    /* Основные стили */
+    :root {
+      --primary-color: #25D366;
+      --admin-color: #ff4757;
+    }
+    
     body {
       font-family: Arial, sans-serif;
       background: #f9f9f9;
       margin: 0;
-      padding: 1em;
+      padding: 0;
     }
     
     /* Шапка */
     header {
-      background: #ffffff;
-      padding: 1em;
-      border-bottom: 1px solid #ddd;
+      background: white;
+      padding: 15px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       text-align: center;
+      margin-bottom: 10px;
+    }
+    
+    /* Кнопка WhatsApp */
+    .whatsapp-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--primary-color);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      z-index: 100;
+    }
+    
+    .whatsapp-btn::before {
+      content: "💬";
+      margin-right: 8px;
+      font-size: 20px;
+    }
+    
+    /* Админ-кнопка */
+    .admin-btn {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: var(--admin-color);
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      z-index: 100;
+    }
+    
+    /* Категории */
+    .categories {
+      display: flex;
+      overflow-x: auto;
+      padding: 10px;
+      background: white;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .category-btn {
+      padding: 8px 15px;
+      margin-right: 10px;
+      border: none;
+      border-radius: 20px;
+      background: #f1f1f1;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    
+    .category-btn.active {
+      background: var(--primary-color);
+      color: white;
     }
     
     /* Карточки товаров */
-    .cards-container {
+    .products-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 1em;
-      padding: 0.5em;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 15px;
+      padding: 10px;
     }
     
-    .card {
+    .product-card {
       background: white;
       border-radius: 10px;
-      padding: 1em;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
+      padding: 15px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      position: relative;
+    }
+    
+    .product-image {
+      width: 100%;
+      height: 120px;
+      object-fit: contain;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
+    
+    .product-name {
+      font-weight: bold;
+      margin-bottom: 5px;
+      word-break: break-word;
+    }
+    
+    .product-price {
+      color: #2ecc71;
+      font-weight: bold;
     }
     
     /* Админ-панель */
     .admin-panel {
-      background: #f0f0f0;
-      padding: 1em;
-      margin: 1em 0;
-      border-radius: 8px;
+      background: #f8f9fa;
+      padding: 15px;
+      margin: 10px;
+      border-radius: 10px;
+      display: none;
     }
     
-    /* Мобильная адаптация */
+    .admin-visible .admin-panel {
+      display: block;
+    }
+    
+    .admin-controls {
+      margin-top: 10px;
+      display: flex;
+      gap: 5px;
+    }
+    
+    .admin-controls button {
+      padding: 5px 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    
+    .archive-btn {
+      background: #ffa502;
+      color: white;
+    }
+    
+    .delete-btn {
+      background: var(--admin-color);
+      color: white;
+    }
+    
+    .move-btns {
+      display: flex;
+      justify-content: center;
+      gap: 5px;
+      margin-top: 5px;
+    }
+    
+    /* Архив */
+    .archive-section {
+      display: none;
+      margin-top: 20px;
+      padding: 10px;
+    }
+    
+    .admin-visible .archive-section {
+      display: block;
+    }
+    
+    /* Адаптация */
     @media (max-width: 600px) {
-      .cards-container {
+      .products-grid {
         grid-template-columns: repeat(2, 1fr);
       }
       
-      .admin-panel input {
-        width: 100%;
-        margin-bottom: 0.5em;
+      .whatsapp-btn {
+        bottom: 70px;
+        right: 10px;
+        padding: 10px 15px;
       }
     }
   </style>
 </head>
 <body>
-  <a class="whatsapp-link" href="https://wa.me/77780855478" target="_blank">💬 WhatsApp</a>
+  <!-- WhatsApp кнопка -->
+  <a class="whatsapp-btn" href="https://wa.me/77780855478" target="_blank">WhatsApp</a>
   
+  <!-- Кнопка админа -->
+  <button class="admin-btn" id="adminToggle">Админ</button>
+  
+  <!-- Шапка -->
   <header>
     <h1>Paida All</h1>
     <div class="contact">
-      г. Караганда, ул. Алиханова 37<br>
+      г. Караганда, ул. Алиханова 37 (цокольный этаж)<br>
+      Время работы: 13:00–20:00<br>
       Тел: 8 (778) 085-54-78
     </div>
   </header>
-
-  <div class="admin-controls">
-    <button id="adminToggle">Войти как админ</button>
-    <div id="adminPanel" class="admin-panel" style="display:none">
-      <h3>Добавить товар</h3>
-      <input type="text" id="productName" placeholder="Название">
-      <input type="text" id="productPrice" placeholder="Цена">
-      <input type="text" id="productImage" placeholder="Ссылка на фото">
-      <input type="text" id="productCategory" placeholder="Категория">
-      <button id="addProduct">Добавить</button>
-    </div>
+  
+  <!-- Уведомление -->
+  <div class="notice">
+    Заказы после 19:00 обрабатываются на следующий день.<br>
+    Доставка и самовывоз доступны по Караганде.
   </div>
-
-  <div id="productsContainer" class="cards-container"></div>
+  
+  <!-- Категории -->
+  <div class="categories" id="categories">
+    <button class="category-btn active" data-category="all">Все</button>
+    <!-- Категории будут добавлены через JS -->
+  </div>
+  
+  <!-- Товары -->
+  <div class="products-grid" id="productsGrid"></div>
+  
+  <!-- Архив (только для админа) -->
+  <div class="archive-section" id="archiveSection">
+    <h3>📦 Архив</h3>
+    <div class="products-grid" id="archiveGrid"></div>
+  </div>
+  
+  <!-- Админ-панель -->
+  <div class="admin-panel" id="adminPanel">
+    <h3>Добавить товар</h3>
+    <input type="text" id="productName" placeholder="Название" style="width:100%; margin-bottom:10px; padding:8px;">
+    <input type="text" id="productPrice" placeholder="Цена" style="width:100%; margin-bottom:10px; padding:8px;">
+    <input type="text" id="productImage" placeholder="Ссылка на фото" style="width:100%; margin-bottom:10px; padding:8px;">
+    <input type="text" id="productCategory" placeholder="Категория" style="width:100%; margin-bottom:10px; padding:8px;">
+    <button id="addProductBtn" style="width:100%; padding:10px; background:var(--primary-color); color:white; border:none; border-radius:5px;">Добавить</button>
+  </div>
 
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
     
-    // Инициализация Supabase
     const supabaseUrl = 'https://qmnnbotyzwftlhwakbnz.supabase.co'
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtbm5ib3R5endmdGxod2FrYm56Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIwOTE3MzYsImV4cCI6MjA2NzY2NzczNn0.QaHkN4M4_Deh4HN4CZ-spv8QKbGKzhrfGwMvr6Pbyv4'
     const supabase = createClient(supabaseUrl, supabaseKey)
@@ -97,12 +250,22 @@
     // DOM элементы
     const adminToggle = document.getElementById('adminToggle')
     const adminPanel = document.getElementById('adminPanel')
-    const productsContainer = document.getElementById('productsContainer')
-    const addProductBtn = document.getElementById('addProduct')
+    const productsGrid = document.getElementById('productsGrid')
+    const archiveGrid = document.getElementById('archiveGrid')
+    const categoriesContainer = document.getElementById('categories')
+    const archiveSection = document.getElementById('archiveSection')
     
     // Состояние
     let isAdmin = false
     const ADMIN_PASSWORD = "erema"
+    let selectedCategory = "all"
+    let allProducts = []
+    
+    // Инициализация
+    document.addEventListener('DOMContentLoaded', () => {
+      loadProducts()
+      setupEventListeners()
+    })
     
     // Загрузка товаров
     async function loadProducts() {
@@ -116,80 +279,211 @@
         return
       }
       
-      renderProducts(data.filter(p => !p.archived))
+      allProducts = data
+      updateCategories()
+      renderProducts()
     }
     
-    // Отображение товаров
-    function renderProducts(products) {
-      productsContainer.innerHTML = ''
+    // Обновление категорий
+    function updateCategories() {
+      // Получаем все уникальные категории
+      const categories = [...new Set(allProducts.map(p => p.category))]
       
-      products.forEach(product => {
-        const productCard = document.createElement('div')
-        productCard.className = 'card'
-        productCard.innerHTML = `
-          <img src="${product.img || 'https://via.placeholder.com/150'}" width="120">
-          <h3>${product.name}</h3>
-          <p>${product.price} ₸</p>
-          ${isAdmin ? `
-            <button onclick="archiveProduct(${product.id})">Архив</button>
-            <button onclick="deleteProduct(${product.id})">Удалить</button>
-          ` : ''}
-        `
-        productsContainer.appendChild(productCard)
+      // Очищаем и добавляем кнопки категорий
+      categoriesContainer.innerHTML = `
+        <button class="category-btn active" data-category="all">Все</button>
+        ${categories.map(cat => `
+          <button class="category-btn" data-category="${cat}">${cat}</button>
+        `).join('')}
+      `
+      
+      // Назначаем обработчики
+      document.querySelectorAll('.category-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          selectedCategory = btn.dataset.category
+          document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'))
+          btn.classList.add('active')
+          renderProducts()
+        })
       })
     }
     
-    // Админ-функции
-    adminToggle.addEventListener('click', () => {
-      const password = prompt('Введите пароль администратора:')
-      if (password === ADMIN_PASSWORD) {
-        isAdmin = !isAdmin
-        adminPanel.style.display = isAdmin ? 'block' : 'none'
-        loadProducts()
-      } else {
-        alert('Неверный пароль!')
+    // Отображение товаров
+    function renderProducts() {
+      // Фильтруем товары по категории и архиву
+      const activeProducts = allProducts.filter(p => 
+        !p.archived && (selectedCategory === "all" || p.category === selectedCategory)
+      )
+      
+      const archivedProducts = allProducts.filter(p => p.archived)
+      
+      // Рендерим активные товары
+      productsGrid.innerHTML = activeProducts.map(product => `
+        <div class="product-card" data-id="${product.id}">
+          <img src="${product.img || 'https://via.placeholder.com/150'}" class="product-image">
+          <div class="product-name" contenteditable="${isAdmin}" onblur="updateProductField(${product.id}, 'name', this.textContent)">${product.name}</div>
+          <div class="product-price" contenteditable="${isAdmin}" onblur="updateProductField(${product.id}, 'price', this.textContent)">${product.price} ₸</div>
+          
+          ${isAdmin ? `
+            <div class="admin-controls">
+              <button class="archive-btn" onclick="toggleArchive(${product.id}, true)">Архив</button>
+              <button class="delete-btn" onclick="deleteProduct(${product.id})">Удалить</button>
+            </div>
+            <div class="move-btns">
+              <button onclick="moveProduct(${product.id}, 'up')">↑</button>
+              <button onclick="moveProduct(${product.id}, 'down')">↓</button>
+            </div>
+          ` : ''}
+        </div>
+      `).join('')
+      
+      // Рендерим архив (только для админа)
+      if (isAdmin) {
+        archiveGrid.innerHTML = archivedProducts.map(product => `
+          <div class="product-card" data-id="${product.id}">
+            <img src="${product.img || 'https://via.placeholder.com/150'}" class="product-image">
+            <div class="product-name">${product.name}</div>
+            <div class="product-price">${product.price} ₸</div>
+            <div class="admin-controls">
+              <button class="archive-btn" onclick="toggleArchive(${product.id}, false)">Восстановить</button>
+              <button class="delete-btn" onclick="deleteProduct(${product.id})">Удалить</button>
+            </div>
+          </div>
+        `).join('')
       }
-    })
+    }
     
-    addProductBtn.addEventListener('click', async () => {
-      const name = document.getElementById('productName').value
-      const price = document.getElementById('productPrice').value
-      const img = document.getElementById('productImage').value || 'https://via.placeholder.com/150'
-      const category = document.getElementById('productCategory').value || 'Без категории'
+    // Настройка обработчиков событий
+    function setupEventListeners() {
+      // Админ-режим
+      adminToggle.addEventListener('click', () => {
+        if (isAdmin) {
+          isAdmin = false
+          document.body.classList.remove('admin-visible')
+        } else {
+          const password = prompt('Введите пароль администратора:')
+          if (password === ADMIN_PASSWORD) {
+            isAdmin = true
+            document.body.classList.add('admin-visible')
+            renderProducts()
+          } else {
+            alert('Неверный пароль!')
+          }
+        }
+      })
       
-      if (!name || !price) {
-        alert('Заполните название и цену!')
-        return
-      }
-      
+      // Добавление товара
+      document.getElementById('addProductBtn').addEventListener('click', async () => {
+        const name = document.getElementById('productName').value
+        const price = document.getElementById('productPrice').value
+        const img = document.getElementById('productImage').value
+        const category = document.getElementById('productCategory').value
+        
+        if (!name || !price || !category) {
+          alert('Заполните название, цену и категорию!')
+          return
+        }
+        
+        const { error } = await supabase
+          .from('products')
+          .insert([{ 
+            name, 
+            price, 
+            img: img || 'https://via.placeholder.com/150',
+            category,
+            archived: false,
+            order: allProducts.length + 1
+          }])
+        
+        if (error) {
+          alert('Ошибка: ' + error.message)
+        } else {
+          document.getElementById('productName').value = ''
+          document.getElementById('productPrice').value = ''
+          document.getElementById('productImage').value = ''
+          document.getElementById('productCategory').value = ''
+          loadProducts()
+        }
+      })
+    }
+    
+    // Обновление поля товара
+    window.updateProductField = async (id, field, value) => {
       const { error } = await supabase
         .from('products')
-        .insert([{ name, price, img, category, archived: false }])
+        .update({ [field]: field === 'price' ? value.replace(/[^\d]/g, '') : value })
+        .eq('id', id)
       
       if (error) {
-        alert('Ошибка при добавлении: ' + error.message)
-      } else {
-        loadProducts()
-        document.getElementById('productName').value = ''
-        document.getElementById('productPrice').value = ''
+        console.error('Ошибка обновления:', error)
+        loadProducts() // Перезагружаем, если ошибка
       }
-    })
-    
-    // Глобальные функции для кнопок
-    window.archiveProduct = async (id) => {
-      await supabase.from('products').update({ archived: true }).eq('id', id)
-      loadProducts()
     }
     
+    // Архивация/восстановление
+    window.toggleArchive = async (id, archive) => {
+      const { error } = await supabase
+        .from('products')
+        .update({ archived: archive })
+        .eq('id', id)
+      
+      if (!error) loadProducts()
+    }
+    
+    // Удаление
     window.deleteProduct = async (id) => {
       if (confirm('Удалить этот товар?')) {
-        await supabase.from('products').delete().eq('id', id)
-        loadProducts()
+        const { error } = await supabase
+          .from('products')
+          .delete()
+          .eq('id', id)
+        
+        if (!error) loadProducts()
       }
     }
     
-    // Инициализация
-    loadProducts()
+    // Перемещение товара
+    window.moveProduct = async (id, direction) => {
+      const product = allProducts.find(p => p.id === id)
+      if (!product) return
+      
+      const categoryProducts = allProducts
+        .filter(p => p.category === product.category && !p.archived)
+        .sort((a, b) => a.order - b.order)
+      
+      const currentIndex = categoryProducts.findIndex(p => p.id === id)
+      
+      if (direction === 'up' && currentIndex > 0) {
+        const prevProduct = categoryProducts[currentIndex - 1]
+        // Меняем порядок
+        await supabase
+          .from('products')
+          .update({ order: prevProduct.order })
+          .eq('id', product.id)
+        
+        await supabase
+          .from('products')
+          .update({ order: product.order })
+          .eq('id', prevProduct.id)
+        
+        loadProducts()
+      }
+      else if (direction === 'down' && currentIndex < categoryProducts.length - 1) {
+        const nextProduct = categoryProducts[currentIndex + 1]
+        // Меняем порядок
+        await supabase
+          .from('products')
+          .update({ order: nextProduct.order })
+          .eq('id', product.id)
+        
+        await supabase
+          .from('products')
+          .update({ order: product.order })
+          .eq('id', nextProduct.id)
+        
+        loadProducts()
+      }
+    }
   </script>
 </body>
 </html>
