@@ -14,9 +14,11 @@
     body {
       font-family: Arial, sans-serif;
       background: #f9f9f9;
-      margin: 0; padding: 0;
+      margin: 0;
+      padding: 0;
       min-height: 100vh;
     }
+    /* Шапка с админ-кнопкой */
     header {
       background: white;
       padding: 15px;
@@ -26,110 +28,159 @@
       position: relative;
     }
     .admin-access {
-      position: absolute; top: 10px; right: 10px;
+      position: absolute;
+      top: 10px;
+      right: 10px;
       color: var(--admin-color);
-      font-size: 12px; cursor: pointer;
+      font-size: 12px;
+      cursor: pointer;
       text-decoration: underline;
     }
+    /* Уведомление */
     .notice {
       background-color: var(--notice-color);
-      color: #5c4a00; padding: 12px; margin: 10px;
+      color: #5c4a00;
+      padding: 12px;
+      margin: 10px;
       border-left: 5px solid #ffd700;
       border-radius: 5px;
     }
+    /* WhatsApp */
     .whatsapp-btn {
-      position: fixed; bottom: 20px; right: 20px;
-      background: var(--primary-color); color: white;
-      padding: 12px 20px; border-radius: 50px;
-      text-decoration: none; font-weight: bold;
-      display: flex; align-items: center;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--primary-color);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
       box-shadow: 0 4px 8px rgba(0,0,0,0.2);
       z-index: 100;
     }
     .whatsapp-btn::before {
-      content: "💬"; margin-right: 8px; font-size: 20px;
+      content: "💬";
+      margin-right: 8px;
+      font-size: 20px;
     }
+    /* Категории */
     .categories {
-      display: flex; overflow-x: auto;
-      padding: 10px; background: white;
+      display: flex;
+      overflow-x: auto;
+      padding: 10px;
+      background: white;
       margin-bottom: 10px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       scrollbar-width: none;
     }
     .categories::-webkit-scrollbar { display: none; }
     .category-btn {
-      padding: 8px 15px; margin-right: 10px;
-      border: none; border-radius: 20px;
-      background: #f1f1f1; cursor: pointer;
-      white-space: nowrap; flex-shrink: 0;
+      padding: 8px 15px;
+      margin-right: 10px;
+      border: none;
+      border-radius: 20px;
+      background: #f1f1f1;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
     .category-btn.active {
-      background: var(--primary-color); color: white;
+      background: var(--primary-color);
+      color: white;
     }
+    /* Сетка товаров */
     .products-container { padding: 10px; }
     .products-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px,1fr));
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
       gap: 15px;
     }
     .product-card {
-      background: white; border-radius: 10px;
-      padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      background: white;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       position: relative;
     }
     .product-image {
-      width:100%; height:120px; object-fit:contain;
-      border-radius:5px; margin-bottom:10px;
-      background:#f8f8f8;
+      width: 100%;
+      height: 120px;
+      object-fit: contain;
+      border-radius: 5px;
+      margin-bottom: 10px;
+      background: #f8f8f8;
     }
     .product-name {
-      font-weight:bold; margin-bottom:5px;
-      word-break:break-word;
+      font-weight: bold;
+      margin-bottom: 5px;
+      word-break: break-word;
     }
     .product-price {
-      color:#2ecc71; font-weight:bold;
+      color: #2ecc71;
+      font-weight: bold;
     }
+    /* Админ-панель */
     .admin-panel {
-      background:#f8f9fa; padding:15px; margin:10px;
-      border-radius:10px; display:none;
+      background: #f8f9fa;
+      padding: 15px;
+      margin: 10px;
+      border-radius: 10px;
+      display: none;
     }
-    .admin-visible .admin-panel { display:block; }
+    .admin-visible .admin-panel { display: block; }
     .admin-controls {
-      margin-top:10px; display:flex;
-      flex-wrap:wrap; gap:5px;
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
     }
     .admin-controls button {
-      padding:5px 10px; border:none; border-radius:5px;
-      cursor:pointer; font-size:12px;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 12px;
     }
-    .archive-btn { background:#ffa502; color:white; }
-    .delete-btn  { background:var(--admin-color); color:white; }
+    .archive-btn { background: #ffa502; color: white; }
+    .delete-btn  { background: var(--admin-color); color: white; }
     .move-btns {
-      display:flex; justify-content:center; gap:5px;
-      margin-top:5px;
+      display: flex;
+      justify-content: center;
+      gap: 5px;
+      margin-top: 5px;
     }
-    .archive-section {
-      display:none; padding:10px;
-    }
-    .admin-visible .archive-section { display:block; }
+    /* Архив */
+    .archive-section { display: none; padding: 10px; }
+    .admin-visible .archive-section { display: block; }
     .archive-title {
-      padding:10px; background:#f1f1f1;
-      border-radius:5px; margin-bottom:10px;
-      font-weight:bold;
+      padding: 10px;
+      background: #f1f1f1;
+      border-radius: 5px;
+      margin-bottom: 10px;
+      font-weight: bold;
     }
+    /* Лоадер */
     #loader {
-      display:none; position:fixed; top:0; left:0;
-      width:100%; height:100%; background:rgba(0,0,0,0.5);
-      color:white; font-size:24px;
-      justify-content:center; align-items:center;
-      z-index:1000;
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      color: white;
+      font-size: 24px;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
     }
-    @media (max-width:600px) {
-      .products-grid { grid-template-columns:repeat(2,1fr); }
-      body { font-size:14px; }
+    @media (max-width: 600px) {
+      .products-grid { grid-template-columns: repeat(2, 1fr); }
+      body { font-size: 14px; }
     }
-    @media (min-width:1000px) {
-      .products-grid { grid-template-columns:repeat(5,1fr); }
+    @media (min-width: 1000px) {
+      .products-grid { grid-template-columns: repeat(5, 1fr); }
     }
   </style>
 </head>
@@ -137,9 +188,9 @@
 
   <div id="loader">Загрузка...</div>
 
-  <a class="whatsapp-btn" href="https://wa.me/77780855478" target="_blank">
-    WhatsApp
-  </a>
+  <a class="whatsapp-btn"
+     href="https://wa.me/77780855478"
+     target="_blank">WhatsApp</a>
 
   <header>
     <h1>Paida All</h1>
@@ -170,10 +221,10 @@
 
   <div class="admin-panel" id="adminPanel">
     <h3>Добавить товар</h3>
-    <input type="text" id="productName" placeholder="Название">
-    <input type="text" id="productPrice" placeholder="Цена (только цифры)">
-    <input type="text" id="productImage" placeholder="Ссылка на фото">
-    <input type="text" id="productCategory" placeholder="Категория">
+    <input type="text"   id="productName"     placeholder="Название">
+    <input type="text"   id="productPrice"    placeholder="Цена (только цифры)">
+    <input type="text"   id="productImage"    placeholder="Ссылка на фото">
+    <input type="text"   id="productCategory" placeholder="Категория">
     <button id="addProductBtn">Добавить</button>
   </div>
 
@@ -181,9 +232,23 @@
     import { createClient }
       from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
+    // **ВАЖНО**: подставьте сюда _свой_ Anon Key из Supabase
     const supabaseUrl = 'https://qmnnbotyzwftlhwakbnz.supabase.co'
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3Mi...'
+    const supabaseKey = 'ваш_actual_anon_key_из_Supabase'
     const supabase = createClient(supabaseUrl, supabaseKey)
+
+    // Telegram-уведомления (опционально)
+    const TG_TOKEN = '7673591792:AAFQ83r98YSJay_X81HZIMh2cowWQu1bgGc'
+    const TG_CHAT  = '1182976777'
+    async function sendTG(msg){
+      try{
+        await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ chat_id:TG_CHAT, text:msg })
+        })
+      }catch(e){ console.warn(e) }
+    }
 
     let isAdmin = false
     let selectedCategory = 'all'
@@ -207,9 +272,9 @@
         allProducts = data
         renderCategories()
         renderProducts()
-      } catch(e){
+      } catch(e) {
         console.error(e)
-        alert('Ошибка загрузки данных:\n'+ e.message)
+        alert('Ошибка загрузки данных:\n' + e.message)
       } finally {
         hideLoader()
       }
@@ -239,8 +304,8 @@
 
     function renderProducts(){
       const act = allProducts.filter(x=>
-        !x.archived &&
-        (selectedCategory==='all' || x.category===selectedCategory)
+        !x.archived
+        && (selectedCategory==='all'||x.category===selectedCategory)
       )
       grid.innerHTML = act.map(x=>cardHTML(x,false)).join('')
       if(isAdmin){
@@ -285,11 +350,11 @@
         </div>`
     }
 
-    window.updateProduct = async (id,field,val)=>{
+    window.updateProduct = async (id, field, value) => {
       let v = field==='price'
-        ? parseInt(val.replace(/[^\d]/g,''))||0
-        : val.trim()
-      if(field==='price'&&v<=0){
+        ? parseInt(value.replace(/[^\d]/g,''))||0
+        : value.trim()
+      if(field==='price' && v<=0){
         alert('Цена должна быть положительной')
         return
       }
@@ -298,15 +363,13 @@
         .update({ [field]: v })
         .eq('id', id)
       if(error){
-        console.error(error)
-        alert(error.message)
-        return
+        console.error(error); alert(error.message); return
       }
-      // после сохранения перезагружаем всё
+      // **ПРАВКА**: сразу перезагружаем, чтобы изменения сохранились
       await loadProducts()
     }
 
-    window.addNewProduct = async ()=>{
+    window.addNewProduct = async () => {
       const N = document.getElementById('productName').value.trim()
       const P = document.getElementById('productPrice').value.replace(/[^\d]/g,'')
       const I = document.getElementById('productImage').value.trim()
@@ -318,20 +381,20 @@
       const { error } = await supabase
         .from('products')
         .insert([{
-          name:N, price:P,
-          img:I||'https://via.placeholder.com/150',
-          category:C, archived:false,
-          order: allProducts.length+1
+          name: N, price: P,
+          img: I||'https://via.placeholder.com/150',
+          category: C,
+          archived: false,
+          order: allProducts.length + 1
         }])
       if(error){
-        console.error(error)
-        alert(error.message)
+        console.error(error); alert(error.message)
       } else {
         await loadProducts()
       }
     }
 
-    window.archiveProduct = async (id)=>{
+    window.archiveProduct = async (id) => {
       if(!confirm('Переместить товар в архив?')) return
       showLoader()
       try {
@@ -342,14 +405,13 @@
         if(error) throw error
         await loadProducts()
       } catch(e){
-        console.error(e)
-        alert('Ошибка архивации:\n'+e.message)
+        console.error(e); alert('Ошибка архивации:\n'+e.message)
       } finally {
         hideLoader()
       }
     }
 
-    window.restoreProduct = async (id)=>{
+    window.restoreProduct = async (id) => {
       showLoader()
       try {
         const { error } = await supabase
@@ -359,14 +421,13 @@
         if(error) throw error
         await loadProducts()
       } catch(e){
-        console.error(e)
-        alert('Ошибка восстановления:\n'+e.message)
+        console.error(e); alert('Ошибка восстановления:\n'+e.message)
       } finally {
         hideLoader()
       }
     }
 
-    window.deleteProduct = async (id)=>{
+    window.deleteProduct = async (id) => {
       if(!confirm('Удалить товар навсегда?')) return
       showLoader()
       try {
@@ -377,22 +438,21 @@
         if(error) throw error
         await loadProducts()
       } catch(e){
-        console.error(e)
-        alert('Ошибка удаления:\n'+e.message)
+        console.error(e); alert('Ошибка удаления:\n'+e.message)
       } finally {
         hideLoader()
       }
     }
 
-    window.moveProduct = async (id,dir)=>{
+    window.moveProduct = async (id, dir) => {
       const pr = allProducts.find(x=>x.id===id)
       const lst = allProducts
         .filter(x=>x.category===pr.category && !x.archived)
         .sort((a,b)=>a.order - b.order)
-      const idx = lst.findIndex(x=>x.id===id)
-      let oth = dir==='up'&&idx>0   ? lst[idx-1]
-                : dir==='down'&&idx<lst.length-1? lst[idx+1]
-                : null
+      const i = lst.findIndex(x=>x.id===id)
+      let oth = dir==='up'&&i>0         ? lst[i-1]
+              : dir==='down'&&i<lst.length-1 ? lst[i+1]
+              : null
       if(!oth) return
       showLoader()
       try {
@@ -406,14 +466,13 @@
           .eq('id', oth.id)
         await loadProducts()
       } catch(e){
-        console.error(e)
-        alert('Ошибка перемещения:\n'+e.message)
+        console.error(e); alert('Ошибка перемещения:\n'+e.message)
       } finally {
         hideLoader()
       }
     }
 
-    window.toggleAdminMode = ()=>{
+    window.toggleAdminMode = () => {
       if(isAdmin){
         isAdmin = false
         document.body.classList.remove('admin-visible')
@@ -429,10 +488,10 @@
       }
     }
 
-    document.getElementById('adminAccess').onclick = toggleAdminMode
-    document.getElementById('addProductBtn').onclick = addNewProduct
+    document.getElementById('adminAccess').onclick     = toggleAdminMode
+    document.getElementById('addProductBtn').onclick   = addNewProduct
     document.querySelector('[data-category="all"]').onclick = ()=>{
-      selectedCategory='all'
+      selectedCategory = 'all'
       document.querySelectorAll('.category-btn')
         .forEach(x=>x.classList.remove('active'))
       document.querySelector('[data-category="all"]')
