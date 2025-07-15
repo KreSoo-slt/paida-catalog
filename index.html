@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <meta charset="UTF-8" />
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
   <title>Paida All — Каталог</title>
   <style>
     :root {
@@ -71,9 +72,7 @@
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       scrollbar-width: none;
     }
-    .categories::-webkit-scrollbar {
-      display: none;
-    }
+    .categories::-webkit-scrollbar { display: none; }
     .category-btn {
       padding: 8px 15px;
       margin-right: 10px;
@@ -88,9 +87,7 @@
       background: var(--primary-color);
       color: white;
     }
-    .products-container {
-      padding: 10px;
-    }
+    .products-container { padding: 10px; }
     .products-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -127,9 +124,7 @@
       border-radius: 10px;
       display: none;
     }
-    .admin-visible .admin-panel {
-      display: block;
-    }
+    .admin-visible .admin-panel { display: block; }
     .admin-controls {
       margin-top: 10px;
       display: flex;
@@ -143,51 +138,40 @@
       cursor: pointer;
       font-size: 12px;
     }
-    .archive-btn {
-      background: #ffa502;
-      color: white;
-    }
-    .delete-btn {
-      background: var(--admin-color);
-      color: white;
-    }
-    .move-btns {
-      display: flex;
-      justify-content: center;
-      gap: 5px;
-      margin-top: 5px;
-    }
-    .archive-section {
-      display: none;
-      padding: 10px;
-    }
-    .admin-visible .archive-section {
-      display: block;
-    }
+    .archive-btn { background: #ffa502; color: white; }
+    .delete-btn  { background: var(--admin-color); color: white; }
+    .move-btns { display: flex; gap:5px; margin-top:5px; justify-content:center; }
+    .archive-section { display: none; padding:10px; }
+    .admin-visible .archive-section { display: block; }
     .archive-title {
-      padding: 10px;
-      background: #f1f1f1;
-      border-radius: 5px;
-      margin-bottom: 10px;
-      font-weight: bold;
+      padding:10px;
+      background:#f1f1f1;
+      border-radius:5px;
+      margin-bottom:10px;
+      font-weight:bold;
     }
-    @media (max-width: 600px) {
-      .products-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-      .product-image {
-        height: 100px;
-      }
+    @media (max-width:600px) {
+      .products-grid { grid-template-columns: repeat(2,1fr); }
+      body { font-size: 14px; }
     }
-    @media (min-width: 1000px) {
-      .products-grid {
-        grid-template-columns: repeat(5, 1fr);
-      }
+    @media (min-width:1000px) {
+      .products-grid { grid-template-columns: repeat(5,1fr); }
+    }
+    #loader {
+      display:none;
+      position:fixed;top:0;left:0;width:100%;height:100%;
+      background:rgba(0,0,0,0.5);color:white;font-size:24px;
+      justify-content:center;align-items:center;z-index:1000;
     }
   </style>
 </head>
 <body>
-  <a class="whatsapp-btn" href="https://wa.me/77780855478" target="_blank">WhatsApp</a>
+  <div id="loader">Загрузка...</div>
+
+  <a class="whatsapp-btn"
+     href="https://wa.me/77780855478"
+     target="_blank">WhatsApp</a>
+
   <header>
     <h1>Paida All</h1>
     <div class="contact">
@@ -196,20 +180,26 @@
     </div>
     <div class="admin-access" id="adminAccess">Для админа</div>
   </header>
+
   <div class="notice">
     Заказы после 13:00 обрабатываются на следующий день.<br>
     Доставка и самовывоз доступны по Караганде.
   </div>
+
   <div class="categories" id="categories">
-    <button class="category-btn active" data-category="all">Все</button>
+    <button class="category-btn active"
+            data-category="all">Все</button>
   </div>
+
   <div class="products-container">
     <div class="products-grid" id="productsGrid"></div>
   </div>
+
   <div class="archive-section" id="archiveSection">
     <div class="archive-title">📦 Архив (только для админа)</div>
     <div class="products-grid" id="archiveGrid"></div>
   </div>
+
   <div class="admin-panel" id="adminPanel">
     <h3>Добавить товар</h3>
     <input type="text" id="productName" placeholder="Название">
@@ -218,33 +208,258 @@
     <input type="text" id="productCategory" placeholder="Категория">
     <button id="addProductBtn">Добавить</button>
   </div>
+
   <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
-    const supabase = createClient(
-      'https://qmnnbotyzwftlhwakbnz.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtbm5ib3R5endmdGxod2FrYm56Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIwOTE3MzYsImV4cCI6MjA2NzY2NzczNn0.QaHkN4M4_Deh4HN4CZ-spv8QKbGKzhrfGwMvr6Pbyv4'
-    );
+    import { createClient } 
+      from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-    let isAdmin = false;
-    const ADMIN_PASSWORD = "erema";
-    let selectedCategory = "all";
-    let allProducts = [];
+    // Supabase
+    const supabaseUrl = 'https://qmnnbotyzwftlhwakbnz.supabase.co'
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiI...<ваш_публичный_ключ>'
+    const supabase = createClient(supabaseUrl, supabaseKey)
 
-    document.addEventListener('DOMContentLoaded', () => {
-      loadProducts();
-      setupEventListeners();
-    });
+    // Telegram
+    const TELEGRAM_BOT_TOKEN = '7673591792:AAFQ83r98YSJay_X81HZIMh2cowWQu1bgGc'
+    const TELEGRAM_CHAT_ID   = '1182976777'
 
-    async function loadProducts() {
+    // State
+    let isAdmin = false
+    let selectedCategory = 'all'
+    let allProducts = []
+
+    // Elements
+    const loader = document.getElementById('loader')
+    const grid   = document.getElementById('productsGrid')
+    const arch   = document.getElementById('archiveGrid')
+
+    // Helpers
+    function showLoader(){ loader.style.display='flex' }
+    function hideLoader(){ loader.style.display='none' }
+
+    async function hashPwd(pwd){
+      const buf = new TextEncoder().encode(pwd)
+      const hash = await crypto.subtle.digest('SHA-256', buf)
+      return Array.from(new Uint8Array(hash))
+        .map(b=>b.toString(16).padStart(2,'0')).join('')
+    }
+
+    async function tg(msg){
       try {
-        const { data, error } = await supabase
+        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`,{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({
+            chat_id: TELEGRAM_CHAT_ID,
+            text: msg
+          })
+        })
+      } catch(e){ console.warn('TG:',e) }
+    }
+
+    // Load
+    async function loadProducts(){
+      showLoader()
+      try {
+        const {data,error} = await supabase
           .from('products')
           .select('*')
-          .order('order', { ascending: true });
-        if (error) throw error;
-        allProducts = data;
-        updateCategories();
-        renderProducts();
-      } catch (error) {
-        console.error('Ошибка загрузки:', error);
-        alert('Ошибка загрузки данных');
+          .order('order',{ascending:true})
+        if(error) throw error
+        allProducts = data
+        renderCategories()
+        renderProducts()
+      } catch(e){
+        alert('Ошибка загрузки данных')
+        console.error(e)
+      } finally {
+        hideLoader()
+      }
+    }
+
+    function renderCategories(){
+      const cats = [...new Set(allProducts.map(p=>p.category).filter(Boolean))]
+      const ctn  = document.getElementById('categories')
+      const btnAll = ctn.querySelector('[data-category="all"]')
+      ctn.innerHTML = ''
+      ctn.append(btnAll)
+      cats.forEach(cat=>{
+        const b = document.createElement('button')
+        b.className = 'category-btn'
+        b.textContent = cat
+        b.dataset.category = cat
+        b.onclick = ()=>{
+          selectedCategory = cat
+          ctn.querySelectorAll('.category-btn').forEach(x=>x.classList.remove('active'))
+          b.classList.add('active')
+          renderProducts()
+        }
+        ctn.append(b)
+      })
+    }
+
+    function renderProducts(){
+      const active = allProducts.filter(p=>
+        !p.archived && (selectedCategory==='all' || p.category===selectedCategory)
+      )
+      grid.innerHTML = active.map(p=>cardHTML(p,false)).join('')
+      if(isAdmin){
+        const archProds = allProducts.filter(p=>p.archived)
+        arch.innerHTML = archProds.map(p=>cardHTML(p,true)).join('')
+      }
+    }
+
+    function cardHTML(p,isArc){
+      const price = Number(p.price).toLocaleString('ru-RU') + ' ₸'
+      return `
+        <div class="product-card" data-id="${p.id}">
+          <img class="product-image"
+               src="${p.img||'https://via.placeholder.com/150'}"
+               onerror="this.src='https://via.placeholder.com/150?text=No+Image'">
+          <div class="product-name"
+               contenteditable="${isAdmin}"
+               onblur="updateProduct(${p.id},'name',this.textContent)">
+            ${p.name}
+          </div>
+          <div class="product-price"
+               contenteditable="${isAdmin}"
+               onblur="updateProduct(${p.id},'price',this.textContent)">
+            ${price}
+          </div>
+          ${isAdmin?`
+            <div class="admin-controls">
+              <button class="${isArc?'archive-btn':'archive-btn'}"
+                      onclick="${isArc?'restoreProduct':'archiveProduct'}(${p.id})">
+                ${isArc?'Восстановить':'Архив'}
+              </button>
+              <button class="delete-btn"
+                      onclick="deleteProduct(${p.id})">
+                Удалить
+              </button>
+            </div>
+            ${!isArc?`
+              <div class="move-btns">
+                <button onclick="moveProduct(${p.id},'up')">↑</button>
+                <button onclick="moveProduct(${p.id},'down')">↓</button>
+              </div>
+            `:''}
+          `:''}
+        </div>
+      `
+    }
+
+    // CRUD & telegram
+    window.updateProduct = async (id,field,val)=>{
+      let v = field==='price'
+        ? parseInt(val.replace(/[^\d]/g,''))||0
+        : val.trim()
+      if(field==='price'&&v<=0){alert('Цена > 0');return}
+      const {error} = await supabase
+        .from('products').update({[field]:v}).eq('id',id)
+      if(error){console.error(error);return}
+      allProducts.find(x=>x.id===id)[field]=v
+      await tg(`✏️ Изменено ${field} у ID ${id} → ${v}`)
+    }
+
+    window.addNewProduct = async ()=>{
+      const n = document.getElementById('productName').value.trim()
+      const p = document.getElementById('productPrice').value.replace(/[^\d]/g,'')
+      const i = document.getElementById('productImage').value.trim()
+      const c = document.getElementById('productCategory').value.trim()
+      if(!n||!p||!c){alert('Заполните все');return}
+      const {error} = await supabase.from('products').insert([{
+        name:n, price:p,
+        img:i||null, category:c,
+        archived:false, order:allProducts.length+1
+      }])
+      if(error){console.error(error);return}
+      await tg(`🆕 Добавлен "${n}" (${p} ₸)`)
+      loadProducts()
+    }
+
+    window.archiveProduct = async id=>{
+      if(!confirm('В архив?'))return
+      await supabase.from('products').update({archived:true}).eq('id',id)
+      await tg(`📦 В архив ID ${id}`)
+      loadProducts()
+    }
+
+    window.restoreProduct = async id=>{
+      await supabase.from('products').update({archived:false}).eq('id',id)
+      await tg(`🔄 Из архива ID ${id}`)
+      loadProducts()
+    }
+
+    window.deleteProduct = async id=>{
+      if(!confirm('Удалить навсегда?'))return
+      await supabase.from('products').delete().eq('id',id)
+      await tg(`🗑 Удалён ID ${id}`)
+      loadProducts()
+    }
+
+    window.moveProduct = async (id,dir)=>{
+      const prod = allProducts.find(x=>x.id===id)
+      const lst = allProducts
+        .filter(x=>x.category===prod.category && !x.archived)
+        .sort((a,b)=>a.order-b.order)
+      const idx = lst.findIndex(x=>x.id===id)
+      let other = dir==='up'&&idx>0
+                ? lst[idx-1]
+                : dir==='down'&&idx<lst.length-1
+                ? lst[idx+1]
+                : null
+      if(!other) return
+      await supabase.from('products')
+        .update({order:other.order}).eq('id',prod.id)
+      await supabase.from('products')
+        .update({order:prod.order}).eq('id',other.id)
+      loadProducts()
+    }
+
+    // admin login via Supabase
+    window.toggleAdminMode = async ()=>{
+      if(isAdmin){
+        isAdmin=false
+        document.body.classList.remove('admin-visible')
+        return
+      }
+      const pwd = prompt('Введите пароль админа:')
+      if(!pwd) return
+      const h = await hashPwd(pwd)
+      // fetch hash from Supabase
+      const { data,error } = await supabase
+        .from('admin_settings')
+        .select('value')
+        .eq('key','admin_password_hash')
+        .single()
+      if(error||!data){
+        alert('Не удалось проверить пароль')
+        console.error(error)
+        return
+      }
+      if(h!==data.value){
+        alert('Неверный пароль!')
+        return
+      }
+      isAdmin=true
+      document.body.classList.add('admin-visible')
+      await tg('🔑 Админ-режим включён')
+      renderProducts()
+    }
+
+    // init
+    document.getElementById('adminAccess').onclick = toggleAdminMode
+    document.getElementById('addProductBtn').onclick = addNewProduct
+    document.querySelector('[data-category="all"]').onclick = ()=>{
+      selectedCategory='all'
+      document.querySelectorAll('.category-btn')
+        .forEach(x=>x.classList.remove('active'))
+      document.querySelector('[data-category="all"]')
+        .classList.add('active')
+      renderProducts()
+    }
+
+    loadProducts()
+
+  </script>
+</body>
+</html>
