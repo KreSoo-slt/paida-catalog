@@ -6,7 +6,6 @@
         content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
   <title>Paida All — Каталог</title>
   <style>
-    /* ================== Стили из вашего шаблона ================== */
     :root {
       --primary-color: #25D366;
       --admin-color: #ff4757;
@@ -15,8 +14,7 @@
     body {
       font-family: Arial, sans-serif;
       background: #f9f9f9;
-      margin: 0;
-      padding: 0;
+      margin: 0; padding: 0;
       min-height: 100vh;
     }
     header {
@@ -24,8 +22,8 @@
       padding: 15px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       text-align: center;
-      position: relative;
       margin-bottom: 10px;
+      position: relative;
     }
     .admin-access {
       position: absolute;
@@ -36,89 +34,132 @@
       text-decoration: underline;
     }
     .notice {
-      background: var(--notice-color);
+      background-color: var(--notice-color);
       color: #5c4a00;
       padding: 12px; margin: 10px;
       border-left: 5px solid #ffd700;
       border-radius: 5px;
     }
     .whatsapp-btn {
-      position: fixed; bottom:20px; right:20px;
-      background: var(--primary-color); color:white;
-      padding:12px 20px; border-radius:50px;
-      text-decoration:none; font-weight:bold;
-      display:flex; align-items:center;
-      box-shadow:0 4px 8px rgba(0,0,0,0.2);
-      z-index:100;
+      position: fixed; bottom: 20px; right: 20px;
+      background: var(--primary-color);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: bold;
+      display: flex; align-items: center;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      z-index: 100;
     }
-    .whatsapp-btn::before { content:"💬"; margin-right:8px; font-size:20px; }
+    .whatsapp-btn::before {
+      content: "💬";
+      margin-right: 8px;
+      font-size: 20px;
+    }
     .categories {
-      display:flex; overflow-x:auto; padding:10px;
-      background:white; margin-bottom:10px;
-      box-shadow:0 2px 5px rgba(0,0,0,0.1);
-      scrollbar-width:none;
+      display: flex; overflow-x: auto;
+      padding: 10px; background: white;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      scrollbar-width: none;
     }
-    .categories::-webkit-scrollbar { display:none; }
+    .categories::-webkit-scrollbar { display: none; }
     .category-btn {
-      padding:8px 15px; margin-right:10px;
-      border:none; border-radius:20px;
-      background:#f1f1f1; cursor:pointer;
-      white-space:nowrap; flex-shrink:0;
+      padding: 8px 15px; margin-right: 10px;
+      border: none; border-radius: 20px;
+      background: #f1f1f1; cursor: pointer;
+      white-space: nowrap; flex-shrink: 0;
     }
-    .category-btn.active { background:var(--primary-color); color:white; }
-    .products-container { padding:10px; }
+    .category-btn.active {
+      background: var(--primary-color);
+      color: white;
+    }
+    .products-container { padding: 10px; }
     .products-grid {
-      display:grid;
-      grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
-      gap:15px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px,1fr));
+      gap: 15px;
     }
     .product-card {
-      background:white; border-radius:10px;
-      padding:15px; box-shadow:0 2px 5px rgba(0,0,0,0.1);
-      position:relative;
+      background: white;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      position: relative;
     }
     .product-image {
-      width:100%; height:120px; object-fit:contain;
-      border-radius:5px; margin-bottom:10px;
-      background:#f8f8f8;
+      width: 100%; height: 120px;
+      object-fit: contain;
+      border-radius: 5px;
+      margin-bottom: 10px;
+      background: #f8f8f8;
     }
-    .product-name { font-weight:bold; margin-bottom:5px; }
-    .product-price { color:#2ecc71; font-weight:bold; }
+    .product-name {
+      font-weight: bold;
+      margin-bottom: 5px;
+      word-break: break-word;
+    }
+    .product-price {
+      color: #2ecc71;
+      font-weight: bold;
+    }
     .admin-panel {
-      background:#f8f9fa; padding:15px; margin:10px;
-      border-radius:10px; display:none;
+      background: #f8f9fa;
+      padding: 15px;
+      margin: 10px;
+      border-radius: 10px;
+      display: none;
     }
-    .admin-visible .admin-panel { display:block; }
+    .admin-visible .admin-panel {
+      display: block;
+    }
     .admin-controls {
-      margin-top:10px; display:flex; flex-wrap:wrap; gap:5px;
+      margin-top: 10px;
+      display: flex; flex-wrap: wrap; gap: 5px;
     }
     .admin-controls button {
-      padding:5px 10px; border:none; border-radius:5px;
-      cursor:pointer; font-size:12px;
+      padding: 5px 10px;
+      border: none; border-radius: 5px;
+      cursor: pointer; font-size: 12px;
     }
-    .archive-btn { background:#ffa502; color:white; }
-    .delete-btn { background:var(--admin-color); color:white; }
+    .archive-btn { background: #ffa502; color: white; }
+    .delete-btn  { background: var(--admin-color); color: white; }
     .move-btns {
-      display:flex; justify-content:center; gap:5px; margin-top:5px;
+      display: flex; justify-content: center;
+      gap: 5px; margin-top: 5px;
     }
-    .archive-section { display:none; padding:10px; }
-    .admin-visible .archive-section { display:block; }
+    .archive-section { display: none; padding: 10px; }
+    .admin-visible .archive-section {
+      display: block;
+    }
     .archive-title {
-      padding:10px; background:#f1f1f1; border-radius:5px;
-      margin-bottom:10px; font-weight:bold;
+      padding: 10px;
+      background: #f1f1f1;
+      border-radius: 5px;
+      margin-bottom: 10px;
+      font-weight: bold;
     }
     #loader {
-      display:none;
-      position:fixed; top:0; left:0; width:100%; height:100%;
-      background:rgba(0,0,0,0.5); color:white; font-size:24px;
-      justify-content:center; align-items:center; z-index:1000;
+      display: none;
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      color: white; font-size: 24px;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
     }
-    @media(max-width:600px) {
-      .products-grid { grid-template-columns:repeat(2,1fr); }
-      body { font-size:14px; }
+    @media (max-width: 600px) {
+      .products-grid {
+        grid-template-columns: repeat(2,1fr);
+      }
+      body { font-size: 14px; }
     }
-    @media(min-width:1000px) {
-      .products-grid { grid-template-columns:repeat(5,1fr); }
+    @media (min-width: 1000px) {
+      .products-grid {
+        grid-template-columns: repeat(5,1fr);
+      }
     }
   </style>
 </head>
@@ -145,7 +186,9 @@
   </div>
 
   <div class="categories" id="categories">
-    <button class="category-btn active" data-category="all">Все</button>
+    <button class="category-btn active" data-category="all">
+      Все
+    </button>
   </div>
 
   <div class="products-container">
@@ -170,30 +213,27 @@
     import { createClient }
       from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-    // ====== Supabase ======
-    const SUPA_URL = 'https://qmnnbotyzwftlhwakbnz.supabase.co'
-    const SUPA_KEY = 'eyJhbGciOiJIUzI1NiI...<ваш_anon_key>'
-    const supabase = createClient(SUPA_URL, SUPA_KEY)
+    const supabaseUrl = 'https://qmnnbotyzwftlhwakbnz.supabase.co'
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ...'
+    const supabase = createClient(supabaseUrl, supabaseKey)
 
-    // ====== Telegram ======
-    const TB = '7673591792:AAFQ83r98YSJay_X81HZIMh2cowWQu1bgGc'
-    const TC = '1182976777'
-    async function tg(msg){
+    // Telegram-уведомления (не обязятельно)
+    const TG_TOKEN = '7673591792:AAFQ83r98YSJay_X81HZIMh2cowWQu1bgGc'
+    const TG_CHAT  = '1182976777'
+    async function sendTG(msg){
       try {
-        await fetch(`https://api.telegram.org/bot${TB}/sendMessage`,{
+        await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`,{
           method:'POST',
           headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({chat_id:TC, text:msg})
+          body: JSON.stringify({ chat_id:TG_CHAT, text:msg })
         })
-      } catch(e){ console.warn('TG err',e) }
+      } catch(e){ console.warn(e) }
     }
 
-    // ====== State ======
     let isAdmin = false
     let selectedCategory = 'all'
     let allProducts = []
 
-    // ====== DOM ======
     const loader = document.getElementById('loader')
     const grid   = document.getElementById('productsGrid')
     const arch   = document.getElementById('archiveGrid')
@@ -201,46 +241,40 @@
     function showLoader(){ loader.style.display='flex' }
     function hideLoader(){ loader.style.display='none' }
 
-    async function hashPwd(pwd){
-      const buf  = new TextEncoder().encode(pwd)
-      const hash = await crypto.subtle.digest('SHA-256',buf)
-      return Array.from(new Uint8Array(hash))
-        .map(b=>b.toString(16).padStart(2,'0')).join('')
-    }
-
-    // ====== CRUD ======
     async function loadProducts(){
       showLoader()
       try {
-        // запрос товаров
         const { data, error } = await supabase
           .from('products')
           .select('*')
           .order('order',{ascending:true})
-        if (error) throw error
+        if(error) throw error
         allProducts = data
         renderCategories()
         renderProducts()
       } catch(e){
-        console.error('Supabase load error',e)
-        alert('Ошибка загрузки данных: ' + e.message)
-      } finally { hideLoader() }
+        console.error(e)
+        alert('Ошибка загрузки товаров:\n' + e.message)
+      } finally {
+        hideLoader()
+      }
     }
 
     function renderCategories(){
-      const cats = [...new Set(allProducts.map(p=>p.category).filter(Boolean))]
+      const cats = [...new Set(allProducts.map(x=>x.category).filter(Boolean))]
       const ctn  = document.getElementById('categories')
       const btnA = ctn.querySelector('[data-category="all"]')
-      ctn.innerHTML = ''
+      ctn.innerHTML=''
       ctn.append(btnA)
       cats.forEach(cat=>{
         const b = document.createElement('button')
-        b.className = 'category-btn'; b.textContent = cat
-        b.dataset.category = cat
-        b.onclick = ()=>{
+        b.className='category-btn'
+        b.textContent=cat
+        b.dataset.category=cat
+        b.onclick=()=>{
           selectedCategory=cat
-          ctn.querySelectorAll('.category-btn')
-             .forEach(x=>x.classList.remove('active'))
+          document.querySelectorAll('.category-btn')
+            .forEach(x=>x.classList.remove('active'))
           b.classList.add('active')
           renderProducts()
         }
@@ -249,29 +283,27 @@
     }
 
     function renderProducts(){
-      const act = allProducts.filter(p=>!p.archived &&
-        (selectedCategory==='all'||p.category===selectedCategory))
-      grid.innerHTML = act.map(p=>cardHTML(p,false)).join('')
+      const act = allProducts.filter(x=>
+        !x.archived && (selectedCategory==='all'||x.category===selectedCategory))
+      grid.innerHTML = act.map(x=>card(x,false)).join('')
       if(isAdmin){
-        const ar = allProducts.filter(p=>p.archived)
-        arch.innerHTML = ar.map(p=>cardHTML(p,true)).join('')
+        const ar = allProducts.filter(x=>x.archived)
+        arch.innerHTML = ar.map(x=>card(x,true)).join('')
       }
     }
 
-    function cardHTML(p,isArc){
+    function card(p,isArc){
       const price = Number(p.price).toLocaleString('ru-RU') + ' ₸'
       return `
         <div class="product-card" data-id="${p.id}">
           <img class="product-image"
                src="${p.img||'https://via.placeholder.com/150'}"
                onerror="this.src='https://via.placeholder.com/150?text=No+Image'">
-          <div class="product-name"
-               contenteditable="${isAdmin}"
+          <div class="product-name" contenteditable="${isAdmin}"
                onblur="updateProduct(${p.id},'name',this.textContent)">
             ${p.name}
           </div>
-          <div class="product-price"
-               contenteditable="${isAdmin}"
+          <div class="product-price" contenteditable="${isAdmin}"
                onblur="updateProduct(${p.id},'price',this.textContent)">
             ${price}
           </div>
@@ -296,16 +328,18 @@
         </div>`
     }
 
-    window.updateProduct = async (id,field,val)=>{
-      let v = field==='price'
-        ? parseInt(val.replace(/[^\d]/g,''))||0
-        : val.trim()
-      if(field==='price'&&v<=0){ alert('Цена > 0'); return }
-      const {error} = await supabase
-        .from('products').update({[field]:v}).eq('id',id)
+    window.updateProduct = async (id, f, v)=>{
+      let val = f==='price'
+        ? parseInt(v.replace(/[^\d]/g,''))||0
+        : v.trim()
+      if(f==='price' && val<=0){ alert('Цена > 0'); return }
+      const { error } = await supabase
+        .from('products')
+        .update({ [f]:val })
+        .eq('id',id)
       if(error){ console.error(error); alert(error.message); return }
-      allProducts.find(x=>x.id===id)[field]=v
-      await tg(`✏️ Изменено ${field} у ID ${id} → ${v}`)
+      allProducts.find(x=>x.id===id)[f]=val
+      sendTG(`✏️ Изменено ${f} у ID ${id} → ${val}`)
     }
 
     window.addNewProduct = async ()=>{
@@ -313,85 +347,88 @@
       const P = document.getElementById('productPrice').value.replace(/[^\d]/g,'')
       const I = document.getElementById('productImage').value.trim()
       const C = document.getElementById('productCategory').value.trim()
-      if(!N||!P||!C){alert('Заполните все поля');return}
-      const {error} = await supabase.from('products').insert([{
-        name:N, price:P,
-        img:I||null, category:C,
-        archived:false, order:allProducts.length+1
-      }])
-      if(error){ alert(error.message); return }
-      await tg(`🆕 Добавлен "${N}" (${P} ₸)`)
+      if(!N||!P||!C){ alert('Заполните все'); return }
+      const { error } = await supabase
+        .from('products')
+        .insert([{
+          name:N, price:P,
+          img:I||null, category:C,
+          archived:false, order:allProducts.length+1
+        }])
+      if(error){ console.error(error); alert(error.message); return }
+      sendTG(`🆕 Добавлен "${N}" (${P} ₸)`)
       loadProducts()
     }
 
     window.archiveProduct = async id=>{
       if(!confirm('В архив?'))return
-      await supabase.from('products').update({archived:true}).eq('id',id)
-      await tg(`📦 В архив ID ${id}`)
-      loadProducts()
+      const { error } = await supabase
+        .from('products')
+        .update({ archived:true })
+        .eq('id',id)
+      if(error){ console.error(error); alert(error.message); return }
+      sendTG(`📦 В архив ID ${id}`)
+      await loadProducts()
     }
 
     window.restoreProduct = async id=>{
-      await supabase.from('products').update({archived:false}).eq('id',id)
-      await tg(`🔄 Из архива ID ${id}`)
-      loadProducts()
+      const { error } = await supabase
+        .from('products')
+        .update({ archived:false })
+        .eq('id',id)
+      if(error){ console.error(error); alert(error.message); return }
+      sendTG(`🔄 Из архива ID ${id}`)
+      await loadProducts()
     }
 
     window.deleteProduct = async id=>{
       if(!confirm('Удалить навсегда?'))return
-      await supabase.from('products').delete().eq('id',id)
-      await tg(`🗑 Удалён ID ${id}`)
-      loadProducts()
+      const { error } = await supabase
+        .from('products')
+        .delete()
+        .eq('id',id)
+      if(error){ console.error(error); alert(error.message); return }
+      sendTG(`🗑 Удалён ID ${id}`)
+      await loadProducts()
     }
 
     window.moveProduct = async (id,dir)=>{
       const pr = allProducts.find(x=>x.id===id)
-      const lst = allProducts
+      const lst= allProducts
         .filter(x=>x.category===pr.category && !x.archived)
         .sort((a,b)=>a.order-b.order)
       const i = lst.findIndex(x=>x.id===id)
-      let other = dir==='up'&&i>0   ? lst[i-1]
-                : dir==='down'&&i<lst.length-1? lst[i+1]
-                : null
-      if(!other) return
-      await supabase.from('products')
-        .update({order:other.order}).eq('id',pr.id)
-      await supabase.from('products')
-        .update({order:pr.order}).eq('id',other.id)
+      let oth = dir==='up'&&i>0   ? lst[i-1]
+              : dir==='down'&&i<lst.length-1? lst[i+1]
+              : null
+      if(!oth) return
+      await supabase
+        .from('products')
+        .update({ order:oth.order }).eq('id',pr.id)
+      await supabase
+        .from('products')
+        .update({ order:pr.order }). eq('id',oth.id)
       loadProducts()
     }
 
-    window.toggleAdminMode = async ()=>{
+    window.toggleAdminMode = ()=>{
       if(isAdmin){
         isAdmin=false
         document.body.classList.remove('admin-visible')
         return
       }
-      const pwd = prompt('Введите пароль админа:')
-      if(!pwd) return
-      const h = await hashPwd(pwd)
-      // читаем хеш из Supabase
-      const {data,error} = await supabase
-        .from('admin_settings')
-        .select('value')
-        .eq('key','admin_password_hash')
-        .single()
-      if(error||!data){
-        alert('Пароль не настроен или нет доступа')
-        console.error(error)
-        return
-      }
-      if(h!==data.value){
+      const pwd = prompt('Пароль админа:')
+      if(pwd==='erema'){   // пароль жёстко «erema»
+        isAdmin=true
+        document.body.classList.add('admin-visible')
+        sendTG('🔑 Админ режим вкл.')
+        renderProducts()
+      } else {
         alert('Неверный пароль!')
-        return
       }
-      isAdmin=true
-      document.body.classList.add('admin-visible')
-      await tg('🔑 Админ-режим включён')
-      renderProducts()
     }
 
-    // init
+    // Инициализация
     document.getElementById('adminAccess').onclick = toggleAdminMode
     document.getElementById('addProductBtn').onclick = addNewProduct
     document.querySelector('[data-category="all"]').onclick = ()=>{
@@ -404,7 +441,6 @@
     }
 
     loadProducts()
-
   </script>
 </body>
 </html>
