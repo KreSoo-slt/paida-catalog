@@ -321,12 +321,8 @@
       document.getElementById('productsGrid').innerHTML = activeProducts.map(product => `
         <div class="product-card" data-id="${product.id}">
           <img src="${product.img || 'https://via.placeholder.com/150'}" class="product-image">
-          <div class="product-name" contenteditable="${isAdmin}" onblur="updateProductField(${product.id}, 'name', this.textContent)">
-            ${product.name}
-          </div>
-          <div class="product-price" contenteditable="${isAdmin}" onblur="updateProductField(${product.id}, 'price', this.textContent)">
-            ${product.price} ₸
-          </div>
+          <div class="product-name" contenteditable="${isAdmin}" onblur="updateProduct(${product.id}, 'name', this.textContent)">${product.name}</div>
+          <div class="product-price" contenteditable="${isAdmin}" onblur="updatePrice(${product.id}, this)">${product.price} ₸</div>
           ${isAdmin ? `
             <div class="admin-controls">
               <button class="archive-btn" onclick="archiveProduct(${product.id})">Архив</button>
@@ -355,43 +351,93 @@
       }
     }
 
-    window.updateProductField = async function(id, field, value) {
+    // Функция для обновления цены
+    window.updatePrice = async function(id, element) {
+      const newPrice = parseInt(element.textContent.replace(/[^\d]/g, '')) || 0;
+      if (newPrice <= 0) {
+        alert("Цена должна быть положительной");
+        const product = allProducts.find(p => p.id === id);
+        element.textContent = product.price + ' ₸';
+        return;
+      }
+      
       try {
-        let updateValue = field === 'price' ? parseInt(value.replace(/\D/g, '')) || 0 : value.trim();
-        
-        if (field === 'price' && updateValue <= 0) {
-          alert("Цена должна быть положительной");
-          return;
-        }
-        
         const { error } = await supabase
           .from('products')
-          .update({ [field]: updateValue })
+          .update({ price: newPrice })
           .eq('id', id);
         
         if (error) throw error;
         
         const product = allProducts.find(p => p.id === id);
         if (product) {
-          product[field] = updateValue;
-          if (field === 'price') {
-            document.querySelector(`.product-card[data-id="${id}"] .product-price`).textContent = `${updateValue} ₸`;
-          }
+          product.price = newPrice;
+          element.textContent = newPrice + ' ₸';
         }
       } catch (error) {
+        console.error('Ошибка сохранения цены:', error);
+        const product = allProducts.find(p => p.id === id);
+        element.textContent = product.price + ' ₸';
+        alert('Ошибка сохранения цены');
+      }
+    };
+
+    // Функция для обновления названия
+    window.updateProduct = async function(id, field, value) {
+      try {
+        const { error } = await supabase
+          .from('products')
+          .update({ [field]: value.trim() })
+          .eq('id', id);
+        
+        if (error) throw error;
+        
+        const product = allProducts.find(p => p.id === id);
+        if (product) product[field] = value.trim();
+      } catch (error) {
         console.error('Ошибка сохранения:', error);
-        alert('Не удалось сохранить изменения');
-        loadProducts();
+        alert('Ошибка сохранения');
       }
     };
 
     window.archiveProduct = async function(id) {
       if (!confirm('Переместить товар в архив?')) return;
-      await updateProductField(id, 'archived', true);
+      
+      try {
+        const { error } = await supabase
+          .from('products')
+          .update({ archived: true })
+          .eq('id', id);
+        
+        if (error) throw error;
+        
+        const product = allProducts.find(p => p.id === id);
+        if (product) product.archived = true;
+        
+        renderProducts();
+      } catch (error) {
+        console.error('Ошибка архивации:', error);
+        alert('Ошибка архивации товара');
+      }
     };
 
     window.restoreProduct = async function(id) {
-      await updateProductField(id, 'archived', false);
+      try {
+        const { error } = await supabase
+          .from('products')
+          .update({ archived: false })
+          .eq('id', id);
+        
+        if (error) throw error;
+        
+        const product = allProducts.find(p => p.id === id);
+        if (product) product.archived = false;
+        
+        renderProducts();
+      } catch (error) {
+        console.error('Ошибка восстановления:', error);
+        alert('Ошибка восстановления товара');
+      }
     };
 
     window.deleteProduct = async function(id) {
@@ -418,16 +464,26 @@
         const index = allProducts.findIndex(p => p.id === id);
         if (index === -1) return;
         
-        const newIndex = direction === 'up' ? index - 1 : index + 1;
-        if (newIndex < 0 || newIndex >= allProducts.length) return;
-        
-        [allProducts[index].order, allProducts[newIndex].order] = 
-          [allProducts[newIndex].order, allProducts[index].order];
+        if (direction === 'up' && index > 0) {
+          [allProducts[index].order, allProducts[index-1].order] = [allProducts[index-1].order, allProducts[index].order];
+        } 
+        else if (direction === 'down' && index < allProducts.length - 1) {
+          [allProducts[index].order, allProducts[index+1].order] = [allProducts[index+1].order, allProducts[index].order];
+        } else {
+          return;
+        }
         
         allProducts.sort((a, b) => a.order - b.order);
         
-        const updates = allProducts.map((p, i) => ({ id: p.id, order: i + 1 }));
-        const { error } = await supabase.from('products').upsert(updates);
+        const updates = allProducts.map((product, idx) => ({
+          id: product.id,
+          order: idx + 1
+        }));
+        
+        const { error } = await supabase
+          .from('products')
+          .upsert(updates);
+        
         if (error) throw error;
         
         renderProducts();
@@ -439,12 +495,12 @@
 
     window.addNewProduct = async function() {
       const name = document.getElementById('productName').value.trim();
-      const price = parseInt(document.getElementById('productPrice').value.replace(/\D/g, '')) || 0;
+      const price = parseInt(document.getElementById('productPrice').value.replace(/[^\d]/g, '')) || 0;
       const img = document.getElementById('productImage').value.trim();
       const category = document.getElementById('productCategory').value.trim();
       
       if (!name || !price || !category) {
-        alert('Заполните все поля!');
+        alert("Заполните название, цену и категорию!");
         return;
       }
       
@@ -470,7 +526,7 @@
         
         loadProducts();
       } catch (error) {
-        console.error('Ошибка добавления:', error);
+        console.error('Ошибка:', error);
         alert('Ошибка при добавлении товара');
       }
     };
