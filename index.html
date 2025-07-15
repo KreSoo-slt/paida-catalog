@@ -1,208 +1,179 @@
-<!--
-ФИНАЛЬНАЯ ВЕРСИЯ: Объединяет рабочий функционал из первого и второго кода
-Добавлены исправления:
-- цена редактируется и сохраняется корректно
-- кнопки "Архив", "Удалить", "Восстановить" работают
-- пароль спрятан в ENV (переменную можно передать через Vercel)
--->
+<div class="notice">
+  Заказы после 13:00 обрабатываются на следующий день.<br>
+  Доставка и самовывоз доступны по Караганде.
+</div>
 
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Paida All — Каталог</title>
-  <style>
-    :root {
-      --primary-color: #25D366;
-      --admin-color: #ff4757;
-    }
-    body {
-      font-family: Arial;
-      margin: 0;
-      background: #f0f0f0;
-    }
-    header { text-align: center; background: white; padding: 10px; position: relative; }
-    .admin-access { position: absolute; right: 10px; top: 10px; cursor: pointer; color: var(--admin-color); font-size: 12px; text-decoration: underline; }
-    .notice { background: #fff6b0; padding: 10px; text-align: center; font-size: 14px; }
-    .categories { display: flex; overflow-x: auto; padding: 10px; background: white; }
-    .category-btn { margin-right: 5px; padding: 5px 10px; border: none; border-radius: 10px; cursor: pointer; background: #eee; }
-    .category-btn.active { background: var(--primary-color); color: white; }
-    .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; padding: 10px; }
-    .product-card { background: white; padding: 10px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-    .product-image { width: 100%; height: 100px; object-fit: contain; margin-bottom: 10px; }
-    .product-name, .product-price { font-weight: bold; margin-bottom: 5px; }
-    .product-price { color: green; }
-    .admin-controls { margin-top: 5px; display: flex; gap: 5px; }
-    .admin-controls button { padding: 3px 6px; font-size: 12px; border: none; border-radius: 5px; cursor: pointer; }
-    .archive-btn { background: orange; color: white; }
-    .delete-btn { background: red; color: white; }
-    .move-btns { margin-top: 5px; display: flex; gap: 5px; justify-content: center; }
-    .admin-panel, .archive-section { display: none; background: #fff; margin: 10px; padding: 10px; border-radius: 10px; }
-    .admin-visible .admin-panel, .admin-visible .archive-section { display: block; }
-    .whatsapp-btn { position: fixed; bottom: 20px; right: 20px; background: var(--primary-color); color: white; padding: 10px 15px; border-radius: 50px; text-decoration: none; }
-  </style>
-</head>
-<body>
-  <a class="whatsapp-btn" href="https://wa.me/77780855478" target="_blank">💬 WhatsApp</a>
+<div class="categories" id="categories">
+  <button class="category-btn active" data-category="all">Все</button>
+</div>
 
-  <header>
-    <h1>Paida All</h1>
-    <div class="contact">г. Караганда, ул. Алиханова 37 (цокольный этаж)<br>Тел: 8 (778) 085-54-78</div>
-    <div class="admin-access" id="adminAccess">Для админа</div>
-  </header>
+<div class="products-container">
+  <div class="products-grid" id="productsGrid"></div>
+</div>
 
-  <div class="notice">Заказы после 13:00 обрабатываются на следующий день. Доставка и самовывоз доступны по Караганде.</div>
+<div class="archive-section" id="archiveSection">
+  <div class="archive-title">📦 Архив (только для админа)</div>
+  <div class="products-grid" id="archiveGrid"></div>
+</div>
 
-  <div class="categories" id="categories">
-    <button class="category-btn active" data-category="all">Все</button>
-  </div>
+<div class="admin-panel" id="adminPanel">
+  <h3>Добавить товар</h3>
+  <input type="text" id="productName" placeholder="Название">
+  <input type="text" id="productPrice" placeholder="Цена (только цифры)">
+  <input type="text" id="productImage" placeholder="Ссылка на фото">
+  <input type="text" id="productCategory" placeholder="Категория">
+  <button id="addProductBtn">Добавить</button>
+</div>
 
-  <div class="products-container">
-    <div class="products-grid" id="productsGrid"></div>
-  </div>
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-  <div class="archive-section" id="archiveSection">
-    <div class="archive-title">📦 Архив</div>
-    <div class="products-grid" id="archiveGrid"></div>
-  </div>
+const supabase = createClient(
+  'https://qmnnbotyzwftlhwakbnz.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtbm5ib3R5endmdGxod2FrYm56Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIwOTE3MzYsImV4cCI6MjA2NzY2NzczNn0.QaHkN4M4_Deh4HN4CZ-spv8QKbGKzhrfGwMvr6Pbyv4'
+);
 
-  <div class="admin-panel" id="adminPanel">
-    <h3>Добавить товар</h3>
-    <input type="text" id="productName" placeholder="Название">
-    <input type="text" id="productPrice" placeholder="Цена (только цифры)">
-    <input type="text" id="productImage" placeholder="Ссылка на фото">
-    <input type="text" id="productCategory" placeholder="Категория">
-    <button id="addProductBtn">Добавить</button>
-  </div>
+let isAdmin = false;
+let selectedCategory = "all";
+let allProducts = [];
 
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-    const supabase = createClient(
-      'https://qmnnbotyzwftlhwakbnz.supabase.co',
-      import.meta.env.VITE_SUPABASE_KEY || ''
-    );
+document.addEventListener('DOMContentLoaded', () => {
+  loadProducts();
+  setupEventListeners();
+});
 
-    let isAdmin = false;
-    let selectedCategory = 'all';
-    let allProducts = [];
-    const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || '';
+async function loadProducts() {
+  const { data, error } = await supabase.from('products').select('*').order('order', { ascending: true });
+  if (error) return alert('Ошибка загрузки');
+  allProducts = data || [];
+  updateCategories();
+  renderProducts();
+}
 
-    document.getElementById('adminAccess').addEventListener('click', () => {
-      const pw = prompt('Введите пароль:');
-      if (pw === ADMIN_PASSWORD) {
-        isAdmin = true;
-        document.body.classList.add('admin-visible');
-        renderProducts();
-      } else {
-        alert('Неверный пароль');
-      }
-    });
-
-    document.getElementById('addProductBtn').addEventListener('click', async () => {
-      const name = document.getElementById('productName').value;
-      const price = parseInt(document.getElementById('productPrice').value.replace(/\D/g, ''));
-      const img = document.getElementById('productImage').value || 'https://via.placeholder.com/150';
-      const category = document.getElementById('productCategory').value;
-      if (!name || !price || !category) return alert('Заполните все поля');
-      await supabase.from('products').insert([{ name, price, img, category, archived: false, order: allProducts.length + 1 }]);
-      loadProducts();
-    });
-
-    async function loadProducts() {
-      const { data } = await supabase.from('products').select('*').order('order', { ascending: true });
-      allProducts = data || [];
-      renderCategories();
-      renderProducts();
-    }
-
-    function renderCategories() {
-      const cats = [...new Set(allProducts.map(p => p.category).filter(Boolean))];
-      const container = document.getElementById('categories');
-      container.innerHTML = '<button class="category-btn active" data-category="all">Все</button>';
-      cats.forEach(cat => {
-        const btn = document.createElement('button');
-        btn.className = 'category-btn';
-        btn.dataset.category = cat;
-        btn.textContent = cat;
-        btn.onclick = () => {
-          selectedCategory = cat;
-          document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          renderProducts();
-        };
-        container.appendChild(btn);
-      });
-    }
-
-    function renderProducts() {
-      const grid = document.getElementById('productsGrid');
-      const archiveGrid = document.getElementById('archiveGrid');
-      grid.innerHTML = '';
-      archiveGrid.innerHTML = '';
-      allProducts.forEach(product => {
-        const card = document.createElement('div');
-        card.className = 'product-card';
-        card.innerHTML = `
-          <img src="${product.img}" class="product-image">
-          <div class="product-name" contenteditable="${isAdmin}" onblur="updateProduct(${product.id}, 'name', this.textContent)">${product.name}</div>
-          <div class="product-price" contenteditable="${isAdmin}" onblur="updateProduct(${product.id}, 'price', this.textContent)">${product.price} ₸</div>
-        `;
-        if (isAdmin) {
-          card.innerHTML += `
-            <div class="admin-controls">
-              <button class="${product.archived ? 'archive-btn' : 'delete-btn'}" onclick="${product.archived ? 'restoreProduct' : 'archiveProduct'}(${product.id})">
-                ${product.archived ? 'Восстановить' : 'Архив'}
-              </button>
-              <button class="delete-btn" onclick="deleteProduct(${product.id})">Удалить</button>
-            </div>
-            <div class="move-btns">
-              <button onclick="moveProduct(${product.id}, 'up')">↑</button>
-              <button onclick="moveProduct(${product.id}, 'down')">↓</button>
-            </div>`;
-        }
-        if (product.archived) archiveGrid.appendChild(card);
-        else if (selectedCategory === 'all' || product.category === selectedCategory) grid.appendChild(card);
-      });
-    }
-
-    window.updateProduct = async function(id, field, value) {
-      const cleanValue = field === 'price' ? parseInt(value.replace(/\D/g, '')) : value.trim();
-      await supabase.from('products').update({ [field]: cleanValue }).eq('id', id);
-      const prod = allProducts.find(p => p.id === id);
-      if (prod) prod[field] = cleanValue;
+function updateCategories() {
+  const categories = [...new Set(allProducts.map(p => p.category).filter(Boolean))];
+  const container = document.getElementById('categories');
+  const allButton = container.querySelector('[data-category="all"]');
+  container.innerHTML = '';
+  container.appendChild(allButton);
+  categories.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = 'category-btn';
+    btn.dataset.category = cat;
+    btn.textContent = cat;
+    btn.onclick = () => {
+      selectedCategory = cat;
+      document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
       renderProducts();
     };
+    container.appendChild(btn);
+  });
+}
 
-    window.archiveProduct = async function(id) {
-      await supabase.from('products').update({ archived: true }).eq('id', id);
-      loadProducts();
-    };
+function renderProducts() {
+  const activeProducts = allProducts.filter(p => !p.archived && (selectedCategory === "all" || p.category === selectedCategory));
+  const archivedProducts = allProducts.filter(p => p.archived);
 
-    window.restoreProduct = async function(id) {
-      await supabase.from('products').update({ archived: false }).eq('id', id);
-      loadProducts();
-    };
+  document.getElementById('productsGrid').innerHTML = activeProducts.map(product => `
+    <div class="product-card" data-id="${product.id}">
+      <img src="${product.img || 'https://via.placeholder.com/150'}" class="product-image">
+      <div class="product-name" contenteditable="${isAdmin}" onblur="updateField(${product.id}, 'name', this.textContent)">${product.name}</div>
+      <div class="product-price" contenteditable="${isAdmin}" onblur="updateField(${product.id}, 'price', this.textContent)">${product.price} ₸</div>
+      ${isAdmin ? `
+        <div class="admin-controls">
+          <button onclick="archiveProduct(${product.id})">Архив</button>
+          <button onclick="deleteProduct(${product.id})">Удалить</button>
+        </div>
+      ` : ''}
+    </div>
+  `).join('');
 
-    window.deleteProduct = async function(id) {
-      await supabase.from('products').delete().eq('id', id);
-      loadProducts();
-    };
+  if (isAdmin) {
+    document.getElementById('archiveGrid').innerHTML = archivedProducts.map(product => `
+      <div class="product-card" data-id="${product.id}">
+        <img src="${product.img || 'https://via.placeholder.com/150'}" class="product-image">
+        <div class="product-name">${product.name}</div>
+        <div class="product-price">${product.price} ₸</div>
+        <div class="admin-controls">
+          <button onclick="restoreProduct(${product.id})">Восстановить</button>
+          <button onclick="deleteProduct(${product.id})">Удалить</button>
+        </div>
+      </div>
+    `).join('');
+  }
+}
 
-    window.moveProduct = async function(id, dir) {
-      const index = allProducts.findIndex(p => p.id === id);
-      if (index === -1) return;
-      const swapIndex = dir === 'up' ? index - 1 : index + 1;
-      if (swapIndex < 0 || swapIndex >= allProducts.length) return;
-      const a = allProducts[index], b = allProducts[swapIndex];
-      await supabase.from('products').upsert([
-        { id: a.id, order: b.order },
-        { id: b.id, order: a.order }
-      ]);
-      loadProducts();
-    };
+window.updateField = async function(id, field, value) {
+  const cleaned = field === 'price' ? parseInt(value.replace(/[^\d]/g, '')) || 0 : value.trim();
+  if (field === 'price' && cleaned <= 0) return alert('Цена должна быть больше 0');
+  const { error } = await supabase.from('products').update({ [field]: cleaned }).eq('id', id);
+  if (error) return alert('Ошибка сохранения');
+  const product = allProducts.find(p => p.id === id);
+  if (product) product[field] = cleaned;
+  renderProducts();
+};
 
-    window.onload = loadProducts;
-  </script>
-</body>
-</html>
+window.archiveProduct = async function(id) {
+  if (!confirm('Архивировать товар?')) return;
+  const { error } = await supabase.from('products').update({ archived: true }).eq('id', id);
+  if (error) return alert('Ошибка архивации');
+  const product = allProducts.find(p => p.id === id);
+  if (product) product.archived = true;
+  renderProducts();
+};
+
+window.restoreProduct = async function(id) {
+  const { error } = await supabase.from('products').update({ archived: false }).eq('id', id);
+  if (error) return alert('Ошибка восстановления');
+  const product = allProducts.find(p => p.id === id);
+  if (product) product.archived = false;
+  renderProducts();
+};
+
+window.deleteProduct = async function(id) {
+  if (!confirm('Удалить товар навсегда?')) return;
+  const { error } = await supabase.from('products').delete().eq('id', id);
+  if (error) return alert('Ошибка удаления');
+  allProducts = allProducts.filter(p => p.id !== id);
+  renderProducts();
+};
+
+window.addNewProduct = async function() {
+  const name = document.getElementById('productName').value.trim();
+  const price = parseInt(document.getElementById('productPrice').value.replace(/[^\d]/g, '')) || 0;
+  const img = document.getElementById('productImage').value.trim();
+  const category = document.getElementById('productCategory').value.trim();
+  if (!name || !price || !category) return alert('Заполните все поля');
+
+  const { data, error } = await supabase.from('products').insert([{
+    name, price, img: img || 'https://via.placeholder.com/150', category, archived: false, order: allProducts.length + 1
+  }]);
+  if (error) return alert('Ошибка добавления');
+  document.getElementById('productName').value = '';
+  document.getElementById('productPrice').value = '';
+  document.getElementById('productImage').value = '';
+  document.getElementById('productCategory').value = '';
+  loadProducts();
+};
+
+function setupEventListeners() {
+  document.getElementById('adminAccess').addEventListener('click', () => {
+    const password = prompt('Введите пароль:');
+    if (password === 'erema') {
+      isAdmin = !isAdmin;
+      document.body.classList.toggle('admin-visible', isAdmin);
+      renderProducts();
+    } else if (password !== null) {
+      alert('Неверный пароль');
+    }
+  });
+  document.getElementById('addProductBtn').addEventListener('click', addNewProduct);
+  document.querySelector('[data-category="all"]').addEventListener('click', () => {
+    selectedCategory = 'all';
+    document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('[data-category="all"]').classList.add('active');
+    renderProducts();
+  });
+}
+</script>
