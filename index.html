@@ -111,35 +111,26 @@
     
     .product-card {
       background: white;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      border-radius: 10px;
+      padding: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       position: relative;
     }
     
-    .product-image-container {
-      height: 150px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #f8f8f8;
-    }
-    
     .product-image {
-      max-width: 100%;
-      max-height: 100%;
+      width: 100%;
+      height: 120px;
       object-fit: contain;
-    }
-    
-    .product-info {
-      padding: 10px;
+      border-radius: 5px;
+      margin-bottom: 10px;
+      background: #f8f8f8;
     }
     
     .product-name {
       font-weight: bold;
       margin-bottom: 5px;
       font-size: 14px;
-      height: 40px;
+      height: 36px;
       overflow: hidden;
       text-overflow: ellipsis;
       display: -webkit-box;
@@ -228,11 +219,6 @@
       color: white;
       font-size: 24px;
     }
-    
-    /* Telegram панель - скрыта по умолчанию */
-    .telegram-panel {
-      display: none;
-    }
   </style>
 </head>
 <body>
@@ -273,12 +259,6 @@
     <input type="text" id="productImage" placeholder="Ссылка на фото">
     <input type="text" id="productCategory" placeholder="Категория">
     <button id="addProductBtn">Добавить</button>
-    
-    <!-- Telegram панель скрыта, но функционал остается -->
-    <div class="telegram-panel" id="telegramPanel">
-      <input type="hidden" id="telegramToken" value="7673591792:AAFQ83r98YSJay_X81HZIMh2cowWQu1bgGc">
-      <input type="hidden" id="telegramChatId" value="ВАШ_CHAT_ID">
-    </div>
   </div>
 
   <script type="module">
@@ -288,15 +268,15 @@
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtbm5ib3R5endmdGxod2FrYm56Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIwOTE3MzYsImV4cCI6MjA2NzY2NzczNn0.QaHkN4M4_Deh4HN4CZ-spv8QKbGKzhrfGwMvr6Pbyv4'
     const supabase = createClient(supabaseUrl, supabaseKey)
     
-    // Настройки
+    // Telegram настройки
+    const TELEGRAM_BOT_TOKEN = '7673591792:AAFQ83r98YSJay_X81HZIMh2cowWQu1bgGc';
+    const TELEGRAM_CHAT_ID = '1182976777';
+    
+    // Состояние
     let isAdmin = false;
     let adminPasswordHash = localStorage.getItem('admin_password_hash') || '';
     let selectedCategory = "all";
     let allProducts = [];
-    
-    // Telegram (значения берутся из скрытых полей)
-    const telegramBotToken = document.getElementById('telegramToken').value;
-    const telegramChatId = document.getElementById('telegramChatId').value;
     
     // Инициализация
     document.addEventListener('DOMContentLoaded', () => {
@@ -304,8 +284,7 @@
       setupEventListeners();
     });
     
-    // ==================== ОСНОВНЫЕ ФУНКЦИИ ====================
-    
+    // Загрузка товаров
     async function loadProducts() {
       try {
         showLoader();
@@ -320,14 +299,32 @@
         updateCategories();
         renderProducts();
       } catch (error) {
-        console.error('Ошибка загрузки:', error);
+        console.error('Ошибка загрузки товаров:', error);
         sendTelegramAlert(`❌ Ошибка загрузки товаров: ${error.message}`);
-        alert('Ошибка загрузки данных');
+        alert('Ошибка загрузки данных. Проверьте консоль для подробностей.');
       } finally {
         hideLoader();
       }
     }
     
+    // Отправка уведомления в Telegram
+    async function sendTelegramAlert(message) {
+      try {
+        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: TELEGRAM_CHAT_ID,
+            text: message,
+            parse_mode: 'HTML'
+          })
+        });
+      } catch (error) {
+        console.error('Ошибка отправки в Telegram:', error);
+      }
+    }
+    
+    // Обновление категорий
     function updateCategories() {
       const categories = [...new Set(allProducts.map(p => p.category).filter(Boolean))];
       const container = document.getElementById('categories');
@@ -351,6 +348,7 @@
       });
     }
     
+    // Отображение товаров
     function renderProducts() {
       const activeProducts = allProducts.filter(p => 
         !p.archived && (selectedCategory === "all" || p.category === selectedCategory)
@@ -367,72 +365,271 @@
       }
     }
     
+    // Создание карточки товара (старый стиль)
     function createProductCard(product, isArchived) {
       const priceValue = typeof product.price === 'number' ? product.price : 
                        parseInt((product.price || '').toString().replace(/[^\d]/g, '')) || 0;
-      const formattedPrice = priceValue.toLocaleString() + ' ₸';
+      const formattedPrice = priceValue.toLocaleString('ru-RU') + ' ₸';
       
       return `
         <div class="product-card" data-id="${product.id}">
-          <div class="product-image-container">
-            <img src="${product.img || 'https://via.placeholder.com/150'}" class="product-image" 
-                 onerror="this.src='https://via.placeholder.com/150?text=No+Image'">
+          <img src="${product.img || 'https://via.placeholder.com/150'}" class="product-image" 
+               onerror="this.src='https://via.placeholder.com/150?text=No+Image'">
+          <div class="product-name" contenteditable="${isAdmin}" 
+               onblur="updateProduct(${product.id}, 'name', this.textContent)">
+            ${product.name}
           </div>
-          <div class="product-info">
-            <div class="product-name" contenteditable="${isAdmin}" 
-                 onblur="updateProduct(${product.id}, 'name', this.textContent)">
-              ${product.name}
+          <div class="product-price" contenteditable="${isAdmin}" 
+               onblur="updateProduct(${product.id}, 'price', this.textContent)">
+            ${formattedPrice}
+          </div>
+          
+          ${isAdmin ? `
+            <div class="admin-controls">
+              <button class="${isArchived ? 'archive-btn' : 'delete-btn'}" 
+                onclick="${isArchived ? 'restoreProduct' : 'archiveProduct'}('${product.id}')">
+                ${isArchived ? 'Восстановить' : 'Архив'}
+              </button>
+              <button class="delete-btn" onclick="deleteProduct('${product.id}')">Удалить</button>
             </div>
-            <div class="product-price" contenteditable="${isAdmin}" 
-                 onblur="updateProduct(${product.id}, 'price', this.textContent)">
-              ${formattedPrice}
-            </div>
-            
-            ${isAdmin ? `
-              <div class="admin-controls">
-                <button class="${isArchived ? 'archive-btn' : 'delete-btn'}" 
-                  onclick="${isArchived ? 'restoreProduct' : 'archiveProduct'}('${product.id}')">
-                  ${isArchived ? 'Восстановить' : 'Архив'}
-                </button>
-                <button class="delete-btn" onclick="deleteProduct('${product.id}')">Удалить</button>
+            ${!isArchived ? `
+              <div class="move-btns">
+                <button onclick="moveProduct('${product.id}', 'up')">↑</button>
+                <button onclick="moveProduct('${product.id}', 'down')">↓</button>
               </div>
-              ${!isArchived ? `
-                <div class="move-btns">
-                  <button onclick="moveProduct('${product.id}', 'up')">↑</button>
-                  <button onclick="moveProduct('${product.id}', 'down')">↓</button>
-                </div>
-              ` : ''}
             ` : ''}
-          </div>
+          ` : ''}
         </div>
       `;
     }
     
-    // ==================== TELEGRAM ====================
+    // Обновление товара
+    window.updateProduct = async (id, field, value) => {
+      try {
+        let updateValue = field === 'price' 
+          ? parseInt(value.replace(/[^\d]/g, '')) || 0
+          : value.trim();
+        
+        if (field === 'price' && (isNaN(updateValue) || updateValue <= 0)) {
+          alert("Цена должна быть положительным числом");
+          return;
+        }
+        
+        const { error } = await supabase
+          .from('products')
+          .update({ [field]: updateValue })
+          .eq('id', id);
+        
+        if (error) throw error;
+        
+        // Обновляем локально
+        const productIndex = allProducts.findIndex(p => p.id === id);
+        if (productIndex !== -1) {
+          allProducts[productIndex][field] = updateValue;
+        }
+        
+        await sendTelegramAlert(
+          `✏️ <b>Обновлен товар</b>\nID: ${id}\n` +
+          `Поле: ${field}\nНовое значение: ${updateValue}`
+        );
+      } catch (error) {
+        console.error('Ошибка обновления товара:', error);
+        sendTelegramAlert(`❌ Ошибка обновления товара ${id}: ${error.message}`);
+        alert('Ошибка сохранения. Проверьте консоль.');
+        loadProducts();
+      }
+    };
     
-    async function sendTelegramAlert(message) {
-      if (!telegramBotToken || !telegramChatId) return;
+    // Добавление товара
+    window.addNewProduct = async function() {
+      try {
+        const name = document.getElementById('productName').value.trim();
+        const price = parseInt(document.getElementById('productPrice').value.replace(/[^\d]/g, '')) || 0;
+        const img = document.getElementById('productImage').value.trim();
+        const category = document.getElementById('productCategory').value.trim();
+        
+        if (!name || !category || price <= 0) {
+          alert("Заполните все поля корректно!");
+          return;
+        }
+        
+        const { data, error } = await supabase
+          .from('products')
+          .insert([{
+            name,
+            price,
+            img: img || 'https://via.placeholder.com/150',
+            category,
+            order: allProducts.length + 1
+          }])
+          .select();
+        
+        if (error) throw error;
+        
+        // Очищаем поля
+        ['productName', 'productPrice', 'productImage', 'productCategory'].forEach(id => {
+          document.getElementById(id).value = '';
+        });
+        
+        await sendTelegramAlert(
+          `🆕 <b>Добавлен товар</b>\nНазвание: ${name}\n` +
+          `Цена: ${price} ₸\nКатегория: ${category}`
+        );
+        
+        loadProducts();
+      } catch (error) {
+        console.error('Ошибка добавления товара:', error);
+        sendTelegramAlert(`❌ Ошибка добавления товара: ${error.message}`);
+        alert('Ошибка при добавлении товара');
+      }
+    };
+    
+    // Архивация товара
+    window.archiveProduct = async (id) => {
+      if (!confirm('Переместить товар в архив?')) return;
       
       try {
-        await fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            chat_id: telegramChatId,
-            text: message,
-            parse_mode: 'HTML'
-          })
-        });
+        await supabase
+          .from('products')
+          .update({ archived: true })
+          .eq('id', id);
+        
+        await sendTelegramAlert(`📦 Товар ID ${id} перемещен в архив`);
+        loadProducts();
       } catch (error) {
-        console.error('Ошибка Telegram:', error);
+        console.error('Ошибка архивации:', error);
+        sendTelegramAlert(`❌ Ошибка архивации товара ${id}: ${error.message}`);
       }
+    };
+    
+    // Восстановление товара
+    window.restoreProduct = async (id) => {
+      try {
+        await supabase
+          .from('products')
+          .update({ archived: false })
+          .eq('id', id);
+        
+        await sendTelegramAlert(`🔄 Товар ID ${id} восстановлен из архива`);
+        loadProducts();
+      } catch (error) {
+        console.error('Ошибка восстановления:', error);
+        sendTelegramAlert(`❌ Ошибка восстановления товара ${id}: ${error.message}`);
+      }
+    };
+    
+    // Удаление товара
+    window.deleteProduct = async (id) => {
+      if (!confirm('Удалить этот товар навсегда?')) return;
+      
+      try {
+        await supabase
+          .from('products')
+          .delete()
+          .eq('id', id);
+        
+        await sendTelegramAlert(`🗑 Товар ID ${id} удален навсегда`);
+        loadProducts();
+      } catch (error) {
+        console.error('Ошибка удаления:', error);
+        sendTelegramAlert(`❌ Ошибка удаления товара ${id}: ${error.message}`);
+      }
+    };
+    
+    // Перемещение товара
+    window.moveProduct = async (id, direction) => {
+      try {
+        const product = allProducts.find(p => p.id === id);
+        if (!product) return;
+        
+        const categoryProducts = allProducts
+          .filter(p => p.category === product.category && !p.archived)
+          .sort((a, b) => a.order - b.order);
+        
+        const currentIndex = categoryProducts.findIndex(p => p.id === id);
+        
+        if (direction === 'up' && currentIndex > 0) {
+          const prevProduct = categoryProducts[currentIndex - 1];
+          
+          await Promise.all([
+            supabase
+              .from('products')
+              .update({ order: prevProduct.order })
+              .eq('id', product.id),
+            supabase
+              .from('products')
+              .update({ order: product.order })
+              .eq('id', prevProduct.id)
+          ]);
+          
+          loadProducts();
+        }
+        else if (direction === 'down' && currentIndex < categoryProducts.length - 1) {
+          const nextProduct = categoryProducts[currentIndex + 1];
+          
+          await Promise.all([
+            supabase
+              .from('products')
+              .update({ order: nextProduct.order })
+              .eq('id', product.id),
+            supabase
+              .from('products')
+              .update({ order: product.order })
+              .eq('id', nextProduct.id)
+          ]);
+          
+          loadProducts();
+        }
+      } catch (error) {
+        console.error('Ошибка перемещения:', error);
+        sendTelegramAlert(`❌ Ошибка перемещения товара ${id}: ${error.message}`);
+      }
+    };
+    
+    // Переключение админ-режима
+    window.toggleAdminMode = async function() {
+      if (isAdmin) {
+        isAdmin = false;
+        document.body.classList.remove('admin-visible');
+      } else {
+        const password = prompt('Введите пароль администратора:');
+        if (!password) return;
+        
+        const hashedPassword = await hashPassword(password);
+        
+        if (!adminPasswordHash) {
+          adminPasswordHash = hashedPassword;
+          localStorage.setItem('admin_password_hash', adminPasswordHash);
+          isAdmin = true;
+          document.body.classList.add('admin-visible');
+          renderProducts();
+        } else if (hashedPassword === adminPasswordHash) {
+          isAdmin = true;
+          document.body.classList.add('admin-visible');
+          renderProducts();
+        } else {
+          alert('Неверный пароль!');
+        }
+      }
+    };
+    
+    // Хэширование пароля
+    async function hashPassword(password) {
+      const msgBuffer = new TextEncoder().encode(password);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+      return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
     }
     
-    // ==================== ОСТАЛЬНЫЕ ФУНКЦИИ ====================
-    // ... (остальные функции остаются без изменений, как в предыдущем коде)
-    // Включая: updateProduct, addNewProduct, archiveProduct, restoreProduct,
-    // deleteProduct, moveProduct, toggleAdminMode, hashPassword и т.д.
+    // Показать/скрыть лоадер
+    function showLoader() {
+      document.getElementById('loader').style.display = 'flex';
+    }
     
+    function hideLoader() {
+      document.getElementById('loader').style.display = 'none';
+    }
+    
+    // Настройка обработчиков событий
     function setupEventListeners() {
       document.getElementById('adminAccess').addEventListener('click', toggleAdminMode);
       document.getElementById('addProductBtn').addEventListener('click', addNewProduct);
