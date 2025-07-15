@@ -10,7 +10,6 @@
       --admin-color: #ff4757;
       --notice-color: #fff0c4;
     }
-    
     body {
       font-family: Arial, sans-serif;
       background: #f9f9f9;
@@ -18,7 +17,6 @@
       padding: 0;
       min-height: 100vh;
     }
-    
     header {
       background: white;
       padding: 15px;
@@ -27,7 +25,6 @@
       margin-bottom: 10px;
       position: relative;
     }
-    
     .admin-access {
       position: absolute;
       top: 10px;
@@ -37,7 +34,6 @@
       cursor: pointer;
       text-decoration: underline;
     }
-    
     .notice {
       background-color: var(--notice-color);
       color: #5c4a00;
@@ -46,7 +42,6 @@
       border-left: 5px solid #ffd700;
       border-radius: 5px;
     }
-    
     .whatsapp-btn {
       position: fixed;
       bottom: 20px;
@@ -62,13 +57,11 @@
       box-shadow: 0 4px 8px rgba(0,0,0,0.2);
       z-index: 100;
     }
-    
     .whatsapp-btn::before {
       content: "💬";
       margin-right: 8px;
       font-size: 20px;
     }
-    
     .categories {
       display: flex;
       overflow-x: auto;
@@ -78,11 +71,9 @@
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       scrollbar-width: none;
     }
-    
     .categories::-webkit-scrollbar {
       display: none;
     }
-    
     .category-btn {
       padding: 8px 15px;
       margin-right: 10px;
@@ -93,32 +84,25 @@
       white-space: nowrap;
       flex-shrink: 0;
     }
-    
     .category-btn.active {
       background: var(--primary-color);
       color: white;
     }
-    
     .products-container {
       padding: 10px;
     }
-    
     .products-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
       gap: 15px;
     }
-    
     .product-card {
       background: white;
       border-radius: 10px;
       padding: 15px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       position: relative;
-      display: flex;
-      flex-direction: column;
     }
-    
     .product-image {
       width: 100%;
       height: 120px;
@@ -127,25 +111,15 @@
       margin-bottom: 10px;
       background: #f8f8f8;
     }
-    
     .product-name {
       font-weight: bold;
       margin-bottom: 5px;
       word-break: break-word;
-      min-height: 40px;
-      flex-grow: 1;
-      overflow: hidden;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
     }
-    
     .product-price {
       color: #2ecc71;
       font-weight: bold;
-      margin-top: auto;
     }
-    
     .admin-panel {
       background: #f8f9fa;
       padding: 15px;
@@ -153,18 +127,15 @@
       border-radius: 10px;
       display: none;
     }
-    
     .admin-visible .admin-panel {
       display: block;
     }
-    
     .admin-controls {
       margin-top: 10px;
       display: flex;
       flex-wrap: wrap;
       gap: 5px;
     }
-    
     .admin-controls button {
       padding: 5px 10px;
       border: none;
@@ -172,33 +143,27 @@
       cursor: pointer;
       font-size: 12px;
     }
-    
     .archive-btn {
       background: #ffa502;
       color: white;
     }
-    
     .delete-btn {
       background: var(--admin-color);
       color: white;
     }
-    
     .move-btns {
       display: flex;
       justify-content: center;
       gap: 5px;
       margin-top: 5px;
     }
-    
     .archive-section {
       display: none;
       padding: 10px;
     }
-    
     .admin-visible .archive-section {
       display: block;
     }
-    
     .archive-title {
       padding: 10px;
       background: #f1f1f1;
@@ -206,43 +171,14 @@
       margin-bottom: 10px;
       font-weight: bold;
     }
-    
-    #loader {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.5);
-      z-index: 1000;
-      justify-content: center;
-      align-items: center;
-      color: white;
-      font-size: 24px;
-    }
-    
     @media (max-width: 600px) {
       .products-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
       }
-      
-      .product-card {
-        padding: 10px;
-      }
-      
       .product-image {
         height: 100px;
       }
-      
-      .product-name {
-        -webkit-line-clamp: 4;
-        font-size: 14px;
-        min-height: 60px;
-      }
     }
-    
     @media (min-width: 1000px) {
       .products-grid {
         grid-template-columns: repeat(5, 1fr);
@@ -251,9 +187,7 @@
   </style>
 </head>
 <body>
-  <div id="loader">Загрузка...</div>
   <a class="whatsapp-btn" href="https://wa.me/77780855478" target="_blank">WhatsApp</a>
-  
   <header>
     <h1>Paida All</h1>
     <div class="contact">
@@ -262,25 +196,20 @@
     </div>
     <div class="admin-access" id="adminAccess">Для админа</div>
   </header>
-  
   <div class="notice">
     Заказы после 13:00 обрабатываются на следующий день.<br>
     Доставка и самовывоз доступны по Караганде.
   </div>
-  
   <div class="categories" id="categories">
     <button class="category-btn active" data-category="all">Все</button>
   </div>
-  
   <div class="products-container">
     <div class="products-grid" id="productsGrid"></div>
   </div>
-  
   <div class="archive-section" id="archiveSection">
     <div class="archive-title">📦 Архив (только для админа)</div>
     <div class="products-grid" id="archiveGrid"></div>
   </div>
-  
   <div class="admin-panel" id="adminPanel">
     <h3>Добавить товар</h3>
     <input type="text" id="productName" placeholder="Название">
@@ -289,363 +218,33 @@
     <input type="text" id="productCategory" placeholder="Категория">
     <button id="addProductBtn">Добавить</button>
   </div>
-
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
-    
-    const supabaseUrl = 'https://qmnnbotyzwftlhwakbnz.supabase.co'
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtbm5ib3R5endmdGxod2FrYm56Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIwOTE3MzYsImV4cCI6MjA2NzY2NzczNn0.QaHkN4M4_Deh4HN4CZ-spv8QKbGKzhrfGwMvr6Pbyv4'
-    const supabase = createClient(supabaseUrl, supabaseKey)
-    
-    // Состояние
+    const supabase = createClient(
+      'https://qmnnbotyzwftlhwakbnz.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtbm5ib3R5endmdGxod2FrYm56Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIwOTE3MzYsImV4cCI6MjA2NzY2NzczNn0.QaHkN4M4_Deh4HN4CZ-spv8QKbGKzhrfGwMvr6Pbyv4'
+    );
+
     let isAdmin = false;
     const ADMIN_PASSWORD = "erema";
     let selectedCategory = "all";
     let allProducts = [];
-    
-    // Инициализация
+
     document.addEventListener('DOMContentLoaded', () => {
       loadProducts();
       setupEventListeners();
     });
-    
-    // Загрузка товаров
+
     async function loadProducts() {
       try {
-        showLoader();
         const { data, error } = await supabase
           .from('products')
           .select('*')
           .order('order', { ascending: true });
-        
         if (error) throw error;
-        
-        allProducts = data || [];
+        allProducts = data;
         updateCategories();
         renderProducts();
       } catch (error) {
         console.error('Ошибка загрузки:', error);
         alert('Ошибка загрузки данных');
-      } finally {
-        hideLoader();
-      }
-    }
-    
-    // Обновление категорий
-    function updateCategories() {
-      const categories = [...new Set(allProducts.map(p => p.category).filter(Boolean))];
-      const container = document.getElementById('categories');
-      
-      const allButton = container.querySelector('[data-category="all"]');
-      container.innerHTML = '';
-      container.appendChild(allButton);
-      
-      categories.forEach(cat => {
-        const btn = document.createElement('button');
-        btn.className = 'category-btn';
-        btn.dataset.category = cat;
-        btn.textContent = cat;
-        btn.addEventListener('click', () => {
-          selectedCategory = cat;
-          document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          renderProducts();
-        });
-        container.appendChild(btn);
-      });
-    }
-    
-    // Отображение товаров
-    function renderProducts() {
-      const activeProducts = allProducts.filter(p => 
-        !p.archived && (selectedCategory === "all" || p.category === selectedCategory)
-      );
-      
-      const archivedProducts = allProducts.filter(p => p.archived);
-      
-      const productsGrid = document.getElementById('productsGrid');
-      productsGrid.innerHTML = activeProducts.map(product => createProductCard(product, false)).join('');
-      
-      if (isAdmin) {
-        const archiveGrid = document.getElementById('archiveGrid');
-        archiveGrid.innerHTML = archivedProducts.map(product => createProductCard(product, true)).join('');
-      }
-    }
-    
-    // Создание карточки товара
-    function createProductCard(product, isArchived) {
-      const priceValue = typeof product.price === 'number' ? product.price : 
-                       parseInt((product.price || '').toString().replace(/[^\d]/g, '')) || 0;
-      const formattedPrice = priceValue.toLocaleString('ru-RU') + ' ₽';
-      
-      return `
-        <div class="product-card" data-id="${product.id}">
-          <img src="${product.img || 'https://via.placeholder.com/150'}" class="product-image" 
-               onerror="this.src='https://via.placeholder.com/150?text=No+Image'">
-          <div class="product-name" contenteditable="${isAdmin}" 
-               onblur="updateProduct(${product.id}, 'name', this.textContent)">
-            ${product.name}
-          </div>
-          <div class="product-price" contenteditable="${isAdmin}" 
-               onblur="updateProduct(${product.id}, 'price', this.textContent)">
-            ${formattedPrice}
-          </div>
-          
-          ${isAdmin ? `
-            <div class="admin-controls">
-              <button class="${isArchived ? 'archive-btn' : 'delete-btn'}" 
-                onclick="${isArchived ? 'restoreFromArchive' : 'moveToArchive'}(${product.id})">
-                ${isArchived ? 'Восстановить' : 'Архив'}
-              </button>
-              <button class="delete-btn" onclick="deleteProduct(${product.id})">Удалить</button>
-            </div>
-            ${!isArchived ? `
-              <div class="move-btns">
-                <button onclick="moveProduct(${product.id}, 'up')">↑</button>
-                <button onclick="moveProduct(${product.id}, 'down')">↓</button>
-              </div>
-            ` : ''}
-          ` : ''}
-        </div>
-      `;
-    }
-    
-    // Показать/скрыть лоадер
-    function showLoader() {
-      document.getElementById('loader').style.display = 'flex';
-    }
-    
-    function hideLoader() {
-      document.getElementById('loader').style.display = 'none';
-    }
-    
-    // Настройка обработчиков событий
-    function setupEventListeners() {
-      document.getElementById('adminAccess').addEventListener('click', toggleAdminMode);
-      document.getElementById('addProductBtn').addEventListener('click', addNewProduct);
-      
-      document.querySelector('[data-category="all"]').addEventListener('click', () => {
-        selectedCategory = "all";
-        document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-        document.querySelector('[data-category="all"]').classList.add('active');
-        renderProducts();
-      });
-    }
-    
-    // Переключение админ-режима
-    async function toggleAdminMode() {
-      if (isAdmin) {
-        isAdmin = false;
-        document.body.classList.remove('admin-visible');
-      } else {
-        const password = prompt('Введите пароль администратора:');
-        if (password === ADMIN_PASSWORD) {
-          isAdmin = true;
-          document.body.classList.add('admin-visible');
-          renderProducts();
-        } else if (password) {
-          alert('Неверный пароль!');
-        }
-      }
-    }
-    
-    // Добавление нового товара
-    async function addNewProduct() {
-      const name = document.getElementById('productName').value.trim();
-      let price = document.getElementById('productPrice').value;
-      const img = document.getElementById('productImage').value.trim();
-      const category = document.getElementById('productCategory').value.trim();
-      
-      // Очищаем цену от всех нецифровых символов
-      price = price.replace(/[^\d]/g, '');
-      
-      if (!name || !price || !category) {
-        alert('Заполните название, цену и категорию!');
-        return;
-      }
-      
-      try {
-        showLoader();
-        const { error } = await supabase
-          .from('products')
-          .insert([{ 
-            name, 
-            price, 
-            img: img || 'https://via.placeholder.com/150',
-            category,
-            archived: false,
-            order: allProducts.length + 1
-          }]);
-        
-        if (error) throw error;
-        
-        // Очищаем поля
-        document.getElementById('productName').value = '';
-        document.getElementById('productPrice').value = '';
-        document.getElementById('productImage').value = '';
-        document.getElementById('productCategory').value = '';
-        
-        // Перезагружаем товары
-        await loadProducts();
-      } catch (error) {
-        console.error('Ошибка добавления товара:', error);
-        alert('Ошибка при добавлении товара. Проверьте консоль для подробностей.');
-      } finally {
-        hideLoader();
-      }
-    }
-    
-    // Обновление товара
-    window.updateProduct = async (id, field, value) => {
-      try {
-        showLoader();
-        let updateValue = value;
-        
-        // Для цены удаляем все нецифровые символы
-        if (field === 'price') {
-          updateValue = updateValue.replace(/[^\d]/g, '');
-        } else {
-          updateValue = updateValue.trim();
-        }
-        
-        const { error } = await supabase
-          .from('products')
-          .update({ [field]: updateValue })
-          .eq('id', id);
-        
-        if (error) throw error;
-        
-        // Обновляем локальные данные
-        const productIndex = allProducts.findIndex(p => p.id === id);
-        if (productIndex !== -1) {
-          allProducts[productIndex][field] = updateValue;
-        }
-        
-        renderProducts();
-      } catch (error) {
-        console.error('Ошибка обновления товара:', error);
-        alert('Ошибка при сохранении изменений. Проверьте консоль для подробностей.');
-      } finally {
-        hideLoader();
-      }
-    };
-    
-    // Перемещение в архив
-    window.moveToArchive = async (id) => {
-      if (confirm('Переместить товар в архив?')) {
-        try {
-          showLoader();
-          const { error } = await supabase
-            .from('products')
-            .update({ archived: true })
-            .eq('id', id);
-          
-          if (error) throw error;
-          
-          await loadProducts();
-        } catch (error) {
-          console.error('Ошибка архивации товара:', error);
-          alert('Ошибка при архивации товара. Проверьте консоль для подробностей.');
-        } finally {
-          hideLoader();
-        }
-      }
-    };
-    
-    // Восстановление из архива
-    window.restoreFromArchive = async (id) => {
-      try {
-        showLoader();
-        const { error } = await supabase
-          .from('products')
-          .update({ archived: false })
-          .eq('id', id);
-        
-        if (error) throw error;
-        
-        await loadProducts();
-      } catch (error) {
-        console.error('Ошибка восстановления товара:', error);
-        alert('Ошибка при восстановлении товара. Проверьте консоль для подробностей.');
-      } finally {
-        hideLoader();
-      }
-    };
-    
-    // Удаление товара
-    window.deleteProduct = async (id) => {
-      if (confirm('Удалить этот товар навсегда?')) {
-        try {
-          showLoader();
-          const { error } = await supabase
-            .from('products')
-            .delete()
-            .eq('id', id);
-          
-          if (error) throw error;
-          
-          await loadProducts();
-        } catch (error) {
-          console.error('Ошибка удаления товара:', error);
-          alert('Ошибка при удалении товара. Проверьте консоль для подробностей.');
-        } finally {
-          hideLoader();
-        }
-      }
-    };
-    
-    // Перемещение товара
-    window.moveProduct = async (id, direction) => {
-      try {
-        showLoader();
-        const product = allProducts.find(p => p.id === id);
-        if (!product) return;
-        
-        const categoryProducts = allProducts
-          .filter(p => p.category === product.category && !p.archived)
-          .sort((a, b) => a.order - b.order);
-        
-        const currentIndex = categoryProducts.findIndex(p => p.id === id);
-        
-        if (direction === 'up' && currentIndex > 0) {
-          const prevProduct = categoryProducts[currentIndex - 1];
-          
-          // Меняем порядок
-          await supabase
-            .from('products')
-            .update({ order: prevProduct.order })
-            .eq('id', product.id);
-          
-          await supabase
-            .from('products')
-            .update({ order: product.order })
-            .eq('id', prevProduct.id);
-          
-          await loadProducts();
-        }
-        else if (direction === 'down' && currentIndex < categoryProducts.length - 1) {
-          const nextProduct = categoryProducts[currentIndex + 1];
-          
-          // Меняем порядок
-          await supabase
-            .from('products')
-            .update({ order: nextProduct.order })
-            .eq('id', product.id);
-          
-          await supabase
-            .from('products')
-            .update({ order: product.order })
-            .eq('id', nextProduct.id);
-          
-          await loadProducts();
-        }
-      } catch (error) {
-        console.error('Ошибка перемещения товара:', error);
-        alert('Ошибка при перемещении товара. Проверьте консоль для подробностей.');
-      } finally {
-        hideLoader();
-      }
-    };
-  </script>
-</body>
-</html>
