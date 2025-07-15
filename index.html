@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
   <title>Paida All — Каталог</title>
   <style>
     :root {
@@ -16,6 +16,7 @@
       background: #f9f9f9;
       margin: 0;
       padding: 0;
+      min-height: 100vh;
     }
     
     header {
@@ -201,6 +202,20 @@
       .products-grid {
         grid-template-columns: repeat(2, 1fr);
       }
+      
+      .product-card {
+        padding: 10px;
+      }
+      
+      .product-image {
+        height: 100px;
+      }
+    }
+    
+    @media (min-width: 1000px) {
+      .products-grid {
+        grid-template-columns: repeat(5, 1fr);
+      }
     }
   </style>
 </head>
@@ -258,7 +273,7 @@
       loadProducts();
       setupEventListeners();
     });
-    
+
     async function loadProducts() {
       try {
         const { data, error } = await supabase
@@ -275,9 +290,9 @@
         alert('Ошибка загрузки данных');
       }
     }
-    
+
     function updateCategories() {
-      const categories = [...new Set(allProducts.map(p => p.category).filter(Boolean)];
+      const categories = [...new Set(allProducts.map(p => p.category).filter(Boolean))];
       const container = document.getElementById('categories');
       
       const allButton = container.querySelector('[data-category="all"]');
@@ -298,7 +313,7 @@
         container.appendChild(btn);
       });
     }
-    
+
     function renderProducts() {
       const activeProducts = allProducts.filter(p => !p.archived && (selectedCategory === "all" || p.category === selectedCategory));
       const archivedProducts = allProducts.filter(p => p.archived);
@@ -306,8 +321,12 @@
       document.getElementById('productsGrid').innerHTML = activeProducts.map(product => `
         <div class="product-card" data-id="${product.id}">
           <img src="${product.img || 'https://via.placeholder.com/150'}" class="product-image">
-          <div class="product-name" contenteditable="${isAdmin}" onblur="updateProduct(${product.id}, 'name', this.textContent)">${product.name}</div>
-          <div class="product-price" contenteditable="${isAdmin}" onblur="updateProduct(${product.id}, 'price', this.textContent.replace(/[^\d]/g, ''))">${product.price} ₸</div>
+          <div class="product-name" contenteditable="${isAdmin}" onblur="updateProductField(${product.id}, 'name', this.textContent)">
+            ${product.name}
+          </div>
+          <div class="product-price" contenteditable="${isAdmin}" onblur="updateProductField(${product.id}, 'price', this.textContent)">
+            ${product.price} ₸
+          </div>
           ${isAdmin ? `
             <div class="admin-controls">
               <button class="archive-btn" onclick="archiveProduct(${product.id})">Архив</button>
@@ -335,10 +354,10 @@
         `).join('');
       }
     }
-    
-    window.updateProduct = async (id, field, value) => {
+
+    window.updateProductField = async function(id, field, value) {
       try {
-        let updateValue = field === 'price' ? parseInt(value) || 0 : value.trim();
+        let updateValue = field === 'price' ? parseInt(value.replace(/\D/g, '')) || 0 : value.trim();
         
         if (field === 'price' && updateValue <= 0) {
           alert("Цена должна быть положительной");
@@ -353,57 +372,29 @@
         if (error) throw error;
         
         const product = allProducts.find(p => p.id === id);
-        if (product) product[field] = updateValue;
-        
-        renderProducts();
+        if (product) {
+          product[field] = updateValue;
+          if (field === 'price') {
+            document.querySelector(`.product-card[data-id="${id}"] .product-price`).textContent = `${updateValue} ₸`;
+          }
+        }
       } catch (error) {
-        console.error('Ошибка:', error);
-        alert('Ошибка сохранения');
+        console.error('Ошибка сохранения:', error);
+        alert('Не удалось сохранить изменения');
         loadProducts();
       }
     };
-    
-    window.archiveProduct = async (id) => {
+
+    window.archiveProduct = async function(id) {
       if (!confirm('Переместить товар в архив?')) return;
-      
-      try {
-        const { error } = await supabase
-          .from('products')
-          .update({ archived: true })
-          .eq('id', id);
-        
-        if (error) throw error;
-        
-        const product = allProducts.find(p => p.id === id);
-        if (product) product.archived = true;
-        
-        renderProducts();
-      } catch (error) {
-        console.error('Ошибка:', error);
-        alert('Ошибка архивации');
-      }
+      await updateProductField(id, 'archived', true);
     };
-    
-    window.restoreProduct = async (id) => {
-      try {
-        const { error } = await supabase
-          .from('products')
-          .update({ archived: false })
-          .eq('id', id);
-        
-        if (error) throw error;
-        
-        const product = allProducts.find(p => p.id === id);
-        if (product) product.archived = false;
-        
-        renderProducts();
-      } catch (error) {
-        console.error('Ошибка:', error);
-        alert('Ошибка восстановления');
-      }
+
+    window.restoreProduct = async function(id) {
+      await updateProductField(id, 'archived', false);
     };
-    
-    window.deleteProduct = async (id) => {
+
+    window.deleteProduct = async function(id) {
       if (!confirm('Удалить товар навсегда?')) return;
       
       try {
@@ -417,53 +408,43 @@
         allProducts = allProducts.filter(p => p.id !== id);
         renderProducts();
       } catch (error) {
-        console.error('Ошибка:', error);
-        alert('Ошибка удаления');
+        console.error('Ошибка удаления:', error);
+        alert('Ошибка удаления товара');
       }
     };
-    
-    window.moveProduct = async (id, direction) => {
+
+    window.moveProduct = async function(id, direction) {
       try {
         const index = allProducts.findIndex(p => p.id === id);
         if (index === -1) return;
         
-        if (direction === 'up' && index > 0) {
-          [allProducts[index].order, allProducts[index-1].order] = [allProducts[index-1].order, allProducts[index].order];
-        } 
-        else if (direction === 'down' && index < allProducts.length - 1) {
-          [allProducts[index].order, allProducts[index+1].order] = [allProducts[index+1].order, allProducts[index].order];
-        } else {
-          return;
-        }
+        const newIndex = direction === 'up' ? index - 1 : index + 1;
+        if (newIndex < 0 || newIndex >= allProducts.length) return;
+        
+        [allProducts[index].order, allProducts[newIndex].order] = 
+          [allProducts[newIndex].order, allProducts[index].order];
         
         allProducts.sort((a, b) => a.order - b.order);
         
-        const updates = allProducts.map((product, idx) => ({
-          id: product.id,
-          order: idx + 1
-        }));
-        
-        const { error } = await supabase
-          .from('products')
-          .upsert(updates);
-        
+        const updates = allProducts.map((p, i) => ({ id: p.id, order: i + 1 }));
+        const { error } = await supabase.from('products').upsert(updates);
         if (error) throw error;
         
         renderProducts();
       } catch (error) {
-        console.error('Ошибка:', error);
-        alert('Ошибка перемещения');
+        console.error('Ошибка перемещения:', error);
+        alert('Ошибка перемещения товара');
       }
     };
-    
+
     window.addNewProduct = async function() {
       const name = document.getElementById('productName').value.trim();
-      const price = parseInt(document.getElementById('productPrice').value.replace(/[^\d]/g, '')) || 0;
+      const price = parseInt(document.getElementById('productPrice').value.replace(/\D/g, '')) || 0;
       const img = document.getElementById('productImage').value.trim();
       const category = document.getElementById('productCategory').value.trim();
       
       if (!name || !price || !category) {
-        alert("Заполните название, цену и категорию!");
+        alert('Заполните все поля!');
         return;
       }
       
@@ -489,11 +470,11 @@
         
         loadProducts();
       } catch (error) {
-        console.error('Ошибка:', error);
+        console.error('Ошибка добавления:', error);
         alert('Ошибка при добавлении товара');
       }
     };
-    
+
     function setupEventListeners() {
       document.getElementById('adminAccess').addEventListener('click', () => {
         const password = prompt('Введите пароль:');
