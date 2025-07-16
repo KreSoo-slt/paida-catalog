@@ -296,12 +296,10 @@
       const categories = [...new Set(allProducts.map(p => p.category).filter(Boolean))]
       const container = document.getElementById('categories')
       
-      // Сохраняем кнопку "Все"
       const allButton = container.querySelector('[data-category="all"]')
       container.innerHTML = ''
       container.appendChild(allButton)
       
-      // Добавляем остальные категории
       categories.forEach(cat => {
         const btn = document.createElement('button')
         btn.className = 'category-btn'
@@ -337,23 +335,23 @@
       return `
         <div class="product-card" data-id="${product.id}">
           <img src="${product.img || 'https://via.placeholder.com/150'}" class="product-image">
-          <div class="product-name" contenteditable="${isAdmin}" onblur="updateProduct(${product.id}, 'name', this.textContent)">${product.name}</div>
-          <div class="product-price" contenteditable="${isAdmin}" onblur="updateProduct(${product.id}, 'price', this.textContent)">
+          <div class="product-name" contenteditable="${isAdmin}" onblur="updateProduct('${product.id}', 'name', this.textContent)">${product.name}</div>
+          <div class="product-price" contenteditable="${isAdmin}" onblur="updateProduct('${product.id}', 'price', this.textContent)">
             ${(product.price || 0).toLocaleString('ru-RU')} ₸
           </div>
           
           ${isAdmin ? `
             <div class="admin-controls">
               <button class="${isArchived ? 'archive-btn' : 'delete-btn'}" 
-                onclick="${isArchived ? 'restoreProduct' : 'archiveProduct'}(${product.id})">
+                onclick="${isArchived ? 'restoreFromArchive' : 'moveToArchive'}('${product.id}')">
                 ${isArchived ? 'Восстановить' : 'Архив'}
               </button>
-              <button class="delete-btn" onclick="deleteProduct(${product.id})">Удалить</button>
+              <button class="delete-btn" onclick="deleteProduct('${product.id}')">Удалить</button>
             </div>
             ${!isArchived ? `
               <div class="move-btns">
-                <button onclick="moveProduct(${product.id}, 'up')">↑</button>
-                <button onclick="moveProduct(${product.id}, 'down')">↓</button>
+                <button onclick="moveProduct('${product.id}', 'up')">↑</button>
+                <button onclick="moveProduct('${product.id}', 'down')">↓</button>
               </div>
             ` : ''}
           ` : ''}
@@ -452,7 +450,7 @@
       }
     }
     
-    window.archiveProduct = async (id) => {
+    window.moveToArchive = async (id) => {
       if (confirm('Переместить товар в архив?')) {
         try {
           const { error } = await supabase
@@ -462,15 +460,20 @@
           
           if (error) throw error
           
-          await loadProducts()
+          const productIndex = allProducts.findIndex(p => p.id === id)
+          if (productIndex !== -1) {
+            allProducts[productIndex].archived = true
+          }
+          
+          renderProducts()
         } catch (error) {
           console.error('Ошибка архивации:', error)
-          alert('Ошибка при архивации.')
+          alert('Ошибка при архивации товара')
         }
       }
     }
     
-    window.restoreProduct = async (id) => {
+    window.restoreFromArchive = async (id) => {
       try {
         const { error } = await supabase
           .from('products')
@@ -479,10 +482,15 @@
         
         if (error) throw error
         
-        await loadProducts()
+        const productIndex = allProducts.findIndex(p => p.id === id)
+        if (productIndex !== -1) {
+          allProducts[productIndex].archived = false
+        }
+        
+        renderProducts()
       } catch (error) {
         console.error('Ошибка восстановления:', error)
-        alert('Ошибка при восстановлении.')
+        alert('Ошибка при восстановлении товара')
       }
     }
     
@@ -496,10 +504,12 @@
           
           if (error) throw error
           
-          await loadProducts()
+          allProducts = allProducts.filter(p => p.id !== id)
+          
+          renderProducts()
         } catch (error) {
           console.error('Ошибка удаления:', error)
-          alert('Ошибка при удалении.')
+          alert('Ошибка при удалении товара')
         }
       }
     }
