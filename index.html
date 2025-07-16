@@ -1,277 +1,10 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-  <title>Paida All — Каталог</title>
-  <style>
-    :root {
-      --primary-color: #25D366;
-      --admin-color: #ff4757;
-      --notice-color: #fff0c4;
-    }
-    
-    body {
-      font-family: Arial, sans-serif;
-      background: #f9f9f9;
-      margin: 0;
-      padding: 0;
-      min-height: 100vh;
-    }
-    
-    /* Шапка с админ-кнопкой */
-    header {
-      background: white;
-      padding: 15px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      text-align: center;
-      margin-bottom: 10px;
-      position: relative;
-    }
-    
-    .admin-access {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      color: var(--admin-color);
-      font-size: 12px;
-      cursor: pointer;
-      text-decoration: underline;
-    }
-    
-    /* Уведомление */
-    .notice {
-      background-color: var(--notice-color);
-      color: #5c4a00;
-      padding: 12px;
-      margin: 10px;
-      border-left: 5px solid #ffd700;
-      border-radius: 5px;
-    }
-    
-    /* Кнопка WhatsApp */
-    .whatsapp-btn {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: var(--primary-color);
-      color: white;
-      padding: 12px 20px;
-      border-radius: 50px;
-      text-decoration: none;
-      font-weight: bold;
-      display: flex;
-      align-items: center;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      z-index: 100;
-    }
-    
-    .whatsapp-btn::before {
-      content: "💬";
-      margin-right: 8px;
-      font-size: 20px;
-    }
-    
-    /* Категории */
-    .categories {
-      display: flex;
-      overflow-x: auto;
-      padding: 10px;
-      background: white;
-      margin-bottom: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      scrollbar-width: none;
-    }
-    
-    .categories::-webkit-scrollbar {
-      display: none;
-    }
-    
-    .category-btn {
-      padding: 8px 15px;
-      margin-right: 10px;
-      border: none;
-      border-radius: 20px;
-      background: #f1f1f1;
-      cursor: pointer;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-    
-    .category-btn.active {
-      background: var(--primary-color);
-      color: white;
-    }
-    
-    /* Карточки товаров */
-    .products-container {
-      padding: 10px;
-    }
-    
-    .products-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 15px;
-    }
-    
-    .product-card {
-      background: white;
-      border-radius: 10px;
-      padding: 15px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      position: relative;
-    }
-    
-    .product-image {
-      width: 100%;
-      height: 120px;
-      object-fit: contain;
-      border-radius: 5px;
-      margin-bottom: 10px;
-    }
-    
-    .product-name {
-      font-weight: bold;
-      margin-bottom: 5px;
-      word-break: break-word;
-    }
-    
-    .product-price {
-      color: #2ecc71;
-      font-weight: bold;
-    }
-    
-    /* Админ-панель */
-    .admin-panel {
-      background: #f8f9fa;
-      padding: 15px;
-      margin: 10px;
-      border-radius: 10px;
-      display: none;
-    }
-    
-    .admin-visible .admin-panel {
-      display: block;
-    }
-    
-    .admin-controls {
-      margin-top: 10px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-    }
-    
-    .admin-controls button {
-      padding: 5px 10px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 12px;
-    }
-    
-    .archive-btn {
-      background: #ffa502;
-      color: white;
-    }
-    
-    .delete-btn {
-      background: var(--admin-color);
-      color: white;
-    }
-    
-    .move-btns {
-      display: flex;
-      justify-content: center;
-      gap: 5px;
-      margin-top: 5px;
-    }
-    
-    /* Архив */
-    .archive-section {
-      display: none;
-      padding: 10px;
-    }
-    
-    .admin-visible .archive-section {
-      display: block;
-    }
-    
-    .archive-title {
-      padding: 10px;
-      background: #f1f1f1;
-      border-radius: 5px;
-      margin-bottom: 10px;
-      font-weight: bold;
-    }
-    
-    /* Адаптация */
-    @media (max-width: 600px) {
-      .products-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-      
-      .whatsapp-btn {
-        bottom: 20px;
-      }
-      
-      body {
-        font-size: 14px;
-      }
-    }
-    
-    @media (min-width: 1000px) {
-      .products-grid {
-        grid-template-columns: repeat(5, 1fr);
-      }
-    }
-  </style>
+  <!-- ... (остальная часть head без изменений) ... -->
 </head>
 <body>
-  <!-- WhatsApp кнопка -->
-  <a class="whatsapp-btn" href="https://wa.me/77780855478" target="_blank">WhatsApp</a>
-  
-  <!-- Шапка с админ-кнопкой -->
-  <header>
-    <h1>Paida All</h1>
-    <div class="contact">
-      г. Караганда, ул. Алиханова 37 (цокольный этаж)<br>
-      Тел: 8 (778) 085-54-78
-    </div>
-    <div class="admin-access" id="adminAccess">Для админа</div>
-  </header>
-  
-  <!-- Уведомление -->
-  <div class="notice">
-    Заказы после 13:00 обрабатываются на следующий день.<br>
-    Доставка и самовывоз доступны по Караганде.
-  </div>
-  
-  <!-- Категории -->
-  <div class="categories" id="categories">
-    <button class="category-btn active" data-category="all">Все</button>
-    <!-- Категории будут добавлены через JS -->
-  </div>
-  
-  <!-- Товары -->
-  <div class="products-container">
-    <div class="products-grid" id="productsGrid"></div>
-  </div>
-  
-  <!-- Архив (только для админа) -->
-  <div class="archive-section" id="archiveSection">
-    <div class="archive-title">📦 Архив (только для админа)</div>
-    <div class="products-grid" id="archiveGrid"></div>
-  </div>
-  
-  <!-- Админ-панель -->
-  <div class="admin-panel" id="adminPanel">
-    <h3>Добавить товар</h3>
-    <input type="text" id="productName" placeholder="Название">
-    <input type="text" id="productPrice" placeholder="Цена (только цифры)">
-    <input type="text" id="productImage" placeholder="Ссылка на фото">
-    <input type="text" id="productCategory" placeholder="Категория">
-    <button id="addProductBtn">Добавить</button>
-  </div>
+  <!-- ... (все HTML без изменений до скрипта) ... -->
 
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
@@ -286,13 +19,11 @@
     let selectedCategory = "all"
     let allProducts = []
     
-    // Инициализация
     document.addEventListener('DOMContentLoaded', () => {
       loadProducts()
       setupEventListeners()
     })
     
-    // Загрузка товаров
     async function loadProducts() {
       try {
         const { data, error } = await supabase
@@ -307,21 +38,18 @@
         renderProducts()
       } catch (error) {
         console.error('Ошибка загрузки товаров:', error)
-        alert('Ошибка загрузки товаров. Проверьте консоль для подробностей.')
+        alert('Ошибка загрузки товаров. Проверьте консоль.')
       }
     }
     
-    // Обновление категорий
     function updateCategories() {
       const categories = [...new Set(allProducts.map(p => p.category).filter(Boolean))]
       const container = document.getElementById('categories')
       
-      // Сохраняем кнопку "Все"
       const allButton = container.querySelector('[data-category="all"]')
       container.innerHTML = ''
       container.appendChild(allButton)
       
-      // Добавляем остальные категории
       categories.forEach(cat => {
         const btn = document.createElement('button')
         btn.className = 'category-btn'
@@ -337,7 +65,6 @@
       })
     }
     
-    // Отображение товаров
     function renderProducts() {
       const activeProducts = allProducts.filter(p => 
         !p.archived && (selectedCategory === "all" || p.category === selectedCategory)
@@ -345,56 +72,53 @@
       
       const archivedProducts = allProducts.filter(p => p.archived)
       
-      // Рендерим активные товары
+      // Исправленное форматирование цены
       const productsGrid = document.getElementById('productsGrid')
-      productsGrid.innerHTML = activeProducts.map(product => createProductCard(product, false)).join('')
-      
-      // Рендерим архив (только для админа)
-      if (isAdmin) {
-        const archiveGrid = document.getElementById('archiveGrid')
-        archiveGrid.innerHTML = archivedProducts.map(product => createProductCard(product, true)).join('')
-      }
-    }
-    
-    // Создание карточки товара
-    function createProductCard(product, isArchived) {
-      // Форматируем цену (удаляем все нецифровые символы и добавляем ₸)
-      const formattedPrice = (product.price || '').toString().replace(/[^\d]/g, '') + ' ₸'
-      
-      return `
+      productsGrid.innerHTML = activeProducts.map(product => `
         <div class="product-card" data-id="${product.id}">
           <img src="${product.img || 'https://via.placeholder.com/150'}" class="product-image">
           <div class="product-name" contenteditable="${isAdmin}" onblur="updateProduct(${product.id}, 'name', this.textContent)">${product.name}</div>
-          <div class="product-price" contenteditable="${isAdmin}" onblur="updateProduct(${product.id}, 'price', this.textContent)">${formattedPrice}</div>
+          <div class="product-price" contenteditable="${isAdmin}" onblur="updateProduct(${product.id}, 'price', this.textContent)">
+            ${formatPrice(product.price)}
+          </div>
           
           ${isAdmin ? `
             <div class="admin-controls">
-              <button class="${isArchived ? 'archive-btn' : 'delete-btn'}" 
-                onclick="${isArchived ? 'restoreProduct' : 'archiveProduct'}('${product.id}')">
-                ${isArchived ? 'Восстановить' : 'Архив'}
-              </button>
+              <button class="delete-btn" onclick="archiveProduct('${product.id}')">Архив</button>
               <button class="delete-btn" onclick="deleteProduct('${product.id}')">Удалить</button>
             </div>
-            ${!isArchived ? `
-              <div class="move-btns">
-                <button onclick="moveProduct('${product.id}', 'up')">↑</button>
-                <button onclick="moveProduct('${product.id}', 'down')">↓</button>
-              </div>
-            ` : ''}
+            <div class="move-btns">
+              <button onclick="moveProduct('${product.id}', 'up')">↑</button>
+              <button onclick="moveProduct('${product.id}', 'down')">↓</button>
+            </div>
           ` : ''}
         </div>
-      `
+      `).join('')
+      
+      if (isAdmin) {
+        const archiveGrid = document.getElementById('archiveGrid')
+        archiveGrid.innerHTML = archivedProducts.map(product => `
+          <div class="product-card" data-id="${product.id}">
+            <img src="${product.img || 'https://via.placeholder.com/150'}" class="product-image">
+            <div class="product-name">${product.name}</div>
+            <div class="product-price">${formatPrice(product.price)}</div>
+            <div class="admin-controls">
+              <button class="archive-btn" onclick="restoreProduct('${product.id}')">Восстановить</button>
+              <button class="delete-btn" onclick="deleteProduct('${product.id}')">Удалить</button>
+            </div>
+          </div>
+        `).join('')
+      }
     }
     
-    // Настройка обработчиков событий
+    // Новая функция для форматирования цены
+    window.formatPrice = (price) => {
+      return (price || 0).toLocaleString('ru-RU') + ' ₸'
+    }
+    
     function setupEventListeners() {
-      // Админ-доступ
       document.getElementById('adminAccess').addEventListener('click', toggleAdminMode)
-      
-      // Добавление товара
       document.getElementById('addProductBtn').addEventListener('click', addNewProduct)
-      
-      // Кнопка "Все"
       document.querySelector('[data-category="all"]').addEventListener('click', () => {
         selectedCategory = "all"
         document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'))
@@ -403,7 +127,6 @@
       })
     }
     
-    // Переключение админ-режима
     async function toggleAdminMode() {
       if (isAdmin) {
         isAdmin = false
@@ -420,18 +143,17 @@
       }
     }
     
-    // Добавление нового товара
     async function addNewProduct() {
       const name = document.getElementById('productName').value
       let price = document.getElementById('productPrice').value
       const img = document.getElementById('productImage').value
       const category = document.getElementById('productCategory').value
       
-      // Очищаем цену от всех нецифровых символов
-      price = price.replace(/[^\d]/g, '')
+      // Очистка цены (новый код)
+      price = parseInt(price.replace(/[^\d]/g, '')) || 0
       
-      if (!name || !price || !category) {
-        alert('Заполните название, цену и категорию!')
+      if (!name || !category) {
+        alert('Заполните название и категорию!')
         return
       }
       
@@ -449,29 +171,24 @@
         
         if (error) throw error
         
-        // Очищаем поля
         document.getElementById('productName').value = ''
         document.getElementById('productPrice').value = ''
         document.getElementById('productImage').value = ''
         document.getElementById('productCategory').value = ''
         
-        // Перезагружаем товары
         await loadProducts()
       } catch (error) {
         console.error('Ошибка добавления товара:', error)
-        alert('Ошибка при добавлении товара. Проверьте консоль для подробностей.')
+        alert('Ошибка при добавлении товара.')
       }
     }
     
-    // Обновление товара
+    // Обновленная функция updateProduct
     window.updateProduct = async (id, field, value) => {
       try {
-        let updateValue = value
-        
-        // Для цены удаляем все нецифровые символы
-        if (field === 'price') {
-          updateValue = value.replace(/[^\d]/g, '')
-        }
+        let updateValue = field === 'price' 
+          ? parseInt(value.replace(/[^\d]/g, '')) || 0
+          : value
         
         const { error } = await supabase
           .from('products')
@@ -480,122 +197,19 @@
         
         if (error) throw error
         
-        // Обновляем локальные данные
         const productIndex = allProducts.findIndex(p => p.id === id)
         if (productIndex !== -1) {
           allProducts[productIndex][field] = updateValue
+          renderProducts() // Обновляем отображение
         }
       } catch (error) {
-        console.error('Ошибка обновления товара:', error)
-        alert('Ошибка при сохранении изменений. Проверьте консоль для подробностей.')
-        loadProducts() // Перезагружаем данные
+        console.error('Ошибка обновления:', error)
+        alert('Ошибка при сохранении. Проверьте консоль.')
+        loadProducts()
       }
     }
     
-    // Архивация товара
-    window.archiveProduct = async (id) => {
-      if (confirm('Переместить товар в архив?')) {
-        try {
-          const { error } = await supabase
-            .from('products')
-            .update({ archived: true })
-            .eq('id', id)
-          
-          if (error) throw error
-          
-          await loadProducts()
-        } catch (error) {
-          console.error('Ошибка архивации товара:', error)
-          alert('Ошибка при архивации товара. Проверьте консоль для подробностей.')
-        }
-      }
-    }
-    
-    // Восстановление из архива
-    window.restoreProduct = async (id) => {
-      try {
-        const { error } = await supabase
-          .from('products')
-          .update({ archived: false })
-          .eq('id', id)
-        
-        if (error) throw error
-        
-        await loadProducts()
-      } catch (error) {
-        console.error('Ошибка восстановления товара:', error)
-        alert('Ошибка при восстановлении товара. Проверьте консоль для подробностей.')
-      }
-    }
-    
-    // Удаление товара
-    window.deleteProduct = async (id) => {
-      if (confirm('Удалить этот товар навсегда?')) {
-        try {
-          const { error } = await supabase
-            .from('products')
-            .delete()
-            .eq('id', id)
-          
-          if (error) throw error
-          
-          await loadProducts()
-        } catch (error) {
-          console.error('Ошибка удаления товара:', error)
-          alert('Ошибка при удалении товара. Проверьте консоль для подробностей.')
-        }
-      }
-    }
-    
-    // Перемещение товара
-    window.moveProduct = async (id, direction) => {
-      try {
-        const product = allProducts.find(p => p.id === id)
-        if (!product) return
-        
-        const categoryProducts = allProducts
-          .filter(p => p.category === product.category && !p.archived)
-          .sort((a, b) => a.order - b.order)
-        
-        const currentIndex = categoryProducts.findIndex(p => p.id === id)
-        
-        if (direction === 'up' && currentIndex > 0) {
-          const prevProduct = categoryProducts[currentIndex - 1]
-          
-          // Меняем порядок
-          await supabase
-            .from('products')
-            .update({ order: prevProduct.order })
-            .eq('id', product.id)
-          
-          await supabase
-            .from('products')
-            .update({ order: product.order })
-            .eq('id', prevProduct.id)
-          
-          await loadProducts()
-        }
-        else if (direction === 'down' && currentIndex < categoryProducts.length - 1) {
-          const nextProduct = categoryProducts[currentIndex + 1]
-          
-          // Меняем порядок
-          await supabase
-            .from('products')
-            .update({ order: nextProduct.order })
-            .eq('id', product.id)
-          
-          await supabase
-            .from('products')
-            .update({ order: product.order })
-            .eq('id', nextProduct.id)
-          
-          await loadProducts()
-        }
-      } catch (error) {
-        console.error('Ошибка перемещения товара:', error)
-        alert('Ошибка при перемещении товара. Проверьте консоль для подробностей.')
-      }
-    }
+    // ... (остальные функции archiveProduct, restoreProduct, deleteProduct, moveProduct без изменений) ...
   </script>
 </body>
 </html>
