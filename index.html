@@ -10,6 +10,7 @@
       --admin-color: #ff4757;
       --notice-color: #fff0c4;
       --cart-color: #FF9F43;
+      --header-bg: #ffffff;
     }
     
     body {
@@ -20,25 +21,82 @@
       min-height: 100vh;
     }
     
-    header {
-      background: white;
-      padding: 15px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    /* Новая шапка */
+    .main-header {
+      background: var(--header-bg);
+      padding: 10px 0;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 15px;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 10px;
+    }
+    
+    .logo {
+      max-height: 60px;
+      width: auto;
+    }
+    
+    .header-contacts {
       text-align: center;
-      margin-bottom: 10px;
-      position: relative;
+    }
+    
+    .contact-phone {
+      font-weight: bold;
+      font-size: 18px;
+      color: #333;
+    }
+    
+    .contact-address {
+      font-size: 14px;
+      color: #555;
+      margin-top: 5px;
+    }
+    
+    .header-features {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+      padding: 8px 0;
+      background: rgba(0,0,0,0.03);
+      border-radius: 8px;
+    }
+    
+    .feature-item {
+      display: flex;
+      align-items: center;
+      font-size: 13px;
+      color: #444;
+    }
+    
+    .feature-item::before {
+      margin-right: 5px;
+      font-size: 16px;
     }
     
     .admin-access {
-      position: absolute;
-      top: 10px;
-      right: 10px;
       color: var(--admin-color);
       font-size: 12px;
       cursor: pointer;
       text-decoration: underline;
     }
-    
+
     .notice {
       background-color: var(--notice-color);
       color: #5c4a00;
@@ -46,23 +104,6 @@
       margin: 10px;
       border-left: 5px solid #ffd700;
       border-radius: 5px;
-    }
-    
-    .whatsapp-btn {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: var(--primary-color);
-      color: white;
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      z-index: 100;
-      text-decoration: none;
     }
     
     .categories {
@@ -258,19 +299,24 @@
     /* Корзина */
     .cart-toggle {
       position: fixed;
-      bottom: 80px;
+      bottom: 90px;
       left: 20px;
       background: var(--cart-color);
       color: white;
-      width: 50px;
-      height: 50px;
+      width: 60px;
+      height: 60px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
       z-index: 100;
       cursor: pointer;
+      transition: transform 0.2s;
+    }
+    
+    .cart-toggle:hover {
+      transform: scale(1.1);
     }
     
     .cart-badge {
@@ -384,17 +430,38 @@
       color: white;
     }
     
+    /* Кнопка WhatsApp */
+    .whatsapp-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--primary-color);
+      color: white;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      z-index: 100;
+      text-decoration: none;
+      transition: transform 0.2s;
+    }
+    
+    .whatsapp-btn:hover {
+      transform: scale(1.1);
+    }
+    
+    .whatsapp-btn img {
+      width: 70%;
+      height: 70%;
+      object-fit: contain;
+    }
+    
     @media (max-width: 600px) {
       .products-list {
         grid-template-columns: 1fr;
-      }
-      
-      .cart-toggle {
-        bottom: 90px;
-      }
-      
-      .whatsapp-btn {
-        bottom: 20px;
       }
       
       .product-card {
@@ -416,6 +483,30 @@
       .cart-container {
         padding-bottom: 60px;
       }
+      
+      .header-top {
+        flex-direction: column;
+      }
+      
+      .header-features {
+        flex-direction: column;
+        gap: 5px;
+        align-items: center;
+      }
+      
+      .whatsapp-btn {
+        bottom: 25px;
+        right: 25px;
+        width: 55px;
+        height: 55px;
+      }
+      
+      .cart-toggle {
+        bottom: 100px;
+        left: 25px;
+        width: 55px;
+        height: 55px;
+      }
     }
     
     @media (min-width: 768px) {
@@ -426,6 +517,26 @@
   </style>
 </head>
 <body>
+  <!-- Новая шапка -->
+  <header class="main-header">
+    <div class="header-container">
+      <div class="header-top">
+        <img src="https://ibb.co/JR073Bt1" class="logo">
+        <div class="header-contacts">
+          <div class="contact-phone">8 (778) 085-54-78</div>
+          <div class="contact-address">г. Караганда, ул. Алиханова 37 (цокольный этаж)</div>
+        </div>
+        <div class="admin-access" id="adminAccess">Для админа</div>
+      </div>
+      
+      <div class="header-features">
+        <div class="feature-item">💲 Оптовые цены без посредников</div>
+        <div class="feature-item">📝 Работаем с физ. и юр. лицами</div>
+        <div class="feature-item">🚚 Отправка в другие регионы</div>
+      </div>
+    </div>
+  </header>
+
   <div class="cart-toggle" id="cartToggle">
     <div class="cart-badge" id="cartBadge" style="display: none;">0</div>
     🛒
@@ -449,20 +560,9 @@
     </div>
   </div>
   
- <a class="whatsapp-btn" href="https://wa.me/77780855478" target="_blank">
-  <img src="https://foni.papik.pro/uploads/posts/2024-10/foni-papik-pro-925x-p-kartinki-piktogramma-vatsap-na-prozrachnom-4.png" style="width: 30px; height: 30px; object-fit: cover; border-radius: 50%;">
-</a>
-  
-  <header>
-    <h1>Paida All</h1>
-    <div class="contact">
-      г. Караганда, ул. Алиханова 37 (цокольный этаж)<br>
-      Тел: 8 (778) 085-54-78
-💲Оптовые цены,без посредников 📝Работаем с физ. и юр.лицами(все документы)
-               🚚 Отправка в другие регионы
-    </div>
-    <div class="admin-access" id="adminAccess">Для админа</div>
-  </header>
+  <a class="whatsapp-btn" href="https://wa.me/77780855478" target="_blank">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
+  </a>
   
   <div class="notice">
     Заказы обрабатываются на следующий день.<br>
