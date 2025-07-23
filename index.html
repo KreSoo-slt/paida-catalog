@@ -21,7 +21,7 @@
       min-height: 100vh;
     }
     
-    /* Новая шапка */
+    /* Шапка */
     .main-header {
       background: var(--header-bg);
       padding: 10px 0;
@@ -44,26 +44,38 @@
       justify-content: space-between;
       align-items: center;
       padding-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
     
     .logo {
-      max-height: 60px;
+      height: 50px;
       width: auto;
     }
     
+    .shop-name {
+      font-size: 20px;
+      font-weight: bold;
+      color: #333;
+    }
+    
     .header-contacts {
-      text-align: center;
+      text-align: right;
     }
     
     .contact-phone {
-      font-weight: bold;
-      font-size: 18px;
-      color: #333;
+      font-size: 16px;
+      color: #555;
     }
     
     .contact-address {
       font-size: 14px;
-      color: #555;
+      color: #777;
       margin-top: 5px;
     }
     
@@ -95,8 +107,10 @@
       font-size: 12px;
       cursor: pointer;
       text-decoration: underline;
+      margin-left: auto;
     }
 
+    /* Остальные стили остаются без изменений */
     .notice {
       background-color: var(--notice-color);
       color: #5c4a00;
@@ -486,12 +500,19 @@
       
       .header-top {
         flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      
+      .header-contacts {
+        text-align: left;
+        width: 100%;
       }
       
       .header-features {
         flex-direction: column;
         gap: 5px;
-        align-items: center;
+        align-items: flex-start;
       }
       
       .whatsapp-btn {
@@ -507,6 +528,14 @@
         width: 55px;
         height: 55px;
       }
+      
+      .shop-name {
+        font-size: 18px;
+      }
+      
+      .logo {
+        height: 40px;
+      }
     }
     
     @media (min-width: 768px) {
@@ -521,7 +550,10 @@
   <header class="main-header">
     <div class="header-container">
       <div class="header-top">
-        <img src="https://iimg.su/i/UNp0Zk" class="logo">
+        <div class="logo-container">
+          <img src="https://iimg.su/i/UNp0Zk" alt="Paida All" class="logo">
+          <div class="shop-name">Paida All</div>
+        </div>
         <div class="header-contacts">
           <div class="contact-phone">8 (778) 085-54-78</div>
           <div class="contact-address">г. Караганда, ул. Алиханова 37 (цокольный этаж)</div>
@@ -592,6 +624,7 @@
     <button id="addProductBtn">Добавить</button>
   </div>
 
+  <!-- Остальной JavaScript код остается без изменений -->
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
     
