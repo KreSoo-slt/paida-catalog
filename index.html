@@ -26,9 +26,7 @@
       background: var(--header-bg);
       padding: 15px 0;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      position: sticky;
-      top: 0;
-      z-index: 1000;
+      position: static; /* Изменено с sticky на static */
     }
     
     .header-container {
@@ -51,6 +49,8 @@
       display: flex;
       align-items: center;
       gap: 15px;
+      width: 100%;
+      justify-content: space-between;
     }
     
     .logo {
@@ -65,6 +65,8 @@
       font-weight: bold;
       color: #333;
       white-space: nowrap;
+      text-align: center;
+      flex-grow: 1;
     }
     
     .header-contacts {
@@ -72,6 +74,7 @@
       flex-direction: column;
       align-items: flex-end;
       gap: 5px;
+      width: 100%;
     }
     
     .contact-phone {
@@ -117,7 +120,6 @@
       font-size: 13px;
       cursor: pointer;
       text-decoration: underline;
-      margin-left: auto;
       white-space: nowrap;
     }
 
@@ -487,37 +489,41 @@
     @media (max-width: 768px) {
       .header-top {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: center;
         gap: 10px;
       }
       
+      .logo-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+      }
+      
+      .shop-name {
+        order: -1;
+        width: 100%;
+        text-align: center;
+        margin-bottom: 10px;
+      }
+      
       .header-contacts {
-        align-items: flex-start;
-        text-align: left;
+        align-items: center;
+        text-align: center;
       }
       
       .header-features {
         flex-direction: column;
         gap: 8px;
-        align-items: flex-start;
+        align-items: center;
       }
       
       .feature-item {
         white-space: normal;
-      }
-      
-      .logo-container {
-        width: 100%;
-        justify-content: space-between;
+        text-align: center;
       }
       
       .admin-access {
-        margin-left: 0;
         margin-top: 10px;
-      }
-      
-      .shop-name {
-        font-size: 20px;
       }
       
       .contact-phone {
@@ -567,6 +573,16 @@
       .products-list {
         grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
       }
+      
+      .logo-container {
+        flex-direction: row;
+        justify-content: space-between;
+      }
+      
+      .shop-name {
+        order: 0;
+        width: auto;
+      }
     }
   </style>
 </head>
@@ -578,12 +594,12 @@
         <div class="logo-container">
           <img src="https://pic.maxiol.com/thumbs2/1753306101.86132844.paidaj.jpg" alt="Paida All" class="logo">
           <div class="shop-name">Paida All</div>
+          <div class="admin-access" id="adminAccess">Для админа</div>
         </div>
         <div class="header-contacts">
           <div class="contact-phone">8 (778) 085-54-78</div>
           <div class="contact-address">г. Караганда, ул. Алиханова 37 (цокольный этаж)</div>
         </div>
-        <div class="admin-access" id="adminAccess">Для админа</div>
       </div>
       
       <div class="header-features">
