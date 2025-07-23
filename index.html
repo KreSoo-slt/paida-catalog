@@ -54,20 +54,15 @@
       right: 20px;
       background: var(--primary-color);
       color: white;
-      padding: 12px 20px;
-      border-radius: 50px;
-      text-decoration: none;
-      font-weight: bold;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
       display: flex;
       align-items: center;
+      justify-content: center;
       box-shadow: 0 4px 8px rgba(0,0,0,0.2);
       z-index: 100;
-    }
-    
-    .whatsapp-btn::before {
-      content: "💬";
-      margin-right: 8px;
-      font-size: 20px;
+      text-decoration: none;
     }
     
     .categories {
@@ -105,30 +100,27 @@
     }
     
     .products-list {
-      display: flex;
-      flex-direction: column;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 10px;
     }
     
-    .product-row {
+    .product-card {
       background: white;
       border-radius: 10px;
       padding: 15px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       display: flex;
-      gap: 15px;
+      flex-direction: column;
+      position: relative;
     }
     
     .product-image {
-      width: 120px;
-      height: 120px;
+      width: 100%;
+      height: 150px;
       object-fit: contain;
       border-radius: 5px;
-      flex-shrink: 0;
-    }
-    
-    .product-info {
-      flex: 1;
+      margin-bottom: 10px;
     }
     
     .product-name {
@@ -143,32 +135,31 @@
       margin-bottom: 5px;
     }
     
-    .product-specs {
-      font-size: 13px;
-      color: #666;
-      margin-bottom: 5px;
-    }
-    
     .product-description {
       font-size: 14px;
-      color: #444;
+      color: #666;
+      margin-bottom: 10px;
+      padding: 8px;
+      background: rgba(0,0,0,0.03);
+      border-radius: 5px;
     }
     
     .product-actions {
       display: flex;
       align-items: center;
-      margin-top: 10px;
+      margin-top: auto;
     }
     
     .add-to-cart {
       background: var(--primary-color);
       color: white;
       border: none;
-      padding: 6px 12px;
-      border-radius: 4px;
+      padding: 8px 15px;
+      border-radius: 5px;
       cursor: pointer;
       display: flex;
       align-items: center;
+      font-size: 14px;
     }
     
     .add-to-cart::before {
@@ -267,7 +258,7 @@
     /* Корзина */
     .cart-toggle {
       position: fixed;
-      bottom: 20px;
+      bottom: 80px;
       left: 20px;
       background: var(--cart-color);
       color: white;
@@ -394,25 +385,42 @@
     }
     
     @media (max-width: 600px) {
-      .product-row {
-        flex-direction: column;
+      .products-list {
+        grid-template-columns: 1fr;
       }
       
-      .product-image {
-        width: 100%;
-        height: 150px;
+      .cart-toggle {
+        bottom: 90px;
       }
       
       .whatsapp-btn {
-        bottom: 80px;
+        bottom: 20px;
       }
       
-      body {
-        font-size: 14px;
+      .product-card {
+        flex-direction: row;
+        align-items: flex-start;
+      }
+      
+      .product-image {
+        width: 100px;
+        height: 100px;
+        margin-right: 10px;
+        margin-bottom: 0;
+      }
+      
+      .product-info {
+        flex: 1;
       }
       
       .cart-container {
         padding-bottom: 60px;
+      }
+    }
+    
+    @media (min-width: 768px) {
+      .products-list {
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
       }
     }
   </style>
@@ -441,7 +449,7 @@
     </div>
   </div>
   
-  <a class="whatsapp-btn" href="https://wa.me/77780855478" target="_blank">WhatsApp</a>
+  <a class="whatsapp-btn" href="https://wa.me/77780855478" target="_blank">📱</a>
   
   <header>
     <h1>Paida All</h1>
@@ -476,8 +484,7 @@
     <input type="text" id="productPrice" placeholder="Цена (только цифры)">
     <input type="text" id="productImage" placeholder="Ссылка на фото">
     <input type="text" id="productCategory" placeholder="Категория">
-    <input type="text" id="productSpecs" placeholder="Характеристики (через запятую)">
-    <textarea id="productDescription" placeholder="Описание товара"></textarea>
+    <textarea id="productDescription" placeholder="Краткое описание товара"></textarea>
     <button id="addProductBtn">Добавить</button>
   </div>
 
@@ -549,52 +556,46 @@
       const archivedProducts = allProducts.filter(p => p.archived)
       
       const productsList = document.getElementById('productsList')
-      productsList.innerHTML = activeProducts.map(product => createProductRow(product, false)).join('')
+      productsList.innerHTML = activeProducts.map(product => createProductCard(product, false)).join('')
       
       if (isAdmin) {
         const archiveList = document.getElementById('archiveList')
-        archiveList.innerHTML = archivedProducts.map(product => createProductRow(product, true)).join('')
+        archiveList.innerHTML = archivedProducts.map(product => createProductCard(product, true)).join('')
       }
       
       // Добавляем обработчики для кнопок корзины
       document.querySelectorAll('.add-to-cart').forEach(btn => {
         btn.addEventListener('click', function() {
-          const productId = this.closest('.product-row').dataset.id
+          const productId = this.closest('.product-card').dataset.id
           addToCart(productId)
         })
       })
       
       document.querySelectorAll('.quantity-btn').forEach(btn => {
         btn.addEventListener('click', function() {
-          const productId = this.closest('.product-row').dataset.id
+          const productId = this.closest('.product-card').dataset.id
           const action = this.textContent === '+' ? 'increase' : 'decrease'
           updateCartItem(productId, action)
         })
       })
     }
     
-    function createProductRow(product, isArchived) {
+    function createProductCard(product, isArchived) {
       const inCart = cart.find(item => item.id === product.id)
       const quantity = inCart ? inCart.quantity : 1
       
       return `
-        <div class="product-row" data-id="${product.id}">
+        <div class="product-card" data-id="${product.id}">
           <img src="${product.img || 'https://via.placeholder.com/150'}" class="product-image">
           <div class="product-info">
             <div class="product-name" contenteditable="${isAdmin}" onblur="updateProduct('${product.id}', 'name', this.textContent)">${product.name}</div>
             <div class="product-price" contenteditable="${isAdmin}" onblur="updateProduct('${product.id}', 'price', this.textContent)">
               ${(product.price || 0).toLocaleString('ru-RU')} ₸
             </div>
-            ${product.specs ? `
-              <div class="product-specs" contenteditable="${isAdmin}" onblur="updateProduct('${product.id}', 'specs', this.textContent)">
-                ${product.specs.split(',').map(spec => `• ${spec.trim()}`).join('<br>')}
-              </div>
-            ` : ''}
-            ${product.description ? `
-              <div class="product-description" contenteditable="${isAdmin}" onblur="updateProduct('${product.id}', 'description', this.textContent)">
-                ${product.description}
-              </div>
-            ` : ''}
+            <div class="product-description" contenteditable="${isAdmin}" onblur="updateProduct('${product.id}', 'description', this.textContent)">
+              ${product.description || ''}
+            </div>
+            
             <div class="product-actions">
               <button class="add-to-cart">В корзину</button>
               ${inCart ? `
@@ -666,7 +667,6 @@
       let price = document.getElementById('productPrice').value
       const img = document.getElementById('productImage').value
       const category = document.getElementById('productCategory').value
-      const specs = document.getElementById('productSpecs').value
       const description = document.getElementById('productDescription').value
       
       price = parseInt(price.replace(/[^\d]/g, '')) || 0
@@ -684,7 +684,6 @@
             price, 
             img: img || 'https://via.placeholder.com/150',
             category,
-            specs,
             description,
             archived: false,
             order: allProducts.length + 1
@@ -696,7 +695,6 @@
         document.getElementById('productPrice').value = ''
         document.getElementById('productImage').value = ''
         document.getElementById('productCategory').value = ''
-        document.getElementById('productSpecs').value = ''
         document.getElementById('productDescription').value = ''
         
         await loadProducts()
