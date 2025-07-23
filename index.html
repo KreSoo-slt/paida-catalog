@@ -24,7 +24,7 @@
     /* Шапка */
     .main-header {
       background: var(--header-bg);
-      padding: 10px 0;
+      padding: 15px 0;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
       position: sticky;
       top: 0;
@@ -43,49 +43,58 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-bottom: 10px;
       flex-wrap: wrap;
+      gap: 15px;
     }
     
     .logo-container {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 15px;
     }
     
     .logo {
       height: 50px;
       width: auto;
+      border-radius: 5px;
+      object-fit: contain;
     }
     
     .shop-name {
-      font-size: 20px;
+      font-size: 22px;
       font-weight: bold;
       color: #333;
+      white-space: nowrap;
     }
     
     .header-contacts {
-      text-align: right;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 5px;
     }
     
     .contact-phone {
-      font-size: 16px;
-      color: #555;
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+      white-space: nowrap;
     }
     
     .contact-address {
       font-size: 14px;
-      color: #777;
-      margin-top: 5px;
+      color: #666;
+      text-align: right;
+      max-width: 250px;
     }
     
     .header-features {
       display: flex;
       justify-content: center;
-      gap: 15px;
+      gap: 20px;
       flex-wrap: wrap;
-      margin-top: 10px;
-      padding: 8px 0;
+      margin-top: 15px;
+      padding: 12px 0;
       background: rgba(0,0,0,0.03);
       border-radius: 8px;
     }
@@ -93,8 +102,9 @@
     .feature-item {
       display: flex;
       align-items: center;
-      font-size: 13px;
+      font-size: 14px;
       color: #444;
+      white-space: nowrap;
     }
     
     .feature-item::before {
@@ -104,10 +114,11 @@
     
     .admin-access {
       color: var(--admin-color);
-      font-size: 12px;
+      font-size: 13px;
       cursor: pointer;
       text-decoration: underline;
       margin-left: auto;
+      white-space: nowrap;
     }
 
     /* Остальные стили остаются без изменений */
@@ -473,7 +484,46 @@
       object-fit: contain;
     }
     
-    @media (max-width: 600px) {
+    @media (max-width: 768px) {
+      .header-top {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      
+      .header-contacts {
+        align-items: flex-start;
+        text-align: left;
+      }
+      
+      .header-features {
+        flex-direction: column;
+        gap: 8px;
+        align-items: flex-start;
+      }
+      
+      .feature-item {
+        white-space: normal;
+      }
+      
+      .logo-container {
+        width: 100%;
+        justify-content: space-between;
+      }
+      
+      .admin-access {
+        margin-left: 0;
+        margin-top: 10px;
+      }
+      
+      .shop-name {
+        font-size: 20px;
+      }
+      
+      .contact-phone {
+        font-size: 16px;
+      }
+      
       .products-list {
         grid-template-columns: 1fr;
       }
@@ -498,23 +548,6 @@
         padding-bottom: 60px;
       }
       
-      .header-top {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-      }
-      
-      .header-contacts {
-        text-align: left;
-        width: 100%;
-      }
-      
-      .header-features {
-        flex-direction: column;
-        gap: 5px;
-        align-items: flex-start;
-      }
-      
       .whatsapp-btn {
         bottom: 25px;
         right: 25px;
@@ -527,14 +560,6 @@
         left: 25px;
         width: 55px;
         height: 55px;
-      }
-      
-      .shop-name {
-        font-size: 18px;
-      }
-      
-      .logo {
-        height: 40px;
       }
     }
     
@@ -551,7 +576,7 @@
     <div class="header-container">
       <div class="header-top">
         <div class="logo-container">
-          <img src="https://postpic.net/i/KwOiA" alt="Paida All" class="logo">
+          <img src="https://pic.maxiol.com/thumbs2/1753306101.86132844.paidaj.jpg" alt="Paida All" class="logo">
           <div class="shop-name">Paida All</div>
         </div>
         <div class="header-contacts">
@@ -624,7 +649,6 @@
     <button id="addProductBtn">Добавить</button>
   </div>
 
-  <!-- Остальной JavaScript код остается без изменений -->
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
     
