@@ -133,7 +133,7 @@
       border-radius: 5px;
     }
     
-    /* Фильтры */
+    /* Фильтры и поиск */
     .filters-container {
       display: flex;
       flex-wrap: wrap;
@@ -141,73 +141,63 @@
       padding: 10px;
       background: white;
       margin-bottom: 10px;
+      align-items: center;
     }
     
-    .dropdown-filter {
+    .search-container {
       position: relative;
-      display: inline-block;
+      flex-grow: 1;
+      max-width: 400px;
     }
     
-    .dropdown-btn {
+    #searchInput {
+      width: 100%;
       padding: 8px 15px;
+      border: 1px solid #ddd;
+      border-radius: 20px;
+      font-size: 14px;
+    }
+    
+    .search-container::before {
+      content: "🔍";
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    
+    #searchInput {
+      padding-left: 35px;
+    }
+    
+    /* Категории и типы */
+    .categories {
+      display: flex;
+      overflow-x: auto;
+      padding: 10px;
+      background: white;
+      margin-bottom: 10px;
+      scrollbar-width: none;
+    }
+    
+    .categories::-webkit-scrollbar {
+      display: none;
+    }
+    
+    .category-btn {
+      padding: 8px 15px;
+      margin-right: 10px;
       border: none;
       border-radius: 20px;
       background: #f1f1f1;
       cursor: pointer;
       white-space: nowrap;
+      flex-shrink: 0;
     }
     
-    .dropdown-content {
-      display: none;
-      position: absolute;
-      background-color: #f9f9f9;
-      min-width: 200px;
-      max-height: 300px;
-      overflow-y: auto;
-      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-      z-index: 1;
-      border-radius: 5px;
-    }
-    
-    .dropdown-content a {
-      color: black;
-      padding: 8px 12px;
-      text-decoration: none;
-      display: block;
-      cursor: pointer;
-    }
-    
-    .dropdown-content a:hover {
-      background-color: #ddd;
-    }
-    
-    .dropdown-filter:hover .dropdown-content {
-      display: block;
-    }
-    
-    .active-filter {
+    .category-btn.active {
       background: var(--primary-color);
       color: white;
-    }
-    
-    /* Режимы отображения */
-    .view-modes {
-      display: flex;
-      gap: 5px;
-      margin-left: auto;
-    }
-    
-    .view-mode-btn {
-      padding: 5px 10px;
-      border: 1px solid #ddd;
-      background: white;
-      cursor: pointer;
-    }
-    
-    .view-mode-btn.active {
-      background: var(--primary-color);
-      color: white;
-      border-color: var(--primary-color);
     }
     
     /* Товары */
@@ -221,10 +211,6 @@
       gap: 10px;
     }
     
-    .products-list.list-view {
-      grid-template-columns: 1fr;
-    }
-    
     .product-card {
       background: white;
       border-radius: 10px;
@@ -235,11 +221,6 @@
       position: relative;
     }
     
-    .product-card.list-view {
-      flex-direction: row;
-      align-items: center;
-    }
-    
     .product-image {
       width: 100%;
       height: 150px;
@@ -247,13 +228,6 @@
       border-radius: 5px;
       margin-bottom: 10px;
       cursor: pointer;
-    }
-    
-    .product-card.list-view .product-image {
-      width: 100px;
-      height: 100px;
-      margin-right: 15px;
-      margin-bottom: 0;
     }
     
     .product-name {
@@ -275,10 +249,6 @@
       padding: 8px;
       background: rgba(0,0,0,0.03);
       border-radius: 5px;
-    }
-    
-    .product-card.list-view .product-description {
-      display: none;
     }
     
     .product-actions {
@@ -557,6 +527,31 @@
       object-fit: contain;
     }
     
+    /* Быстрое добавление */
+    .quick-add-panel {
+      display: none;
+      margin-top: 15px;
+      padding: 15px;
+      background: #f0f0f0;
+      border-radius: 5px;
+    }
+    
+    .admin-visible .quick-add-panel {
+      display: block;
+    }
+    
+    .quick-add-item {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+      align-items: center;
+    }
+    
+    .quick-add-item input {
+      flex: 1;
+      padding: 5px;
+    }
+    
     /* Мобильная версия */
     @media (max-width: 768px) {
       .header-top {
@@ -602,16 +597,16 @@
         font-size: 16px;
       }
       
-      .products-list:not(.list-view) {
+      .products-list {
         grid-template-columns: 1fr;
       }
       
-      .product-card:not(.list-view) {
+      .product-card {
         flex-direction: row;
         align-items: flex-start;
       }
       
-      .product-card:not(.list-view) .product-image {
+      .product-image {
         width: 100px;
         height: 100px;
         margin-right: 10px;
@@ -639,19 +634,10 @@
         width: 55px;
         height: 55px;
       }
-      
-      .dropdown-content {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 90%;
-        max-height: 70vh;
-      }
     }
     
     @media (min-width: 768px) {
-      .products-list:not(.list-view) {
+      .products-list {
         grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
       }
       
@@ -726,28 +712,16 @@
     Доставка(От 50.000тг) и самовывоз доступны по Караганде.
   </div>
   
-  <!-- Фильтры -->
+  <!-- Фильтры и поиск -->
   <div class="filters-container">
-    <div class="dropdown-filter">
-      <button class="dropdown-btn" id="categoryFilterBtn">Все категории</button>
-      <div class="dropdown-content" id="categoriesDropdown">
-        <a data-category="all" class="active-filter">Все категории</a>
-        <!-- Категории будут добавлены через JS -->
-      </div>
+    <div class="search-container">
+      <input type="text" id="searchInput" placeholder="Поиск товаров...">
     </div>
-    
-    <div class="dropdown-filter">
-      <button class="dropdown-btn" id="typeFilterBtn">Все типы</button>
-      <div class="dropdown-content" id="typesDropdown">
-        <a data-type="all" class="active-filter">Все типы</a>
-        <!-- Типы будут добавлены через JS -->
-      </div>
-    </div>
-    
-    <div class="view-modes">
-      <button class="view-mode-btn active" data-view="grid">Плитка</button>
-      <button class="view-mode-btn" data-view="list">Список</button>
-    </div>
+  </div>
+  
+  <!-- Категории -->
+  <div class="categories" id="categories">
+    <button class="category-btn active" data-category="all">Все</button>
   </div>
   
   <!-- Товары -->
@@ -764,35 +738,40 @@
   <!-- Админ-панель -->
   <div class="admin-panel" id="adminPanel">
     <h3>Добавить товар</h3>
-    <input type="text" id="productName" placeholder="Название">
-    <input type="text" id="productPrice" placeholder="Цена (только цифры)">
-    <input type="text" id="productImage" placeholder="Ссылка на фото">
-    
-    <div style="display: flex; gap: 10px;">
-      <div style="flex: 1;">
-        <input type="text" id="productCategory" placeholder="Категория (производитель)">
-        <div id="existingCategories" style="margin-top: 5px;"></div>
-      </div>
-      <div style="flex: 1;">
-        <input type="text" id="productType" placeholder="Тип товара (мыло, порошок и т.д.)">
-        <div id="existingTypes" style="margin-top: 5px;"></div>
-      </div>
-    </div>
-    
-    <textarea id="productDescription" placeholder="Краткое описание товара"></textarea>
+    <input type="text" id="productName" placeholder="Название (необязательно)">
+    <input type="text" id="productPrice" placeholder="Цена (необязательно)">
+    <input type="text" id="productImage" placeholder="Ссылка на фото (необязательно)">
+    <input type="text" id="productCategory" placeholder="Категория (необязательно)">
+    <input type="text" id="productType" placeholder="Тип товара (необязательно)">
+    <textarea id="productDescription" placeholder="Описание (необязательно)"></textarea>
     
     <div class="admin-controls">
       <button id="addProductBtn">Добавить</button>
-      <button id="exportCSVBtn">Экспорт в CSV</button>
-      <button id="backupBtn">Создать резервную копию</button>
+      <button id="quickAddToggle">Быстрое добавление (3 товара)</button>
     </div>
     
-    <div id="adminStats" style="margin-top: 20px; padding: 10px; background: #f0f0f0; border-radius: 5px;">
-      <h4>Статистика:</h4>
-      <p>Товаров: <span id="productsCount">0</span></p>
-      <p>В архиве: <span id="archivedCount">0</span></p>
-      <p>Категорий: <span id="categoriesCount">0</span></p>
-      <p>Типов товаров: <span id="typesCount">0</span></p>
+    <!-- Панель быстрого добавления -->
+    <div class="quick-add-panel" id="quickAddPanel">
+      <div class="quick-add-item">
+        <input type="text" class="quick-name" placeholder="Название 1">
+        <input type="text" class="quick-price" placeholder="Цена 1">
+      </div>
+      <div class="quick-add-item">
+        <input type="text" class="quick-name" placeholder="Название 2">
+        <input type="text" class="quick-price" placeholder="Цена 2">
+      </div>
+      <div class="quick-add-item">
+        <input type="text" class="quick-name" placeholder="Название 3">
+        <input type="text" class="quick-price" placeholder="Цена 3">
+      </div>
+      
+      <div style="margin-top: 10px;">
+        <input type="text" id="quickCategory" placeholder="Общая категория">
+        <input type="text" id="quickType" placeholder="Общий тип товара" style="margin-top: 5px;">
+        <input type="text" id="quickImage" placeholder="Общая ссылка на фото" style="margin-top: 5px;">
+      </div>
+      
+      <button id="addMultipleBtn" style="margin-top: 10px;">Добавить все</button>
     </div>
   </div>
 
@@ -812,13 +791,11 @@
     let selectedType = "all"
     let allProducts = []
     let cart = []
-    let viewMode = localStorage.getItem('viewMode') || 'grid'
     
     document.addEventListener('DOMContentLoaded', () => {
       loadProducts()
       setupEventListeners()
       loadCart()
-      applyViewMode()
     })
     
     async function getClientIP() {
@@ -834,6 +811,16 @@
     async function logAdminAction(actionText) {
       try {
         const ip = await getClientIP()
+        const time = new Date().toLocaleString('ru-RU')
+        
+        // Форматируем сообщение для Telegram
+        const telegramMessage = `
+🛠 *Действие администратора* 🛠
+📅 *Время:* ${time}
+📱 *IP:* ${ip}
+📝 *Действие:*
+${actionText}
+        `.trim()
         
         // Логируем в Supabase
         await supabase.from('admin_logs').insert([{ 
@@ -847,7 +834,7 @@
         }])
         
         // Отправляем в Telegram
-        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${encodeURIComponent(`${actionText}\nIP: ${ip}`)}`)
+        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${encodeURIComponent(telegramMessage)}&parse_mode=Markdown`)
       } catch (error) {
         console.error('Ошибка логирования:', error)
       }
@@ -864,9 +851,7 @@
         
         allProducts = data || []
         updateCategories()
-        updateTypes()
         renderProducts()
-        updateAdminStats()
       } catch (error) {
         console.error('Ошибка загрузки товаров:', error)
         alert('Ошибка загрузки товаров. Проверьте консоль.')
@@ -875,49 +860,37 @@
     
     function updateCategories() {
       const categories = [...new Set(allProducts.map(p => p.category).filter(Boolean))]
-      const container = document.getElementById('categoriesDropdown')
+      const container = document.getElementById('categories')
       
-      // Очищаем и добавляем только кнопку "Все"
-      container.innerHTML = '<a data-category="all" class="active-filter">Все категории</a>'
+      const allButton = container.querySelector('[data-category="all"]')
+      container.innerHTML = ''
+      container.appendChild(allButton)
       
       categories.forEach(cat => {
-        const link = document.createElement('a')
-        link.dataset.category = cat
-        link.textContent = cat
-        link.addEventListener('click', () => {
-          selectedCategory = cat
-          document.querySelectorAll('#categoriesDropdown a').forEach(a => a.classList.remove('active-filter'))
-          link.classList.add('active-filter')
-          document.getElementById('categoryFilterBtn').textContent = cat
-          renderProducts()
-        })
+        const btn = document.createElement('button')
+        btn.className = 'category-btn'
+        btn.dataset.category = cat
+        btn.textContent = cat
         
         // Добавляем кнопку редактирования для админа
         if (isAdmin) {
-          const editBtn = document.createElement('span')
-          editBtn.textContent = ' ✏️'
-          editBtn.style.cursor = 'pointer'
-          editBtn.addEventListener('click', (e) => {
-            e.stopPropagation()
+          btn.addEventListener('contextmenu', (e) => {
+            e.preventDefault()
             const newName = prompt('Введите новое название категории:', cat)
             if (newName && newName !== cat) {
               updateAllProductsCategory(cat, newName)
             }
           })
-          link.appendChild(editBtn)
         }
         
-        container.appendChild(link)
+        btn.addEventListener('click', () => {
+          selectedCategory = cat
+          document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'))
+          btn.classList.add('active')
+          renderProducts()
+        })
+        container.appendChild(btn)
       })
-      
-      // Обновляем существующие категории в форме добавления
-      const existingCategories = document.getElementById('existingCategories')
-      existingCategories.innerHTML = categories.map(cat => `
-        <span style="display: inline-block; margin: 2px; padding: 3px 5px; background: #eee; border-radius: 3px;">
-          ${cat}
-          <span style="cursor: pointer;" onclick="document.getElementById('productCategory').value = '${cat}'">➕</span>
-        </span>
-      `).join('')
     }
     
     async function updateAllProductsCategory(oldCat, newCat) {
@@ -935,84 +908,15 @@
         
         updateCategories()
         renderProducts()
-        logAdminAction(`Категория изменена: "${oldCat}" → "${newCat}"`)
+        logAdminAction(`Категория изменена:\n"${oldCat}" → "${newCat}"`)
       } catch (error) {
         console.error('Ошибка обновления категории:', error)
         alert('Ошибка при изменении категории')
       }
     }
     
-    function updateTypes() {
-      const types = [...new Set(allProducts.map(p => p.type).filter(Boolean))]
-      const container = document.getElementById('typesDropdown')
-      
-      // Очищаем и добавляем только кнопку "Все"
-      container.innerHTML = '<a data-type="all" class="active-filter">Все типы</a>'
-      
-      types.forEach(type => {
-        const link = document.createElement('a')
-        link.dataset.type = type
-        link.textContent = type
-        link.addEventListener('click', () => {
-          selectedType = type
-          document.querySelectorAll('#typesDropdown a').forEach(a => a.classList.remove('active-filter'))
-          link.classList.add('active-filter')
-          document.getElementById('typeFilterBtn').textContent = type
-          renderProducts()
-        })
-        
-        // Добавляем кнопку редактирования для админа
-        if (isAdmin) {
-          const editBtn = document.createElement('span')
-          editBtn.textContent = ' ✏️'
-          editBtn.style.cursor = 'pointer'
-          editBtn.addEventListener('click', (e) => {
-            e.stopPropagation()
-            const newName = prompt('Введите новое название типа:', type)
-            if (newName && newName !== type) {
-              updateAllProductsType(type, newName)
-            }
-          })
-          link.appendChild(editBtn)
-        }
-        
-        container.appendChild(link)
-      })
-      
-      // Обновляем существующие типы в форме добавления
-      const existingTypes = document.getElementById('existingTypes')
-      existingTypes.innerHTML = types.map(type => `
-        <span style="display: inline-block; margin: 2px; padding: 3px 5px; background: #eee; border-radius: 3px;">
-          ${type}
-          <span style="cursor: pointer;" onclick="document.getElementById('productType').value = '${type}'">➕</span>
-        </span>
-      `).join('')
-    }
-    
-    async function updateAllProductsType(oldType, newType) {
-      try {
-        const { error } = await supabase
-          .from('products')
-          .update({ type: newType })
-          .eq('type', oldType)
-        
-        if (error) throw error
-        
-        allProducts.forEach(p => {
-          if (p.type === oldType) p.type = newType
-        })
-        
-        updateTypes()
-        renderProducts()
-        logAdminAction(`Тип товара изменен: "${oldType}" → "${newType}"`)
-      } catch (error) {
-        console.error('Ошибка обновления типа:', error)
-        alert('Ошибка при изменении типа товара')
-      }
-    }
-    
-    function renderProducts() {
-      const activeProducts = allProducts.filter(p => 
+    function renderProducts(filteredProducts) {
+      let productsToRender = filteredProducts || allProducts.filter(p => 
         !p.archived && 
         (selectedCategory === "all" || p.category === selectedCategory) &&
         (selectedType === "all" || p.type === selectedType)
@@ -1021,7 +925,7 @@
       const archivedProducts = allProducts.filter(p => p.archived)
       
       const productsList = document.getElementById('productsList')
-      productsList.innerHTML = activeProducts.map(product => createProductCard(product, false)).join('')
+      productsList.innerHTML = productsToRender.map(product => createProductCard(product, false)).join('')
       
       if (isAdmin) {
         const archiveList = document.getElementById('archiveList')
@@ -1037,16 +941,28 @@
       const quantity = inCart ? inCart.quantity : 1
       
       return `
-        <div class="product-card ${viewMode === 'list' ? 'list-view' : ''}" data-id="${product.id}">
+        <div class="product-card" data-id="${product.id}">
           <img src="${product.img || 'https://via.placeholder.com/150'}" class="product-image">
           <div class="product-info">
-            <div class="product-name" contenteditable="${isAdmin}" onblur="updateProduct('${product.id}', 'name', this.textContent)">${product.name}</div>
+            <div class="product-name" contenteditable="${isAdmin}" onblur="updateProduct('${product.id}', 'name', this.textContent)">${product.name || 'Без названия'}</div>
             <div class="product-price" contenteditable="${isAdmin}" onblur="updateProduct('${product.id}', 'price', this.textContent)">
-              ${(product.price || 0).toLocaleString('ru-RU')} ₸
+              ${product.price ? `${product.price.toLocaleString('ru-RU')} ₸` : 'Цена не указана'}
             </div>
-            ${viewMode !== 'list' ? `
-              <div class="product-description" contenteditable="${isAdmin}" onblur="updateProduct('${product.id}', 'description', this.textContent)">
-                ${product.description || ''}
+            <div class="product-description" contenteditable="${isAdmin}" onblur="updateProduct('${product.id}', 'description', this.textContent)">
+              ${product.description || ''}
+            </div>
+            
+            <!-- Категория и тип (только для админа) -->
+            ${isAdmin ? `
+              <div style="margin: 5px 0; font-size: 12px;">
+                <div>
+                  Категория: 
+                  <span contenteditable="true" onblur="updateProduct('${product.id}', 'category', this.textContent)">${product.category || ''}</span>
+                </div>
+                <div>
+                  Тип: 
+                  <span contenteditable="true" onblur="updateProduct('${product.id}', 'type', this.textContent)">${product.type || ''}</span>
+                </div>
               </div>
             ` : ''}
             
@@ -1109,7 +1025,7 @@
             if (newUrl && newUrl !== this.src) {
               updateProduct(productId, 'img', newUrl)
               this.src = newUrl
-              logAdminAction(`Изменено изображение товара ID: ${productId}`)
+              logAdminAction(`Изменено изображение товара:\nID: ${productId}\nНовое изображение: ${newUrl}`)
             }
           })
         })
@@ -1123,19 +1039,43 @@
       // Добавление товара
       document.getElementById('addProductBtn').addEventListener('click', addNewProduct)
       
-      // Экспорт в CSV
-      document.getElementById('exportCSVBtn').addEventListener('click', exportToCSV)
+      // Быстрое добавление
+      document.getElementById('quickAddToggle').addEventListener('click', () => {
+        document.getElementById('quickAddPanel').style.display = 
+          document.getElementById('quickAddPanel').style.display === 'none' ? 'block' : 'none'
+      })
       
-      // Резервная копия
-      document.getElementById('backupBtn').addEventListener('click', createBackup)
+      document.getElementById('addMultipleBtn').addEventListener('click', addMultipleProducts)
       
-      // Режимы просмотра
-      document.querySelectorAll('.view-mode-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-          viewMode = this.dataset.view
-          localStorage.setItem('viewMode', viewMode)
-          applyViewMode()
-        })
+      // Поиск
+      document.getElementById('searchInput').addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase()
+        if (searchTerm.length < 2) {
+          renderProducts()
+          return
+        }
+        
+        const filtered = allProducts.filter(p => 
+          !p.archived &&
+          (selectedCategory === "all" || p.category === selectedCategory) &&
+          (selectedType === "all" || p.type === selectedType) &&
+          (
+            (p.name && p.name.toLowerCase().includes(searchTerm)) ||
+            (p.description && p.description.toLowerCase().includes(searchTerm)) ||
+            (p.category && p.category.toLowerCase().includes(searchTerm)) ||
+            (p.type && p.type.toLowerCase().includes(searchTerm))
+          )
+        )
+        
+        renderProducts(filtered)
+      })
+      
+      // Категория "Все"
+      document.querySelector('[data-category="all"]').addEventListener('click', () => {
+        selectedCategory = "all"
+        document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'))
+        document.querySelector('[data-category="all"]').classList.add('active')
+        renderProducts()
       })
       
       // Корзина
@@ -1143,17 +1083,6 @@
       document.getElementById('cartClose').addEventListener('click', toggleCart)
       document.getElementById('clearCart').addEventListener('click', clearCart)
       document.getElementById('checkoutCart').addEventListener('click', checkoutCart)
-    }
-    
-    function applyViewMode() {
-      document.querySelectorAll('.view-mode-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.view === viewMode)
-      })
-      
-      document.getElementById('productsList').classList.toggle('list-view', viewMode === 'list')
-      document.getElementById('archiveList').classList.toggle('list-view', viewMode === 'list')
-      
-      renderProducts()
     }
     
     async function toggleAdminMode() {
@@ -1166,24 +1095,11 @@
           isAdmin = true
           document.body.classList.add('admin-visible')
           renderProducts()
-          logAdminAction('Админ вошел в систему')
+          logAdminAction('Администратор вошел в систему')
         } else {
           alert('Неверный пароль!')
         }
       }
-    }
-    
-    function updateAdminStats() {
-      if (!isAdmin) return
-      
-      document.getElementById('productsCount').textContent = allProducts.filter(p => !p.archived).length
-      document.getElementById('archivedCount').textContent = allProducts.filter(p => p.archived).length
-      
-      const categories = new Set(allProducts.map(p => p.category))
-      document.getElementById('categoriesCount').textContent = categories.size
-      
-      const types = new Set(allProducts.map(p => p.type))
-      document.getElementById('typesCount').textContent = types.size
     }
     
     async function addNewProduct() {
@@ -1194,48 +1110,95 @@
       const type = document.getElementById('productType').value
       const description = document.getElementById('productDescription').value
       
-      price = parseInt(price.replace(/[^\d]/g, '')) || 0
-      
-      if (!name || !category || !type) {
-        alert('Заполните название, категорию и тип товара!')
-        return
-      }
+      price = price ? parseInt(price.replace(/[^\d]/g, '')) || 0 : null
       
       try {
         const { error } = await supabase
           .from('products')
           .insert([{ 
-            name, 
+            name: name || null, 
             price, 
-            img: img || 'https://via.placeholder.com/150',
-            category,
-            type,
-            description,
+            img: img || null,
+            category: category || null,
+            type: type || null,
+            description: description || null,
             archived: false,
             order: allProducts.length + 1
           }])
         
         if (error) throw error
         
-        // Очищаем поля
+        // Очищаем только обязательные поля
         document.getElementById('productName').value = ''
         document.getElementById('productPrice').value = ''
-        document.getElementById('productImage').value = ''
-        document.getElementById('productDescription').value = ''
         
         await loadProducts()
-        logAdminAction(`Добавлен товар: ${name} (${category}, ${type})`)
+        logAdminAction(`Добавлен новый товар:\nНазвание: ${name || 'Не указано'}\nЦена: ${price !== null ? price + ' ₸' : 'Не указана'}\nКатегория: ${category || 'Не указана'}\nТип: ${type || 'Не указан'}`)
       } catch (error) {
         console.error('Ошибка добавления товара:', error)
         alert('Ошибка при добавлении товара.')
       }
     }
     
+    async function addMultipleProducts() {
+      const quickNames = Array.from(document.querySelectorAll('.quick-name')).map(el => el.value)
+      const quickPrices = Array.from(document.querySelectorAll('.quick-price')).map(el => 
+        el.value ? parseInt(el.value.replace(/[^\d]/g, '')) || null : null
+      )
+      
+      const commonCategory = document.getElementById('quickCategory').value || null
+      const commonType = document.getElementById('quickType').value || null
+      const commonImage = document.getElementById('quickImage').value || null
+      
+      const productsToAdd = quickNames
+        .map((name, i) => ({
+          name: name || `Товар ${i+1}`,
+          price: quickPrices[i],
+          img: commonImage,
+          category: commonCategory,
+          type: commonType,
+          description: null,
+          archived: false,
+          order: allProducts.length + i + 1
+        }))
+        .filter(p => p.name) // Фильтруем пустые названия
+      
+      if (productsToAdd.length === 0) {
+        alert('Добавьте хотя бы один товар')
+        return
+      }
+      
+      try {
+        const { error } = await supabase
+          .from('products')
+          .insert(productsToAdd)
+        
+        if (error) throw error
+        
+        // Очищаем поля
+        document.querySelectorAll('.quick-name, .quick-price').forEach(el => el.value = '')
+        document.getElementById('quickCategory').value = ''
+        document.getElementById('quickType').value = ''
+        document.getElementById('quickImage').value = ''
+        
+        await loadProducts()
+        logAdminAction(`Добавлено ${productsToAdd.length} товаров быстро:\nКатегория: ${commonCategory || 'Не указана'}\nТип: ${commonType || 'Не указан'}`)
+      } catch (error) {
+        console.error('Ошибка массового добавления:', error)
+        alert('Ошибка при добавлении товаров')
+      }
+    }
+    
     window.updateProduct = async (id, field, value) => {
       try {
-        let updateValue = field === 'price' 
-          ? parseInt(value.replace(/[^\d]/g, '')) || 0
-          : value
+        let updateValue = value
+        
+        if (field === 'price') {
+          updateValue = value ? parseInt(value.replace(/[^\d]/g, '')) || null : null
+        }
+        
+        // Если поле пустое, сохраняем null
+        if (updateValue === '') updateValue = null
         
         const { error } = await supabase
           .from('products')
@@ -1250,9 +1213,8 @@
         }
         
         if (field === 'category') updateCategories()
-        if (field === 'type') updateTypes()
         
-        logAdminAction(`Обновлен товар ID ${id}: ${field} = ${updateValue}`)
+        logAdminAction(`Обновлен товар ID ${id}:\nПоле: ${field}\nЗначение: ${updateValue !== null ? updateValue : 'удалено'}`)
       } catch (error) {
         console.error('Ошибка обновления:', error)
         alert('Ошибка при сохранении. Проверьте консоль.')
@@ -1276,8 +1238,7 @@
           }
           
           renderProducts()
-          updateAdminStats()
-          logAdminAction(`Товар ID ${id} перемещен в архив`)
+          logAdminAction(`Товар перемещен в архив:\nID: ${id}`)
         } catch (error) {
           console.error('Ошибка архивации:', error)
           alert('Ошибка при архивации товара')
@@ -1300,8 +1261,7 @@
         }
         
         renderProducts()
-        updateAdminStats()
-        logAdminAction(`Товар ID ${id} восстановлен из архива`)
+        logAdminAction(`Товар восстановлен из архива:\nID: ${id}`)
       } catch (error) {
         console.error('Ошибка восстановления:', error)
         alert('Ошибка при восстановлении товара')
@@ -1321,8 +1281,7 @@
           allProducts = allProducts.filter(p => p.id !== id)
           
           renderProducts()
-          updateAdminStats()
-          logAdminAction(`Товар ID ${id} удален навсегда`)
+          logAdminAction(`Товар удален навсегда:\nID: ${id}`)
         } catch (error) {
           console.error('Ошибка удаления:', error)
           alert('Ошибка при удалении товара')
@@ -1355,7 +1314,7 @@
             .eq('id', prevProduct.id)
           
           await loadProducts()
-          logAdminAction(`Товар ID ${id} перемещен вверх в категории ${product.category}`)
+          logAdminAction(`Товар перемещен вверх:\nID: ${id}\nКатегория: ${product.category || 'Не указана'}`)
         }
         else if (direction === 'down' && currentIndex < categoryProducts.length - 1) {
           const nextProduct = categoryProducts[currentIndex + 1]
@@ -1371,7 +1330,7 @@
             .eq('id', nextProduct.id)
           
           await loadProducts()
-          logAdminAction(`Товар ID ${id} перемещен вниз в категории ${product.category}`)
+          logAdminAction(`Товар перемещен вниз:\nID: ${id}\nКатегория: ${product.category || 'Не указана'}`)
         }
       } catch (error) {
         console.error('Ошибка перемещения:', error)
@@ -1406,14 +1365,14 @@
       } else {
         cart.push({
           id: productId,
-          name: product.name,
-          price: product.price,
+          name: product.name || 'Без названия',
+          price: product.price || 0,
           quantity: 1
         })
       }
       
       saveCart()
-      logAdminAction(`Товар добавлен в корзину: ${product.name} (ID: ${productId})`)
+      logAdminAction(`Товар добавлен в корзину:\nID: ${productId}\nНазвание: ${product.name || 'Без названия'}`)
     }
     
     window.updateCartItem = function(productId, action, value = null) {
@@ -1453,7 +1412,7 @@
         const ip = await getClientIP()
         cart = []
         saveCart()
-        logAdminAction(`Корзина очищена (IP: ${ip})`)
+        logAdminAction(`Корзина очищена\nIP: ${ip}`)
       }
     }
     
@@ -1478,7 +1437,7 @@
       const encodedMessage = encodeURIComponent(message)
       window.open(`https://wa.me/${phone}?text=${encodedMessage}`, '_blank')
       
-      logAdminAction(`Оформлен заказ на сумму ${total.toLocaleString('ru-RU')} ₸ (IP: ${ip}): ${cart.map(i => i.name).join(', ')}`)
+      logAdminAction(`Оформлен заказ:\nСумма: ${total.toLocaleString('ru-RU')} ₸\nIP: ${ip}\nТовары: ${cart.map(i => i.name).join(', ')}`)
     }
     
     function updateCartUI() {
@@ -1515,74 +1474,6 @@
     
     function toggleCart() {
       document.getElementById('cartContainer').classList.toggle('visible')
-    }
-    
-    /* CSV экспорт */
-    async function exportToCSV() {
-      try {
-        const { data, error } = await supabase
-          .from('products')
-          .select('*')
-        
-        if (error) throw error
-        
-        let csv = 'ID,Название,Цена,Категория,Тип,Описание,Архив\n'
-        data.forEach(p => {
-          csv += `${p.id},"${p.name}",${p.price},"${p.category}","${p.type}","${p.description || ''}",${p.archived ? 'Да' : 'Нет'}\n`
-        })
-        
-        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
-        const url = URL.createObjectURL(blob)
-        const link = document.createElement('a')
-        link.href = url
-        link.download = `paida_products_${new Date().toISOString().split('T')[0]}.csv`
-        link.click()
-        
-        logAdminAction('Экспортирован CSV с товарами')
-      } catch (error) {
-        console.error('Ошибка экспорта:', error)
-        alert('Ошибка при экспорте данных')
-      }
-    }
-    
-    /* Резервная копия */
-    async function createBackup() {
-      try {
-        const { data, error } = await supabase
-          .from('products')
-          .select('*')
-        
-        if (error) throw error
-        
-        const backupData = {
-          date: new Date().toISOString(),
-          products: data,
-          stats: {
-            total: data.length,
-            active: data.filter(p => !p.archived).length,
-            archived: data.filter(p => p.archived).length
-          }
-        }
-        
-        const json = JSON.stringify(backupData, null, 2)
-        const blob = new Blob([json], { type: 'application/json' })
-        const url = URL.createObjectURL(blob)
-        
-        // Скачивание
-        const link = document.createElement('a')
-        link.href = url
-        link.download = `paida_backup_${new Date().toISOString().split('T')[0]}.json`
-        link.click()
-        
-        // Отправка в Telegram
-        const text = `Резервная копия создана\nТоваров: ${backupData.stats.total}\nАктивных: ${backupData.stats.active}\nВ архиве: ${backupData.stats.archived}`
-        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${encodeURIComponent(text)}`)
-        
-        logAdminAction('Создана резервная копия товаров')
-      } catch (error) {
-        console.error('Ошибка создания резервной копии:', error)
-        alert('Ошибка при создании резервной копии')
-      }
     }
   </script>
 </body>
