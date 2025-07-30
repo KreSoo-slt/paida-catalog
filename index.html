@@ -26,7 +26,7 @@
       background: var(--header-bg);
       padding: 15px 0;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      position: static; /* Изменено с sticky на static */
+      position: static;
     }
     
     .header-container {
@@ -147,7 +147,21 @@
       display: none;
     }
     
-    .category-btn {
+    .types {
+      display: flex;
+      overflow-x: auto;
+      padding: 10px;
+      background: white;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      scrollbar-width: none;
+    }
+    
+    .types::-webkit-scrollbar {
+      display: none;
+    }
+    
+    .category-btn, .type-btn {
       padding: 8px 15px;
       margin-right: 10px;
       border: none;
@@ -158,7 +172,7 @@
       flex-shrink: 0;
     }
     
-    .category-btn.active {
+    .category-btn.active, .type-btn.active {
       background: var(--primary-color);
       color: white;
     }
@@ -189,6 +203,7 @@
       object-fit: contain;
       border-radius: 5px;
       margin-bottom: 10px;
+      cursor: pointer;
     }
     
     .product-name {
@@ -646,6 +661,10 @@
     <button class="category-btn active" data-category="all">Все</button>
   </div>
   
+  <div class="types" id="types">
+    <button class="type-btn active" data-type="all">Все типы</button>
+  </div>
+  
   <div class="products-container">
     <div class="products-list" id="productsList"></div>
   </div>
@@ -660,7 +679,8 @@
     <input type="text" id="productName" placeholder="Название">
     <input type="text" id="productPrice" placeholder="Цена (только цифры)">
     <input type="text" id="productImage" placeholder="Ссылка на фото">
-    <input type="text" id="productCategory" placeholder="Категория">
+    <input type="text" id="productCategory" placeholder="Категория (производитель)">
+    <input type="text" id="productType" placeholder="Тип товара (мыло, порошок и т.д.)">
     <textarea id="productDescription" placeholder="Краткое описание товара"></textarea>
     <button id="addProductBtn">Добавить</button>
   </div>
@@ -672,9 +692,13 @@
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtbm5ib3R5endmdGxod2FrYm56Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIwOTE3MzYsImV4cCI6MjA2NzY2NzczNn0.QaHkN4M4_Deh4HN4CZ-spv8QKbGKzhrfGwMvr6Pbyv4'
     const supabase = createClient(supabaseUrl, supabaseKey)
     
+    const TELEGRAM_BOT_TOKEN = '7673591792:AAFQ83r98YSJay_X81HZIMh2cowWQu1bgGc'
+    const TELEGRAM_CHAT_ID = '1182976777'
+    
     let isAdmin = false
     const ADMIN_PASSWORD = "erema"
     let selectedCategory = "all"
+    let selectedType = "all"
     let allProducts = []
     let cart = []
     
@@ -683,6 +707,25 @@
       setupEventListeners()
       loadCart()
     })
+    
+    async function logAdminAction(actionText) {
+      try {
+        // Логируем в Supabase
+        await supabase.from('admin_logs').insert([{ 
+          action: actionText,
+          description: JSON.stringify({
+            userAgent: navigator.userAgent,
+            screen: `${window.screen.width}x${window.screen.height}`,
+            time: new Date().toISOString()
+          })
+        }])
+        
+        // Отправляем в Telegram
+        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${encodeURIComponent(actionText)}`)
+      } catch (error) {
+        console.error('Ошибка логирования:', error)
+      }
+    }
     
     async function loadProducts() {
       try {
@@ -695,6 +738,7 @@
         
         allProducts = data || []
         updateCategories()
+        updateTypes()
         renderProducts()
       } catch (error) {
         console.error('Ошибка загрузки товаров:', error)
@@ -725,9 +769,34 @@
       })
     }
     
+    function updateTypes() {
+      const types = [...new Set(allProducts.map(p => p.type).filter(Boolean))]
+      const container = document.getElementById('types')
+      
+      const allButton = container.querySelector('[data-type="all"]')
+      container.innerHTML = ''
+      container.appendChild(allButton)
+      
+      types.forEach(type => {
+        const btn = document.createElement('button')
+        btn.className = 'type-btn'
+        btn.dataset.type = type
+        btn.textContent = type
+        btn.addEventListener('click', () => {
+          selectedType = type
+          document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'))
+          btn.classList.add('active')
+          renderProducts()
+        })
+        container.appendChild(btn)
+      })
+    }
+    
     function renderProducts() {
       const activeProducts = allProducts.filter(p => 
-        !p.archived && (selectedCategory === "all" || p.category === selectedCategory)
+        !p.archived && 
+        (selectedCategory === "all" || p.category === selectedCategory) &&
+        (selectedType === "all" || p.type === selectedType)
       )
       
       const archivedProducts = allProducts.filter(p => p.archived)
@@ -755,6 +824,21 @@
           updateCartItem(productId, action)
         })
       })
+      
+      // Добавляем обработчики для изменения изображения (админ)
+      if (isAdmin) {
+        document.querySelectorAll('.product-image').forEach(img => {
+          img.addEventListener('click', function() {
+            const productId = this.closest('.product-card').dataset.id
+            const newUrl = prompt('Введите новую ссылку на изображение:')
+            if (newUrl) {
+              updateProduct(productId, 'img', newUrl)
+              this.src = newUrl
+              logAdminAction(`Изменено изображение товара ID: ${productId}`)
+            }
+          })
+        })
+      }
     }
     
     function createProductCard(product, isArchived) {
@@ -816,6 +900,13 @@
         renderProducts()
       })
       
+      document.querySelector('[data-type="all"]').addEventListener('click', () => {
+        selectedType = "all"
+        document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'))
+        document.querySelector('[data-type="all"]').classList.add('active')
+        renderProducts()
+      })
+      
       // Корзина
       document.getElementById('cartToggle').addEventListener('click', toggleCart)
       document.getElementById('cartClose').addEventListener('click', toggleCart)
@@ -833,6 +924,7 @@
           isAdmin = true
           document.body.classList.add('admin-visible')
           renderProducts()
+          logAdminAction('Админ вошел в систему')
         } else {
           alert('Неверный пароль!')
         }
@@ -844,12 +936,13 @@
       let price = document.getElementById('productPrice').value
       const img = document.getElementById('productImage').value
       const category = document.getElementById('productCategory').value
+      const type = document.getElementById('productType').value
       const description = document.getElementById('productDescription').value
       
       price = parseInt(price.replace(/[^\d]/g, '')) || 0
       
-      if (!name || !category) {
-        alert('Заполните название и категорию!')
+      if (!name || !category || !type) {
+        alert('Заполните название, категорию и тип товара!')
         return
       }
       
@@ -861,6 +954,7 @@
             price, 
             img: img || 'https://via.placeholder.com/150',
             category,
+            type,
             description,
             archived: false,
             order: allProducts.length + 1
@@ -872,9 +966,11 @@
         document.getElementById('productPrice').value = ''
         document.getElementById('productImage').value = ''
         document.getElementById('productCategory').value = ''
+        document.getElementById('productType').value = ''
         document.getElementById('productDescription').value = ''
         
         await loadProducts()
+        logAdminAction(`Добавлен товар: ${name} (${category}, ${type})`)
       } catch (error) {
         console.error('Ошибка добавления товара:', error)
         alert('Ошибка при добавлении товара.')
@@ -898,6 +994,8 @@
         if (productIndex !== -1) {
           allProducts[productIndex][field] = updateValue
         }
+        
+        logAdminAction(`Обновлен товар ID ${id}: ${field} = ${updateValue}`)
       } catch (error) {
         console.error('Ошибка обновления:', error)
         alert('Ошибка при сохранении. Проверьте консоль.')
@@ -921,6 +1019,7 @@
           }
           
           renderProducts()
+          logAdminAction(`Товар ID ${id} перемещен в архив`)
         } catch (error) {
           console.error('Ошибка архивации:', error)
           alert('Ошибка при архивации товара')
@@ -943,6 +1042,7 @@
         }
         
         renderProducts()
+        logAdminAction(`Товар ID ${id} восстановлен из архива`)
       } catch (error) {
         console.error('Ошибка восстановления:', error)
         alert('Ошибка при восстановлении товара')
@@ -962,6 +1062,7 @@
           allProducts = allProducts.filter(p => p.id !== id)
           
           renderProducts()
+          logAdminAction(`Товар ID ${id} удален навсегда`)
         } catch (error) {
           console.error('Ошибка удаления:', error)
           alert('Ошибка при удалении товара')
@@ -975,7 +1076,7 @@
         if (!product) return
         
         const categoryProducts = allProducts
-          .filter(p => p.category === product.category && !p.archived)
+          .filter(p => p.category === product.category && p.type === product.type && !p.archived)
           .sort((a, b) => a.order - b.order)
         
         const currentIndex = categoryProducts.findIndex(p => p.id === id)
@@ -994,6 +1095,7 @@
             .eq('id', prevProduct.id)
           
           await loadProducts()
+          logAdminAction(`Товар ID ${id} перемещен вверх в категории ${product.category}`)
         }
         else if (direction === 'down' && currentIndex < categoryProducts.length - 1) {
           const nextProduct = categoryProducts[currentIndex + 1]
@@ -1009,6 +1111,7 @@
             .eq('id', nextProduct.id)
           
           await loadProducts()
+          logAdminAction(`Товар ID ${id} перемещен вниз в категории ${product.category}`)
         }
       } catch (error) {
         console.error('Ошибка перемещения:', error)
@@ -1050,6 +1153,7 @@
       }
       
       saveCart()
+      logAdminAction(`Товар добавлен в корзину: ${product.name} (ID: ${productId})`)
     }
     
     window.updateCartItem = function(productId, action, value = null) {
@@ -1088,6 +1192,7 @@
       if (confirm('Очистить корзину?')) {
         cart = []
         saveCart()
+        logAdminAction('Корзина очищена')
       }
     }
     
@@ -1110,6 +1215,8 @@
       const phone = '77780855478'
       const encodedMessage = encodeURIComponent(message)
       window.open(`https://wa.me/${phone}?text=${encodedMessage}`, '_blank')
+      
+      logAdminAction(`Оформлен заказ на сумму ${total.toLocaleString('ru-RU')} ₸: ${cart.map(i => i.name).join(', ')}`)
     }
     
     function updateCartUI() {
