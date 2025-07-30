@@ -171,12 +171,19 @@
     }
     
     /* Категории и типы */
+    .categories-container {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      background: white;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    
     .categories {
       display: flex;
       overflow-x: auto;
-      padding: 10px;
-      background: white;
-      margin-bottom: 10px;
+      padding: 5px 0;
       scrollbar-width: none;
     }
     
@@ -184,7 +191,18 @@
       display: none;
     }
     
-    .category-btn {
+    .types {
+      display: flex;
+      overflow-x: auto;
+      padding: 5px 0;
+      scrollbar-width: none;
+    }
+    
+    .types::-webkit-scrollbar {
+      display: none;
+    }
+    
+    .category-btn, .type-btn {
       padding: 8px 15px;
       margin-right: 10px;
       border: none;
@@ -195,7 +213,7 @@
       flex-shrink: 0;
     }
     
-    .category-btn.active {
+    .category-btn.active, .type-btn.active {
       background: var(--primary-color);
       color: white;
     }
@@ -719,9 +737,14 @@
     </div>
   </div>
   
-  <!-- Категории -->
-  <div class="categories" id="categories">
-    <button class="category-btn active" data-category="all">Все</button>
+  <!-- Категории и типы -->
+  <div class="categories-container">
+    <div class="categories" id="categories">
+      <button class="category-btn active" data-category="all">Все</button>
+    </div>
+    <div class="types" id="types">
+      <button class="type-btn active" data-type="all">Все типы</button>
+    </div>
   </div>
   
   <!-- Товары -->
@@ -747,28 +770,34 @@
     
     <div class="admin-controls">
       <button id="addProductBtn">Добавить</button>
-      <button id="quickAddToggle">Быстрое добавление (3 товара)</button>
+      <button id="quickAddToggle">Быстрое добавление</button>
     </div>
     
     <!-- Панель быстрого добавления -->
     <div class="quick-add-panel" id="quickAddPanel">
-      <div class="quick-add-item">
-        <input type="text" class="quick-name" placeholder="Название 1">
-        <input type="text" class="quick-price" placeholder="Цена 1">
+      <div style="margin-bottom: 10px;">
+        <label>Количество товаров:</label>
+        <select id="quickItemsCount" style="margin-left: 10px;">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3" selected>3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+        </select>
       </div>
-      <div class="quick-add-item">
-        <input type="text" class="quick-name" placeholder="Название 2">
-        <input type="text" class="quick-price" placeholder="Цена 2">
-      </div>
-      <div class="quick-add-item">
-        <input type="text" class="quick-name" placeholder="Название 3">
-        <input type="text" class="quick-price" placeholder="Цена 3">
+      
+      <div id="quickAddItemsContainer">
+        <!-- Здесь будут динамически добавляться поля -->
       </div>
       
       <div style="margin-top: 10px;">
         <input type="text" id="quickCategory" placeholder="Общая категория">
         <input type="text" id="quickType" placeholder="Общий тип товара" style="margin-top: 5px;">
-        <input type="text" id="quickImage" placeholder="Общая ссылка на фото" style="margin-top: 5px;">
       </div>
       
       <button id="addMultipleBtn" style="margin-top: 10px;">Добавить все</button>
@@ -796,6 +825,7 @@
       loadProducts()
       setupEventListeners()
       loadCart()
+      setupQuickAddFields()
     })
     
     async function getClientIP() {
@@ -851,6 +881,7 @@ ${actionText}
         
         allProducts = data || []
         updateCategories()
+        updateTypes()
         renderProducts()
       } catch (error) {
         console.error('Ошибка загрузки товаров:', error)
@@ -893,6 +924,41 @@ ${actionText}
       })
     }
     
+    function updateTypes() {
+      const types = [...new Set(allProducts.map(p => p.type).filter(Boolean))]
+      const container = document.getElementById('types')
+      
+      const allButton = container.querySelector('[data-type="all"]')
+      container.innerHTML = ''
+      container.appendChild(allButton)
+      
+      types.forEach(type => {
+        const btn = document.createElement('button')
+        btn.className = 'type-btn'
+        btn.dataset.type = type
+        btn.textContent = type
+        
+        // Добавляем кнопку редактирования для админа
+        if (isAdmin) {
+          btn.addEventListener('contextmenu', (e) => {
+            e.preventDefault()
+            const newName = prompt('Введите новое название типа:', type)
+            if (newName && newName !== type) {
+              updateAllProductsType(type, newName)
+            }
+          })
+        }
+        
+        btn.addEventListener('click', () => {
+          selectedType = type
+          document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'))
+          btn.classList.add('active')
+          renderProducts()
+        })
+        container.appendChild(btn)
+      })
+    }
+    
     async function updateAllProductsCategory(oldCat, newCat) {
       try {
         const { error } = await supabase
@@ -912,6 +978,28 @@ ${actionText}
       } catch (error) {
         console.error('Ошибка обновления категории:', error)
         alert('Ошибка при изменении категории')
+      }
+    }
+    
+    async function updateAllProductsType(oldType, newType) {
+      try {
+        const { error } = await supabase
+          .from('products')
+          .update({ type: newType })
+          .eq('type', oldType)
+        
+        if (error) throw error
+        
+        allProducts.forEach(p => {
+          if (p.type === oldType) p.type = newType
+        })
+        
+        updateTypes()
+        renderProducts()
+        logAdminAction(`Тип товара изменен:\n"${oldType}" → "${newType}"`)
+      } catch (error) {
+        console.error('Ошибка обновления типа:', error)
+        alert('Ошибка при изменении типа товара')
       }
     }
     
@@ -1045,6 +1133,7 @@ ${actionText}
           document.getElementById('quickAddPanel').style.display === 'none' ? 'block' : 'none'
       })
       
+      document.getElementById('quickItemsCount').addEventListener('change', setupQuickAddFields)
       document.getElementById('addMultipleBtn').addEventListener('click', addMultipleProducts)
       
       // Поиск
@@ -1078,11 +1167,37 @@ ${actionText}
         renderProducts()
       })
       
+      // Тип "Все"
+      document.querySelector('[data-type="all"]').addEventListener('click', () => {
+        selectedType = "all"
+        document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'))
+        document.querySelector('[data-type="all"]').classList.add('active')
+        renderProducts()
+      })
+      
       // Корзина
       document.getElementById('cartToggle').addEventListener('click', toggleCart)
       document.getElementById('cartClose').addEventListener('click', toggleCart)
       document.getElementById('clearCart').addEventListener('click', clearCart)
       document.getElementById('checkoutCart').addEventListener('click', checkoutCart)
+    }
+    
+    function setupQuickAddFields() {
+      const container = document.getElementById('quickAddItemsContainer')
+      const count = parseInt(document.getElementById('quickItemsCount').value)
+      
+      container.innerHTML = ''
+      
+      for (let i = 0; i < count; i++) {
+        const itemDiv = document.createElement('div')
+        itemDiv.className = 'quick-add-item'
+        itemDiv.innerHTML = `
+          <input type="text" class="quick-name" placeholder="Название ${i+1}">
+          <input type="text" class="quick-price" placeholder="Цена ${i+1}">
+          <input type="text" class="quick-image" placeholder="Фото ${i+1}">
+        `
+        container.appendChild(itemDiv)
+      }
     }
     
     async function toggleAdminMode() {
@@ -1141,20 +1256,21 @@ ${actionText}
     }
     
     async function addMultipleProducts() {
+      const count = parseInt(document.getElementById('quickItemsCount').value)
       const quickNames = Array.from(document.querySelectorAll('.quick-name')).map(el => el.value)
       const quickPrices = Array.from(document.querySelectorAll('.quick-price')).map(el => 
         el.value ? parseInt(el.value.replace(/[^\d]/g, '')) || null : null
       )
+      const quickImages = Array.from(document.querySelectorAll('.quick-image')).map(el => el.value || null)
       
       const commonCategory = document.getElementById('quickCategory').value || null
       const commonType = document.getElementById('quickType').value || null
-      const commonImage = document.getElementById('quickImage').value || null
       
       const productsToAdd = quickNames
         .map((name, i) => ({
           name: name || `Товар ${i+1}`,
           price: quickPrices[i],
-          img: commonImage,
+          img: quickImages[i] || null,
           category: commonCategory,
           type: commonType,
           description: null,
@@ -1176,10 +1292,9 @@ ${actionText}
         if (error) throw error
         
         // Очищаем поля
-        document.querySelectorAll('.quick-name, .quick-price').forEach(el => el.value = '')
+        document.querySelectorAll('.quick-name, .quick-price, .quick-image').forEach(el => el.value = '')
         document.getElementById('quickCategory').value = ''
         document.getElementById('quickType').value = ''
-        document.getElementById('quickImage').value = ''
         
         await loadProducts()
         logAdminAction(`Добавлено ${productsToAdd.length} товаров быстро:\nКатегория: ${commonCategory || 'Не указана'}\nТип: ${commonType || 'Не указан'}`)
@@ -1213,6 +1328,7 @@ ${actionText}
         }
         
         if (field === 'category') updateCategories()
+        if (field === 'type') updateTypes()
         
         logAdminAction(`Обновлен товар ID ${id}:\nПоле: ${field}\nЗначение: ${updateValue !== null ? updateValue : 'удалено'}`)
       } catch (error) {
