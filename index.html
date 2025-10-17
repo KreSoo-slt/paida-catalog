@@ -5,29 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
   <title>Paida All — Каталог</title>
   <style>
-    /* ПЕРЕМЕННЫЕ ДИЗАЙНА */
     :root {
-      --primary-color: #25D366; /* WhatsApp/Главный */
+      --primary-color: #25D366; /* WhatsApp color */
       --admin-color: #ff4757;
       --notice-color: #fff0c4;
-      --cart-color: #FF9F43; /* Цвет корзины */
+      --cart-color: #FF9F43;
       --header-bg: #ffffff;
-      --text-color: #333;
-      --product-bg: #ffffff;
-      --filter-active-bg: #e0f7fa; /* Новый цвет для активного фильтра */
-      --filter-border-color: #ccc;
-      --font-family: Arial, sans-serif; /* Новая переменная для шрифта */
-      --logo-size: 50px; /* Новая переменная для размера логотипа */
+      --admin-overlay-bg: rgba(255, 255, 255, 0.95);
     }
     
     body {
-      font-family: var(--font-family);
+      font-family: Arial, sans-serif;
       background: #f9f9f9;
       margin: 0;
       padding: 0;
       min-height: 100vh;
-      color: var(--text-color);
-      transition: background 0.3s;
+      display: flex;
+      flex-direction: column;
     }
     
     /* Шапка */
@@ -35,9 +29,7 @@
       background: var(--header-bg);
       padding: 15px 0;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      position: sticky;
-      top: 0;
-      z-index: 1000; /* Важно для sticky */
+      position: static;
     }
     
     .header-container {
@@ -48,245 +40,283 @@
       flex-direction: column;
     }
     
-    .logo-and-controls {
+    .header-content {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 10px;
     }
-    
-    .logo {
-      display: flex;
-      align-items: center;
-    }
-    
-    .logo-img {
-      width: var(--logo-size);
-      height: var(--logo-size);
-      margin-right: 10px;
-      border-radius: 50%;
-      object-fit: cover;
-      transition: all 0.3s;
-    }
-    
-    .shop-title {
+
+    .header-logo {
       font-size: 24px;
       font-weight: bold;
-      color: var(--text-color);
-      transition: font-size 0.3s, color 0.3s;
+      color: #333;
+      text-decoration: none;
     }
-    
-    .shop-subtitle {
+
+    /* Стиль для шапки с изображением */
+    .header-banner {
+      display: flex;
+      align-items: center;
+      background: #f0f0f0;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-top: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    .header-img-container {
+      flex: 0 0 150px; /* Увеличил размер фото */
+      height: 150px; /* Увеличил размер фото */
+    }
+
+    .header-banner-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .header-text-container {
+      padding: 15px;
+      flex-grow: 1;
+    }
+
+    .header-title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #555;
+    }
+
+    .header-description {
       font-size: 14px;
       color: #777;
     }
-    
-    /* ФИЛЬТРЫ */
-    .filter-section {
-      margin-top: 15px;
-      padding: 10px 0;
-      background: #ffffff;
-      border-radius: 8px;
-      box-shadow: 0 1px 5px rgba(0,0,0,0.05);
-      overflow: hidden; /* Скрыть кнопку "Все фильтры" по умолчанию */
-    }
 
-    .filter-label {
-      font-weight: bold;
-      margin: 0 15px 5px;
-      display: block;
-      color: #555;
-      font-size: 14px;
-    }
-
-    /* УДОБНОЕ ГОРИЗОНТАЛЬНОЕ МЕНЮ С СКРОЛЛОМ */
-    .filter-scroll-container {
-      display: flex;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch; /* Для iOS */
-      padding: 5px 15px 10px;
-      gap: 8px;
-      scrollbar-width: none; /* Firefox */
-    }
-
-    .filter-scroll-container::-webkit-scrollbar {
-      display: none; /* Chrome, Safari, Opera */
-    }
-
-    .filter-button {
-      flex-shrink: 0;
-      background: #f0f0f0;
-      color: var(--text-color);
-      padding: 8px 15px;
-      border: 1px solid var(--filter-border-color);
-      border-radius: 20px;
-      cursor: pointer;
-      font-size: 14px;
-      transition: all 0.2s ease;
-      white-space: nowrap; /* Важно */
-    }
-
-    .filter-button.active {
-      background: var(--filter-active-bg);
-      border-color: var(--primary-color);
-      color: var(--text-color);
-      font-weight: bold;
-    }
-
-    .filter-button:hover:not(.active) {
-      background: #e9e9e9;
-    }
-
-    /* ДОПОЛНИТЕЛЬНЫЕ ФИЛЬТРЫ (ДЛЯ БОЛЬШЕГО КОНТРОЛЯ) */
-    .additional-filters {
-      display: none; /* По умолчанию скрыты */
-      padding: 10px 15px;
-      border-top: 1px solid #eee;
-      margin-top: 10px;
-    }
-    
-    .additional-filters.visible {
-        display: block;
-    }
-
-    .additional-filters-group {
-        margin-bottom: 10px;
-    }
-    
-    .additional-filters .filter-scroll-container {
-        padding: 5px 0 10px;
-    }
-
-    /* ОСНОВНОЙ КОНТЕНТ */
+    /* Основной контент */
     .main-content {
+      flex-grow: 1;
       max-width: 1200px;
       margin: 20px auto;
       padding: 0 15px;
-    }
-    
-    /* СЕТКА ТОВАРОВ */
-    .product-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      display: flex;
       gap: 20px;
     }
+
+    /* Фильтры */
+    .filter-panel {
+      flex: 0 0 250px;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
     
-    .product-card {
-      background: var(--product-bg);
+    .filter-group {
+      margin-bottom: 20px;
+    }
+    
+    .filter-group h3 {
+      font-size: 16px;
+      margin-top: 0;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 5px;
+    }
+    
+    /* Улучшенное меню фильтрации для десктопа */
+    .filter-options {
+      max-height: 400px; /* Ограничиваем высоту для скролла */
+      overflow-y: auto; /* Добавляем вертикальную прокрутку */
+      padding-right: 5px; /* Немного места для скроллбара */
+    }
+
+    .filter-options::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .filter-options::-webkit-scrollbar-thumb {
+      background-color: #ccc;
+      border-radius: 3px;
+    }
+
+    .filter-option-item {
+      margin-bottom: 8px;
+      cursor: pointer;
+      padding: 5px;
+      border-radius: 4px;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .filter-option-item:hover {
+      background: #f5f5f5;
+    }
+
+    .filter-option-item.active {
+      background: var(--primary-color);
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .filter-option-count {
+      font-size: 12px;
+      background: #eee;
+      color: #555;
+      padding: 2px 6px;
       border-radius: 10px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+
+    .filter-option-item.active .filter-option-count {
+      background: #fff;
+      color: var(--primary-color);
+    }
+
+    /* Каталог товаров */
+    .product-list {
+      flex-grow: 1;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+      align-content: flex-start;
+    }
+
+    .product-card {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s;
+    }
+
+    .product-card:hover {
+      transform: translateY(-3px);
+    }
+
+    .product-image {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      background: #eee;
+    }
+
+    .product-info {
       padding: 15px;
       display: flex;
       flex-direction: column;
-      transition: transform 0.2s, box-shadow 0.2s;
+      flex-grow: 1;
     }
-    
-    .product-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-    }
-    
-    .product-image {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-      border-radius: 8px;
-      margin-bottom: 10px;
-    }
-    
+
     .product-name {
-      font-weight: bold;
       font-size: 16px;
+      font-weight: bold;
       margin-bottom: 5px;
-      min-height: 40px; /* Чтобы названия не "прыгали" */
+      flex-grow: 1;
     }
-    
+
     .product-price {
       font-size: 18px;
       color: var(--primary-color);
-      font-weight: bold;
       margin-bottom: 10px;
-    }
-    
-    .add-to-cart {
-      background: var(--cart-color);
-      color: white;
-      border: none;
-      padding: 10px;
-      border-radius: 20px;
-      cursor: pointer;
       font-weight: bold;
-      transition: background 0.2s;
-      margin-top: auto; /* Прикрепить кнопку к низу */
-    }
-    
-    .add-to-cart:hover {
-      background: #e88d34;
     }
 
-    /* ПЛАВАЮЩИЕ КНОПКИ (WHATSAPP И КОРЗИНА) */
+    .add-to-cart-btn {
+      background: var(--cart-color);
+      color: #fff;
+      border: none;
+      padding: 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.2s;
+    }
+
+    .add-to-cart-btn:hover {
+      background: #e08e38;
+    }
+    
+    .add-to-cart-btn.in-cart {
+      background: var(--primary-color);
+    }
+    
+    .add-to-cart-btn.in-cart:hover {
+      background: #1eab52;
+    }
+    
+    /* Уведомление об отсутствии товаров */
+    .no-products {
+        text-align: center;
+        padding: 50px;
+        grid-column: 1 / -1; /* Растягиваем на всю ширину */
+        font-size: 18px;
+        color: #777;
+    }
+
+    /* Плавающие кнопки WhatsApp и Корзина */
     .floating-buttons {
       position: fixed;
       right: 20px;
       bottom: 20px;
-      z-index: 1010;
       display: flex;
       flex-direction: column;
       gap: 10px;
+      z-index: 1000;
     }
 
-    .floating-button {
+    .floating-btn {
       width: 50px;
       height: 50px;
       border-radius: 50%;
-      color: white;
       display: flex;
-      align-items: center;
       justify-content: center;
-      font-size: 24px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      align-items: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
       cursor: pointer;
-      transition: transform 0.2s, opacity 0.2s;
+      color: #fff;
+      font-size: 24px;
+      text-decoration: none;
+      transition: transform 0.2s;
     }
 
-    .floating-button:hover {
+    .floating-btn:hover {
       transform: scale(1.05);
     }
 
-    /* Кнопка WhatsApp */
-    #whatsappButton {
-      background-color: var(--primary-color);
+    .whatsapp-btn {
+      background: var(--primary-color);
     }
 
-    /* Кнопка Корзины */
-    #cartButton {
-      background-color: var(--cart-color);
+    .cart-btn-fixed { /* Сделал корзину рядом с WhatsApp */
+      background: var(--cart-color);
       position: relative;
     }
-
-    #cartBadge {
+    
+    .cart-badge {
       position: absolute;
       top: -5px;
       right: -5px;
-      background: var(--admin-color); /* Красный цвет */
+      background: var(--admin-color);
       color: white;
-      border-radius: 50%;
-      padding: 2px 6px;
       font-size: 12px;
-      font-weight: bold;
-      display: none; /* Скрыт по умолчанию */
-      align-items: center;
-      justify-content: center;
-      min-width: 20px;
+      width: 20px;
       height: 20px;
+      border-radius: 50%;
+      display: none; /* Скрыто по умолчанию */
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
     }
 
-    /* МОДАЛЬНОЕ ОКНО КОРЗИНЫ */
-    .modal {
+    /* Модальное окно Корзины */
+    .cart-modal {
       display: none;
       position: fixed;
-      z-index: 2000;
+      z-index: 1001;
       left: 0;
       top: 0;
       width: 100%;
@@ -295,26 +325,34 @@
       background-color: rgba(0,0,0,0.4);
     }
 
-    .modal-content {
+    .cart-modal-content {
       background-color: #fefefe;
       margin: 10% auto;
       padding: 20px;
-      border-radius: 10px;
-      width: 90%;
-      max-width: 500px;
+      border-radius: 8px;
       box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      width: 90%;
+      max-width: 600px;
       position: relative;
     }
 
-    .close-button {
+    .cart-modal-content h2 {
+      margin-top: 0;
+      color: #333;
+    }
+
+    .close-btn {
       color: #aaa;
       float: right;
       font-size: 28px;
       font-weight: bold;
+      position: absolute; /* Позиционируем относительно модального окна */
+      top: 10px;
+      right: 20px;
     }
 
-    .close-button:hover,
-    .close-button:focus {
+    .close-btn:hover,
+    .close-btn:focus {
       color: #000;
       text-decoration: none;
       cursor: pointer;
@@ -325,22 +363,39 @@
       justify-content: space-between;
       align-items: center;
       padding: 10px 0;
-      border-bottom: 1px solid #eee;
+      border-bottom: 1px dashed #eee;
     }
 
     .cart-item-name {
-      flex-grow: 1;
+      flex: 3;
       font-weight: bold;
     }
-
-    .cart-item-quantity {
-      margin: 0 10px;
-      color: #777;
+    
+    .cart-item-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 2;
+      justify-content: flex-end;
     }
 
-    .cart-item-price {
-      font-weight: bold;
-      color: var(--cart-color);
+    .cart-item-quantity, .cart-item-price {
+      text-align: right;
+    }
+    
+    .quantity-btn {
+        background: #eee;
+        border: none;
+        width: 25px;
+        height: 25px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background 0.2s;
+    }
+
+    .quantity-btn:hover {
+        background: #ddd;
     }
 
     .cart-total-line {
@@ -348,689 +403,647 @@
       justify-content: space-between;
       font-size: 18px;
       font-weight: bold;
-      margin-top: 15px;
-      padding-top: 10px;
+      padding-top: 15px;
       border-top: 2px solid var(--cart-color);
+      margin-top: 15px;
     }
 
-    #checkoutButton {
-      display: block;
+    .checkout-btn {
       width: 100%;
       padding: 15px;
-      margin-top: 20px;
       background: var(--primary-color);
-      color: white;
+      color: #fff;
       border: none;
-      border-radius: 8px;
-      font-size: 18px;
+      border-radius: 4px;
+      font-size: 16px;
       cursor: pointer;
+      margin-top: 20px;
       transition: background 0.2s;
     }
 
-    #checkoutButton:hover {
-      background: #1e7e34;
+    .checkout-btn:hover {
+      background: #1eab52;
     }
 
-    /* СТИЛИ ДЛЯ АДМИН ПАНЕЛИ */
-    #adminPanel {
-        background: var(--admin-color);
-        color: white;
-        padding: 10px;
-        margin-bottom: 15px;
-        border-radius: 5px;
-        display: none; /* Скрыто по умолчанию, показывается через JS */
-    }
-
-    #adminPanel.visible {
-        display: block;
-    }
-
-    #adminPanel h3 {
-        margin-top: 0;
-        font-size: 16px;
-    }
-
-    #adminPanel input[type="text"],
-    #adminPanel input[type="color"],
-    #adminPanel button {
-        padding: 5px;
-        margin: 5px 0;
-        border-radius: 3px;
-        border: 1px solid #ff99a4;
-        width: 100%;
-        box-sizing: border-box;
-    }
-
-    #adminPanel label {
-        display: block;
-        font-size: 12px;
-        margin-top: 8px;
-        font-weight: bold;
-    }
-
-    .admin-controls-group {
-        border: 1px dashed #ff99a4;
-        padding: 10px;
-        margin-bottom: 10px;
-        border-radius: 5px;
-    }
-
-    /* СООБЩЕНИЕ ОБ ОТСУТСТВИИ ТОВАРОВ */
-    #noProductsMessage {
-      text-align: center;
-      padding: 50px;
-      font-size: 20px;
-      color: #888;
-      border: 1px dashed #ccc;
-      border-radius: 10px;
-      margin-top: 20px;
+    /* Admin Panel */
+    .admin-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--admin-overlay-bg);
+      backdrop-filter: blur(5px);
+      z-index: 2000;
       display: none;
+      justify-content: center;
+      align-items: center;
     }
 
+    .admin-panel {
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      width: 90%;
+      max-width: 500px;
+    }
 
-    /* АДАПТАЦИЯ */
-    @media (min-width: 768px) {
-      .header-container {
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
+    .admin-panel h2 {
+      color: var(--admin-color);
+      border-bottom: 2px solid var(--admin-color);
+      padding-bottom: 10px;
+    }
+
+    .admin-group {
+      margin-bottom: 15px;
+    }
+
+    .admin-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .admin-group input, .admin-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    .admin-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .admin-btn {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .admin-save-btn {
+      background: var(--primary-color);
+      color: #fff;
+    }
+
+    .admin-cancel-btn {
+      background: #eee;
+      color: #333;
+    }
+    
+    /* Мобильные стили */
+    @media (max-width: 768px) {
+      .main-content {
+        flex-direction: column;
+        gap: 10px;
+        margin: 10px auto;
       }
-      .logo-and-controls {
-          margin-bottom: 0;
+
+      .filter-panel {
+        flex: none;
+        width: 100%;
+        padding: 15px;
       }
-      .shop-title {
-        font-size: 28px;
+
+      .product-list {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
       }
-      .filter-section {
-          padding-bottom: 0;
+      
+      .header-img-container {
+        flex: 0 0 100px;
+        height: 100px;
+      }
+      
+      .header-title {
+        font-size: 18px;
+      }
+
+      .header-description {
+        font-size: 12px;
+      }
+
+      .floating-buttons {
+        right: 10px;
+        bottom: 10px;
+        gap: 5px;
+      }
+      
+      .floating-btn {
+        width: 45px;
+        height: 45px;
+        font-size: 20px;
+      }
+      
+      .cart-modal-content {
+          margin: 5% auto;
       }
     }
   </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
 
-  <div id="adminPanel" class="main-content">
-      <h3>🛠️ Панель Редактирования Шапки</h3>
-      <div class="admin-controls-group">
-          <label for="admin-shop-title">Название магазина</label>
-          <input type="text" id="admin-shop-title" value="Paida All">
-
-          <label for="admin-shop-subtitle">Подзаголовок</label>
-          <input type="text" id="admin-shop-subtitle" value="Каталог">
-
-          <label for="admin-logo-url">URL Логотипа</label>
-          <input type="text" id="admin-logo-url" value="" placeholder="http://...">
-
-          <label for="admin-logo-size">Размер логотипа (px)</label>
-          <input type="number" id="admin-logo-size" value="50" min="30" max="100">
-      </div>
-      <div class="admin-controls-group">
-          <label for="admin-header-bg">Цвет шапки</label>
-          <input type="color" id="admin-header-bg" value="#ffffff">
-
-          <label for="admin-primary-color">Основной цвет (WhatsApp, Цена)</label>
-          <input type="color" id="admin-primary-color" value="#25D366">
-
-          <label for="admin-cart-color">Цвет корзины</label>
-          <input type="color" id="admin-cart-color" value="#FF9F43">
-      </div>
-      <button onclick="saveAdminChanges()">Сохранить Изменения (Локально)</button>
-      <button onclick="resetAdminChanges()" style="background: #e74c3c;">Сбросить</button>
-      <p style="font-size: 10px; margin-top: 10px;">*Эти изменения сохранятся только в вашем браузере до тех пор, пока вы не реализуете сохранение в Supabase.</p>
-  </div>
-
-
   <header class="main-header">
     <div class="header-container">
-      
-      <div class="logo-and-controls">
-        <a href="/" class="logo">
-          <img id="shopLogo" src="" alt="Логотип магазина" class="logo-img">
-          <div>
-            <div class="shop-title" id="shopTitle">Paida All</div>
-            <div class="shop-subtitle" id="shopSubtitle">Каталог</div>
-          </div>
-        </a>
+      <div class="header-content">
+        <a href="#" class="header-logo">Paida All</a>
+        </div>
+      <div class="header-banner">
+        <div class="header-img-container">
+          <img id="headerImage" class="header-banner-img" src="https://via.placeholder.com/150/FF9F43/FFFFFF?text=PROMO" alt="Промо-баннер">
+        </div>
+        <div class="header-text-container">
+          <h1 id="headerTitle" class="header-title">Специальные Предложения</h1>
+          <p id="headerDescription" class="header-description">Лучшие цены на товары для дома и семьи. Доставка по Казахстану!</p>
+        </div>
       </div>
-
+      <button id="openAdminPanel" class="add-to-cart-btn" style="background: var(--admin-color); margin-top: 10px; display: none;">Редактировать Шапку (Admin)</button>
     </div>
   </header>
 
-  <div class="filter-section">
-      <span class="filter-label">Производитель:</span>
-      <div id="manufacturerFilter" class="filter-scroll-container">
-          <button class="filter-button active" data-filter-type="manufacturer" data-filter-value="all">Все</button>
-          </div>
-      
-      <div class="additional-filters" id="multiFiltersContainer">
-          <div class="additional-filters-group">
-              <span class="filter-label">Категория:</span>
-              <div id="categoryFilter" class="filter-scroll-container">
-                  <button class="filter-button active" data-filter-type="category" data-filter-value="all">Все категории</button>
-                  </div>
-          </div>
-          
-          <div class="additional-filters-group" id="subCategoryGroup">
-              <span class="filter-label">Тип товара (Подкатегория):</span>
-              <div id="subCategoryFilter" class="filter-scroll-container">
-                  <button class="filter-button active" data-filter-type="subCategory" data-filter-value="all">Все типы</button>
-                  </div>
-          </div>
-      </div>
-      <div style="text-align: center; padding: 10px; border-top: 1px solid #eee;">
-          <button class="filter-button" onclick="toggleMultiFilters()">
-            <span id="toggleFilterText">Показать все фильтры (Категории)</span>
-          </button>
-      </div>
-
-  </div>
-
   <div class="main-content">
-    <div id="noProductsMessage">
-      😞 Товары по выбранным фильтрам отсутствуют.
-    </div>
-    <div class="product-grid" id="productGrid">
+    
+    <aside class="filter-panel">
+      <h2>Фильтр</h2>
+      
+      <div class="filter-group">
+        <h3>Производитель</h3>
+        <div id="manufacturerFilters" class="filter-options">
+          </div>
       </div>
+      
+      <div class="filter-group">
+        <h3>Категория</h3>
+        <div id="categoryFilters" class="filter-options">
+          </div>
+      </div>
+      
+       <div class="filter-group" id="subCategoryGroup" style="display: none;">
+        <h3>Тип Продукта</h3>
+        <div id="subCategoryFilters" class="filter-options">
+          </div>
+      </div>
+      
+    </aside>
+
+    <main class="product-list" id="productList">
+      </main>
+
   </div>
 
   <div class="floating-buttons">
-    
-    <div id="cartButton" class="floating-button" title="Корзина">
-      🛒
-      <span id="cartBadge">0</span>
+    <div id="cartBtnFixed" class="floating-btn cart-btn-fixed">
+      <i class="fas fa-shopping-cart"></i>
+      <span id="cartBadge" class="cart-badge">0</span>
     </div>
-
-    <a id="whatsappButton" class="floating-button" href="https://wa.me/ВАШ_НОМЕР_ТЕЛЕФОНА" target="_blank" title="WhatsApp">
-      💬
+    <a href="https://wa.me/77073105739" class="floating-btn whatsapp-btn" target="_blank">
+      <i class="fab fa-whatsapp"></i>
     </a>
   </div>
-  
-  <div id="cartModal" class="modal">
-    <div class="modal-content">
-      <span class="close-button">&times;</span>
-      <h2>Ваш Заказ</h2>
+
+  <div id="cartModal" class="cart-modal">
+    <div class="cart-modal-content">
+      <span class="close-btn">&times;</span>
+      <h2>Ваша Корзина</h2>
       
       <div id="cartItems">
         </div>
       
-      <p id="emptyCartMessage" style="text-align: center; margin-top: 20px; display: none;">
-          Корзина пуста. Добавьте товары!
-      </p>
-
       <div class="cart-total-line">
         <span>Итого:</span>
         <span id="cartTotal">0 ₸</span>
       </div>
       
-      <button id="checkoutButton">Оформить Заказ через WhatsApp</button>
-      <button id="clearCartButton" style="background: #e74c3c; width: 100%; padding: 10px; border: none; border-radius: 5px; color: white; margin-top: 10px; cursor: pointer;">Очистить Корзину</button>
+      <button id="checkoutBtn" class="checkout-btn">Оформить заказ через WhatsApp</button>
     </div>
   </div>
 
+  <div id="adminOverlay" class="admin-overlay">
+      <div class="admin-panel">
+          <h2>Редактирование Шапки</h2>
+          <div class="admin-group">
+              <label for="adminTitle">Заголовок (H1)</label>
+              <input type="text" id="adminTitle" value="">
+          </div>
+          <div class="admin-group">
+              <label for="adminDescription">Описание (P)</label>
+              <textarea id="adminDescription"></textarea>
+          </div>
+          <div class="admin-group">
+              <label for="adminImage">URL Изображения</label>
+              <input type="text" id="adminImage" value="">
+              <small>Для сохранения на хосте, замените URL изображения напрямую в коде или используйте серверную часть.</small>
+          </div>
+          <div class="admin-actions">
+              <button id="adminCancelBtn" class="admin-btn admin-cancel-btn">Отмена</button>
+              <button id="adminSaveBtn" class="admin-btn admin-save-btn">Применить (Только для сессии)</button>
+          </div>
+      </div>
+  </div>
 
   <script>
-    // ==============================================
-    // КОНФИГУРАЦИЯ И ДАННЫЕ
-    // ==============================================
-
-    const TELEGRAM_BOT_TOKEN = 'ВАШ_ТОКЕН_БОТА';
-    const TELEGRAM_CHAT_ID = 'ВАШ_ID_ЧАТА';
-    const WHATSAPP_NUMBER = '77771234567'; // Ваш номер
-    
-    // Переменная для эмуляции админ-режима
-    let isAdmin = false; // В РЕАЛЬНОМ ПРОЕКТЕ ЭТО ДОЛЖНО ПРОВЕРЯТЬСЯ НА СЕРВЕРЕ!
-    const ADMIN_PASS = 'paidaadmin'; // Только для локального теста
-
-    // ИСХОДНЫЕ ДАННЫЕ
-    const initialProducts = [
-        // Добавлены поля category и subCategory для многоуровневой фильтрации
-        { id: 1, name: "Зубная паста детская 'Фрутти'", price: 500, manufacturer: "АОА Весна", category: "Детские товары", subCategory: "Зубные пасты", imageUrl: "https://via.placeholder.com/300x200?text=Паста+Детская" },
-        { id: 2, name: "Мыло хозяйственное 72%", price: 150, manufacturer: "АОА Весна", category: "Хозяйственные товары", subCategory: "Мыло", imageUrl: "https://via.placeholder.com/300x200?text=Мыло+Хоз" },
-        { id: 3, name: "Шампунь для взрослых 'Сила трав'", price: 800, manufacturer: "Красота KZ", category: "Косметика", subCategory: "Шампуни", imageUrl: "https://via.placeholder.com/300x200?text=Шампунь" },
-        { id: 4, name: "Крем для рук 'Нежность'", price: 600, manufacturer: "Красота KZ", category: "Косметика", subCategory: "Кремы", imageUrl: "https://via.placeholder.com/300x200?text=Крем" },
-        { id: 5, name: "Детский крем под подгузник", price: 750, manufacturer: "АОА Весна", category: "Детские товары", subCategory: "Кремы", imageUrl: "https://via.placeholder.com/300x200?text=Крем+Детский" },
-        { id: 6, name: "Зубная паста для взрослых 'Мята'", price: 450, manufacturer: "Красота KZ", category: "Косметика", subCategory: "Зубные пасты", imageUrl: "https://via.placeholder.com/300x200?text=Паста+Взр" },
-        { id: 7, name: "Чистящее средство для кухни", price: 350, manufacturer: "Clean Master", category: "Хозяйственные товары", subCategory: "Бытовая химия", imageUrl: "https://via.placeholder.com/300x200?text=Чист.+Средство" },
+    // --- 1. ДАННЫЕ ПРОДУКТОВ (Обновленная структура для многоуровневой фильтрации) ---
+    // Добавлены поля `category` и `subCategory`
+    const allProducts = [
+      { id: 1, name: "Мыло Dove", price: 500, manufacturer: "Unilever", category: "Гигиена", subCategory: "Мыло", image: "https://via.placeholder.com/200/4ECDC4/FFFFFF?text=Dove" },
+      { id: 2, name: "Зубная паста R.O.C.S.", price: 1200, manufacturer: "R.O.C.S.", category: "Гигиена", subCategory: "Зубные пасты", image: "https://via.placeholder.com/200/556270/FFFFFF?text=ROCS" },
+      { id: 3, name: "Детский крем 'Весна'", price: 350, manufacturer: "АО 'Весна'", category: "Детские товары", subCategory: "Кремы", image: "https://via.placeholder.com/200/FF6B6B/FFFFFF?text=Дет.Крем" },
+      { id: 4, name: "Шампунь Head&Shoulders", price: 1800, manufacturer: "Procter & Gamble", category: "Гигиена", subCategory: "Шампуни", image: "https://via.placeholder.com/200/C7F464/FFFFFF?text=H%26S" },
+      { id: 5, name: "Подгузники Pampers", price: 4500, manufacturer: "Procter & Gamble", category: "Детские товары", subCategory: "Подгузники", image: "https://via.placeholder.com/200/555B6E/FFFFFF?text=Pampers" },
+      { id: 6, name: "Зубная паста 'Весна' детская", price: 600, manufacturer: "АО 'Весна'", category: "Детские товары", subCategory: "Зубные пасты", image: "https://via.placeholder.com/200/A0DAA9/FFFFFF?text=Весна+Дет." },
+      { id: 7, name: "Чистящее средство Comet", price: 900, manufacturer: "Procter & Gamble", category: "Бытовая химия", subCategory: "Уборка", image: "https://via.placeholder.com/200/FAD089/FFFFFF?text=Comet" },
+      { id: 8, name: "Гель для душа Palmolive", price: 750, manufacturer: "Colgate-Palmolive", category: "Гигиена", subCategory: "Гели для душа", image: "https://via.placeholder.com/200/69D2E7/FFFFFF?text=Palmolive" },
+      { id: 9, name: "Мыло Safeguard", price: 550, manufacturer: "Procter & Gamble", category: "Гигиена", subCategory: "Мыло", image: "https://via.placeholder.com/200/FFCC99/FFFFFF?text=Safeguard" },
+      { id: 10, name: "Детское мыло 'Алиса'", price: 250, manufacturer: "Невская Косметика", category: "Детские товары", subCategory: "Мыло", image: "https://via.placeholder.com/200/96A8A4/FFFFFF?text=Алиса+Мыло" },
+      { id: 11, name: "Ватные диски", price: 200, manufacturer: "Разное", category: "Аксессуары", subCategory: "Прочее", image: "https://via.placeholder.com/200/D0E7FF/FFFFFF?text=Диски" },
+      { id: 12, name: "Лак для волос Taft", price: 1100, manufacturer: "Henkel", category: "Косметика", subCategory: "Укладка", image: "https://via.placeholder.com/200/F08080/FFFFFF?text=Taft" },
+      // Добавим больше от 'АО 'Весна'' для тестирования
+      { id: 13, name: "Туалетное мыло 'Весна'", price: 400, manufacturer: "АО 'Весна'", category: "Гигиена", subCategory: "Мыло", image: "https://via.placeholder.com/200/F5A9A9/FFFFFF?text=Весна+Мыло" },
+      { id: 14, name: "Стиральный порошок 'Весна'", price: 1500, manufacturer: "АО 'Весна'", category: "Бытовая химия", subCategory: "Стирка", image: "https://via.placeholder.com/200/A9A9F5/FFFFFF?text=Весна+Порошок" },
+      { id: 15, name: "Детское мыло 'Весна'", price: 300, manufacturer: "АО 'Весна'", category: "Детские товары", subCategory: "Мыло", image: "https://via.placeholder.com/200/A9F5A9/FFFFFF?text=Весна+Дет.+Мыло" },
+      { id: 16, name: "Взрослая зубная паста 'Весна'", price: 800, manufacturer: "АО 'Весна'", category: "Гигиена", subCategory: "Зубные пасты", image: "https://via.placeholder.com/200/F5F5A9/FFFFFF?text=Весна+ЗП" },
     ];
+
+    // --- 2. ПЕРЕМЕННЫЕ СОСТОЯНИЯ ---
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    let selectedManufacturer = 'all';
+    let selectedCategory = 'all';
+    let selectedSubCategory = 'all';
     
-    // Инициализация корзины и фильтров
-    let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    let allProducts = [...initialProducts];
-    
-    let currentFilters = {
-        manufacturer: 'all',
-        category: 'all',
-        subCategory: 'all'
+    // Переменные для состояния шапки (для админ-панели)
+    let headerState = {
+        title: document.getElementById('headerTitle').textContent,
+        description: document.getElementById('headerDescription').textContent,
+        image: document.getElementById('headerImage').src
     };
 
-    // Все уникальные значения для фильтров
-    const allManufacturers = [...new Set(allProducts.map(p => p.manufacturer))];
-    const allCategories = [...new Set(allProducts.map(p => p.category))];
-    const allSubCategories = [...new Set(allProducts.map(p => p.subCategory))];
-    
-    // ==============================================
-    // АДМИН ПАНЕЛЬ: ФУНКЦИОНАЛ
-    // ==============================================
-    
-    document.addEventListener('DOMContentLoaded', () => {
-        // Проверяем, был ли сохранен админ-режим (для удобства)
-        if (localStorage.getItem('isAdmin') === 'true') {
-            enableAdminMode(true);
-        }
-        
-        // Загрузка сохраненных админ-настроек
-        loadAdminChanges();
-    });
+    // --- 3. ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ---
 
-    // Функция для включения/выключения админ режима
-    function enableAdminMode(shouldEnable) {
-        isAdmin = shouldEnable;
-        const adminPanel = document.getElementById('adminPanel');
-        if (isAdmin) {
-            adminPanel.classList.add('visible');
-            localStorage.setItem('isAdmin', 'true');
-        } else {
-            adminPanel.classList.remove('visible');
-            localStorage.setItem('isAdmin', 'false');
+    /**
+     * Получает IP пользователя для добавления в заказ (имитация)
+     */
+    async function getIP() {
+        try {
+            const response = await fetch('https://api.ipify.org?format=json');
+            const data = await response.json();
+            return data.ip || 'Неизвестен';
+        } catch (error) {
+            console.error('Ошибка получения IP:', error);
+            return 'Неизвестен';
         }
     }
     
-    // Локальное сохранение изменений из админ-панели
-    function saveAdminChanges() {
-        const changes = {
-            shopTitle: document.getElementById('admin-shop-title').value,
-            shopSubtitle: document.getElementById('admin-shop-subtitle').value,
-            logoUrl: document.getElementById('admin-logo-url').value,
-            logoSize: document.getElementById('admin-logo-size').value + 'px',
-            headerBg: document.getElementById('admin-header-bg').value,
-            primaryColor: document.getElementById('admin-primary-color').value,
-            cartColor: document.getElementById('admin-cart-color').value
-        };
-
-        // Обновляем CSS переменные
-        document.documentElement.style.setProperty('--header-bg', changes.headerBg);
-        document.documentElement.style.setProperty('--primary-color', changes.primaryColor);
-        document.documentElement.style.setProperty('--cart-color', changes.cartColor);
-        document.documentElement.style.setProperty('--logo-size', changes.logoSize);
-
-        // Обновляем текст и изображения
-        document.getElementById('shopTitle').textContent = changes.shopTitle;
-        document.getElementById('shopSubtitle').textContent = changes.shopSubtitle;
-        document.getElementById('shopLogo').src = changes.logoUrl;
-
-        // Сохраняем в localStorage
-        localStorage.setItem('adminChanges', JSON.stringify(changes));
-        alert('Изменения сохранены локально!');
-        
-        // В реальном проекте: отправить changes на Supabase
-    }
-
-    // Загрузка изменений при старте
-    function loadAdminChanges() {
-        const savedChanges = localStorage.getItem('adminChanges');
-        if (!savedChanges) return;
-
-        const changes = JSON.parse(savedChanges);
-
-        // Применяем к CSS переменным
-        document.documentElement.style.setProperty('--header-bg', changes.headerBg);
-        document.documentElement.style.setProperty('--primary-color', changes.primaryColor);
-        document.documentElement.style.setProperty('--cart-color', changes.cartColor);
-        document.documentElement.style.setProperty('--logo-size', changes.logoSize);
-
-        // Применяем к HTML элементам
-        document.getElementById('shopTitle').textContent = changes.shopTitle;
-        document.getElementById('shopSubtitle').textContent = changes.shopSubtitle;
-        document.getElementById('shopLogo').src = changes.logoUrl;
-        
-        // Обновляем поля ввода в админке
-        document.getElementById('admin-shop-title').value = changes.shopTitle;
-        document.getElementById('admin-shop-subtitle').value = changes.shopSubtitle;
-        document.getElementById('admin-logo-url').value = changes.logoUrl;
-        document.getElementById('admin-logo-size').value = parseInt(changes.logoSize);
-        document.getElementById('admin-header-bg').value = changes.headerBg;
-        document.getElementById('admin-primary-color').value = changes.primaryColor;
-        document.getElementById('admin-cart-color').value = changes.cartColor;
-    }
-
-    // Сброс админ-настроек
-    function resetAdminChanges() {
-        localStorage.removeItem('adminChanges');
-        alert('Настройки сброшены. Перезагрузите страницу для полного сброса стилей.');
-    }
-    
-    // Вход в админ-панель
-    function promptAdminAccess() {
-        const pass = prompt("Введите пароль для доступа к админ-панели:");
-        if (pass === ADMIN_PASS) {
-            enableAdminMode(true);
-        } else if (pass !== null) {
-            alert("Неверный пароль.");
-        }
-    }
-    
-    // Добавляем вызов по клику на лого (как скрытый вход)
-    document.getElementById('shopLogo').addEventListener('click', promptAdminAccess);
-    
-    // ==============================================
-    // ФИЛЬТРАЦИЯ: ФУНКЦИОНАЛ
-    // ==============================================
-    
-    // Функция для отображения/скрытия дополнительных фильтров на десктопе
-    function toggleMultiFilters() {
-        const container = document.getElementById('multiFiltersContainer');
-        const buttonText = document.getElementById('toggleFilterText');
-        
-        if (container.classList.contains('visible')) {
-            container.classList.remove('visible');
-            buttonText.textContent = 'Показать все фильтры (Категории)';
-        } else {
-            container.classList.add('visible');
-            buttonText.textContent = 'Скрыть все фильтры';
-        }
-    }
-
-    // Обновляет UI кнопок для заданного типа фильтра
-    function updateFilterUI(filterType, containerId, activeValue, uniqueValues, clickHandler) {
-        const container = document.getElementById(containerId);
-        if (!container) return;
-
-        // Создаем кнопку "Все"
-        let buttonsHtml = `<button class="filter-button ${activeValue === 'all' ? 'active' : ''}" data-filter-type="${filterType}" data-filter-value="all">Все</button>`;
-        
-        // Добавляем остальные кнопки
-        buttonsHtml += uniqueValues.map(value => `
-            <button class="filter-button ${activeValue === value ? 'active' : ''}" data-filter-type="${filterType}" data-filter-value="${value}">
-                ${value}
-            </button>
-        `).join('');
-        
-        container.innerHTML = buttonsHtml;
-        
-        // Добавляем обработчики кликов
-        container.querySelectorAll('.filter-button').forEach(button => {
-            button.addEventListener('click', clickHandler);
+    /**
+     * Фильтрует список продуктов на основе текущих выбранных фильтров.
+     * @returns {Array} Отфильтрованный список продуктов.
+     */
+    function getFilteredProducts() {
+        return allProducts.filter(product => {
+            const manMatch = selectedManufacturer === 'all' || product.manufacturer === selectedManufacturer;
+            const catMatch = selectedCategory === 'all' || product.category === selectedCategory;
+            const subCatMatch = selectedSubCategory === 'all' || product.subCategory === selectedSubCategory;
+            
+            return manMatch && catMatch && subCatMatch;
         });
     }
+    
+    // --- 4. ЛОГИКА КОРЗИНЫ (Улучшенная) ---
 
-    // Обработчик клика по кнопке фильтра
-    function handleFilterClick(event) {
-        const button = event.currentTarget;
-        const type = button.dataset.filterType;
-        const value = button.dataset.filterValue;
+    function addToCart(productId) {
+      const product = allProducts.find(p => p.id === productId);
+      if (!product) return;
 
-        if (currentFilters[type] === value) return; // Уже активен
+      const existingItem = cart.find(item => item.id === productId);
 
-        currentFilters[type] = value;
+      if (existingItem) {
+        existingItem.quantity += 1;
+      } else {
+        cart.push({ id: productId, name: product.name, price: product.price, quantity: 1 });
+      }
 
-        // ЛОГИКА АВТОСБРОСА ФИЛЬТРОВ
-        if (type === 'manufacturer') {
-            // При смене производителя, сбросить Категорию и Подкатегорию
-            currentFilters.category = 'all';
-            currentFilters.subCategory = 'all';
-        } else if (type === 'category') {
-            // При смене категории, сбросить Подкатегорию
-            currentFilters.subCategory = 'all';
-        }
-
-        renderFilters(); // Перерисовка кнопок
-        filterAndRenderProducts(); // Обновление товаров
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCartUI();
+      updateProductList(); // Обновить кнопку "В корзине"
     }
-
-    // Главная функция рендеринга фильтров
-    function renderFilters() {
-        // 1. Рендерим Производителей
-        updateFilterUI('manufacturer', 'manufacturerFilter', currentFilters.manufacturer, allManufacturers, handleFilterClick);
-
-        // 2. Определяем доступные Категории на основе Производителя
-        const filteredCategories = currentFilters.manufacturer === 'all' 
-            ? allCategories
-            : [...new Set(allProducts
-                .filter(p => p.manufacturer === currentFilters.manufacturer)
-                .map(p => p.category))];
+    
+    function changeQuantity(productId, delta) {
+        const itemIndex = cart.findIndex(item => item.id === productId);
         
-        updateFilterUI('category', 'categoryFilter', currentFilters.category, filteredCategories, handleFilterClick);
-
-        // 3. Определяем доступные Подкатегории на основе Производителя И Категории
-        const filteredSubCategories = (currentFilters.manufacturer === 'all' && currentFilters.category === 'all')
-            ? allSubCategories
-            : [...new Set(allProducts
-                .filter(p => currentFilters.manufacturer === 'all' || p.manufacturer === currentFilters.manufacturer)
-                .filter(p => currentFilters.category === 'all' || p.category === currentFilters.category)
-                .map(p => p.subCategory))];
-                
-        updateFilterUI('subCategory', 'subCategoryFilter', currentFilters.subCategory, filteredSubCategories, handleFilterClick);
-    }
-
-    // Фильтрация данных и рендеринг карточек
-    function filterAndRenderProducts() {
-        const grid = document.getElementById('productGrid');
-        const noProductsMessage = document.getElementById('noProductsMessage');
-        
-        const filteredProducts = allProducts.filter(product => {
-            const matchesManufacturer = currentFilters.manufacturer === 'all' || product.manufacturer === currentFilters.manufacturer;
-            const matchesCategory = currentFilters.category === 'all' || product.category === currentFilters.category;
-            const matchesSubCategory = currentFilters.subCategory === 'all' || product.subCategory === currentFilters.subCategory;
+        if (itemIndex > -1) {
+            cart[itemIndex].quantity += delta;
             
-            return matchesManufacturer && matchesCategory && matchesSubCategory;
-        });
-        
-        if (filteredProducts.length === 0) {
-            grid.innerHTML = '';
-            noProductsMessage.style.display = 'block';
-        } else {
-            noProductsMessage.style.display = 'none';
-            grid.innerHTML = filteredProducts.map(product => `
-                <div class="product-card">
-                    <img src="${product.imageUrl}" alt="${product.name}" class="product-image">
-                    <div class="product-name">${product.name}</div>
-                    <div class="product-price">${product.price.toLocaleString('ru-RU')} ₸</div>
-                    <button class="add-to-cart" data-id="${product.id}" data-name="${product.name}" data-price="${product.price}">
-                        В корзину
-                    </button>
-                </div>
-            `).join('');
+            if (cart[itemIndex].quantity <= 0) {
+                cart.splice(itemIndex, 1); // Удаляем, если количество <= 0
+            }
             
-            // Добавляем обработчики кликов на новые кнопки "В корзину"
-            document.querySelectorAll('.add-to-cart').forEach(button => {
-                button.addEventListener('click', addToCartFromButton);
-            });
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartUI();
+            updateProductList(); // Обновить кнопку "В корзине"
         }
     }
-
-
-    // ==============================================
-    // КОРЗИНА: ФУНКЦИОНАЛ (УЛУЧШЕН)
-    // ==============================================
     
-    // Модальное окно
-    const cartModal = document.getElementById('cartModal');
-    const closeButton = document.querySelector('.close-button');
-    const cartButton = document.getElementById('cartButton');
-    
-    cartButton.onclick = () => {
-        updateCartUI();
-        cartModal.style.display = 'block';
-    }
-    
-    closeButton.onclick = () => {
-        cartModal.style.display = 'none';
-    }
-    
-    window.onclick = (event) => {
-        if (event.target == cartModal) {
-            cartModal.style.display = 'none';
-        }
-    }
-
-    // Добавление в корзину
-    function addToCartFromButton(event) {
-        const id = parseInt(event.currentTarget.dataset.id);
-        const name = event.currentTarget.dataset.name;
-        const price = parseInt(event.currentTarget.dataset.price);
-
-        addToCart({ id, name, price });
-    }
-
-    function addToCart({ id, name, price }) {
-        const existingItem = cart.find(item => item.id === id);
-
-        if (existingItem) {
-            existingItem.quantity += 1;
-        } else {
-            cart.push({ id, name, price, quantity: 1 });
-        }
-
-        saveCart();
-        updateCartUI();
-    }
-    
-    // Сохранение корзины
-    function saveCart() {
+    function removeFromCart(productId) {
+        cart = cart.filter(item => item.id !== productId);
         localStorage.setItem('cart', JSON.stringify(cart));
+        updateCartUI();
+        updateProductList(); // Обновить кнопку "В корзине"
     }
 
-    // Обновление UI корзины
+    async function checkout() {
+        if (cart.length === 0) {
+            alert('Ваша корзина пуста!');
+            return;
+        }
+
+        const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+        const ip = await getIP();
+        
+        // Формирование сообщения для WhatsApp
+        const messageHeader = `*НОВЫЙ ЗАКАЗ* (IP: ${ip})`;
+        const messageItems = cart.map(item => 
+            `\n- ${item.name} (${item.price.toLocaleString('ru-RU')} ₸) x ${item.quantity} = ${(item.price * item.quantity).toLocaleString('ru-RU')} ₸`
+        ).join('');
+        const messageTotal = `\n\n*ИТОГО:* ${total.toLocaleString('ru-RU')} ₸`;
+        
+        const whatsappMessage = encodeURIComponent(messageHeader + messageItems + messageTotal);
+        
+        // Номер WhatsApp администратора
+        const adminWhatsapp = '77073105739'; 
+        
+        // Открываем WhatsApp
+        window.open(`https://wa.me/${adminWhatsapp}?text=${whatsappMessage}`, '_blank');
+        
+        // Очистка корзины после отправки (по желанию, можно и не очищать)
+        // cart = [];
+        // localStorage.setItem('cart', JSON.stringify(cart));
+        // updateCartUI();
+        // document.getElementById('cartModal').style.display = 'none';
+        
+        // Оставим корзину открытой, но добавим сообщение
+        alert('Заказ отправлен в WhatsApp. Пожалуйста, подтвердите его отправку.');
+    }
+    
     function updateCartUI() {
       const cartItems = document.getElementById('cartItems');
-      const cartTotalElement = document.getElementById('cartTotal');
+      const cartTotal = document.getElementById('cartTotal');
       const cartBadge = document.getElementById('cartBadge');
-      const emptyCartMessage = document.getElementById('emptyCartMessage');
+      const cartModal = document.getElementById('cartModal');
       
-      const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-
       // Показываем/скрываем бейдж
       if (cart.length > 0) {
         cartBadge.style.display = 'flex';
-        cartBadge.textContent = totalItems;
-        emptyCartMessage.style.display = 'none';
+        cartBadge.textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
       } else {
         cartBadge.style.display = 'none';
-        emptyCartMessage.style.display = 'block';
       }
       
-      // Обновляем список товаров в модальном окне
-      cartItems.innerHTML = cart.map(item => {
-        // Продукт уже не ищется в allProducts, так как name и price хранятся в cart
-        // Это более надежно, если allProducts меняется
+      // Обновляем список товаров
+      if (cart.length === 0) {
+          cartItems.innerHTML = '<p style="text-align: center; color: #777;">Корзина пуста.</p>';
+          document.getElementById('checkoutBtn').disabled = true;
+          document.getElementById('checkoutBtn').textContent = 'Корзина пуста';
+      } else {
+          cartItems.innerHTML = cart.map(item => {
+            return `
+              <div class="cart-item">
+                <div class="cart-item-name">${item.name}</div>
+                <div class="cart-item-controls">
+                    <button class="quantity-btn" onclick="changeQuantity(${item.id}, -1)">-</button>
+                    <div class="cart-item-quantity">${item.quantity} шт.</div>
+                    <button class="quantity-btn" onclick="changeQuantity(${item.id}, 1)">+</button>
+                    <div class="cart-item-price">${(item.price * item.quantity).toLocaleString('ru-RU')} ₸</div>
+                </div>
+              </div>
+            `;
+          }).join('');
+          
+          document.getElementById('checkoutBtn').disabled = false;
+          document.getElementById('checkoutBtn').textContent = 'Оформить заказ через WhatsApp';
+      }
+
+      // Обновляем итоговую сумму
+      const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      cartTotal.textContent = `${total.toLocaleString('ru-RU')} ₸`;
+      
+      // Добавляем обработчики для модального окна (открытие/закрытие)
+      document.getElementById('cartBtnFixed').onclick = () => {
+          cartModal.style.display = 'block';
+      };
+      
+      document.querySelector('.close-btn').onclick = () => {
+          cartModal.style.display = 'none';
+      };
+      
+      window.onclick = (event) => {
+          if (event.target === cartModal) {
+              cartModal.style.display = 'none';
+          }
+      };
+    }
+    
+    // --- 5. ЛОГИКА ФИЛЬТРАЦИИ (Многоуровневая) ---
+
+    /**
+     * Создает структуру для фильтров
+     * @param {string} filterType - 'manufacturer', 'category', 'subCategory'
+     */
+    function renderFilters(filterType) {
+        let uniqueItems = new Set();
+        let counts = {};
+        
+        let filteredProducts = getFilteredProducts().filter(p => {
+            // Если мы рендерим категории, игнорируем текущую категорию при фильтрации
+            if (filterType === 'category') {
+                return (selectedManufacturer === 'all' || p.manufacturer === selectedManufacturer);
+            }
+            // Если мы рендерим подкатегории, берем только те, что соответствуют категории
+            if (filterType === 'subCategory') {
+                return (selectedManufacturer === 'all' || p.manufacturer === selectedManufacturer) && p.category === selectedCategory;
+            }
+            // Для производителя, берем все
+            return true;
+        });
+
+        // 1. Сбор уникальных значений и подсчет
+        filteredProducts.forEach(product => {
+            const value = product[filterType];
+            if (value) {
+                uniqueItems.add(value);
+                counts[value] = (counts[value] || 0) + 1;
+            }
+        });
+        
+        // 2. Добавляем "Все" и сортируем
+        const sortedItems = Array.from(uniqueItems).sort();
+        sortedItems.unshift('all');
+
+        // 3. Выбор контейнера и текущего активного фильтра
+        let container, currentSelected;
+        if (filterType === 'manufacturer') {
+            container = document.getElementById('manufacturerFilters');
+            currentSelected = selectedManufacturer;
+        } else if (filterType === 'category') {
+            container = document.getElementById('categoryFilters');
+            currentSelected = selectedCategory;
+        } else if (filterType === 'subCategory') {
+            container = document.getElementById('subCategoryFilters');
+            currentSelected = selectedSubCategory;
+        } else {
+            return;
+        }
+
+        // 4. Рендеринг HTML
+        container.innerHTML = sortedItems.map(item => {
+            const itemName = item === 'all' ? (filterType === 'manufacturer' ? 'Все производители' : 'Все категории') : item;
+            const isActive = item === currentSelected ? 'active' : '';
+            const count = item === 'all' ? filteredProducts.length : counts[item] || 0;
+            
+            // Если текущий фильтр не 'all' и для него нет товаров, не рендерим его, кроме "Все"
+            if (item !== 'all' && count === 0 && selectedManufacturer === 'all' && selectedCategory === 'all') return ''; // Предотвращение рендеринга пустых категорий при отсутствии фильтров
+
+            return `
+                <div class="filter-option-item ${isActive}" onclick="selectFilter('${filterType}', '${item}')">
+                    <span>${itemName}</span>
+                    <span class="filter-option-count">${count}</span>
+                </div>
+            `;
+        }).join('');
+        
+        // 5. Логика отображения подкатегорий
+        const subCategoryGroup = document.getElementById('subCategoryGroup');
+        if (filterType === 'subCategory') {
+             // Если выбрана конкретная категория И есть подкатегории, показываем группу
+             if (selectedCategory !== 'all' && sortedItems.length > 1) { 
+                 subCategoryGroup.style.display = 'block';
+             } else {
+                 subCategoryGroup.style.display = 'none';
+             }
+        }
+    }
+
+    /**
+     * Обрабатывает выбор фильтра
+     * @param {string} filterType - 'manufacturer', 'category', 'subCategory'
+     * @param {string} value - Выбранное значение
+     */
+    function selectFilter(filterType, value) {
+        if (filterType === 'manufacturer') {
+            selectedManufacturer = value;
+            // При смене производителя, сбросить категорию и подкатегорию, как запрашивалось
+            selectedCategory = 'all';
+            selectedSubCategory = 'all';
+        } else if (filterType === 'category') {
+            selectedCategory = value;
+            // При смене категории, сбросить подкатегорию
+            selectedSubCategory = 'all';
+        } else if (filterType === 'subCategory') {
+            selectedSubCategory = value;
+        }
+
+        // Обновляем фильтры, зависящие друг от друга
+        renderFilters('manufacturer');
+        renderFilters('category');
+        renderFilters('subCategory');
+        
+        updateProductList();
+    }
+    
+    // --- 6. РЕНДЕРИНГ СПИСКА ТОВАРОВ ---
+
+    function updateProductList() {
+      const productList = document.getElementById('productList');
+      const products = getFilteredProducts();
+
+      if (products.length === 0) {
+          productList.innerHTML = '<div class="no-products">⚠️ Товаров по выбранным фильтрам не найдено. Попробуйте сбросить некоторые фильтры.</div>';
+          return;
+      }
+      
+      productList.innerHTML = products.map(product => {
+        const isInCart = cart.some(item => item.id === product.id);
+        const btnClass = isInCart ? 'in-cart' : '';
+        const btnText = isInCart ? 'В корзине (+1)' : 'В корзину';
         
         return `
-          <div class="cart-item">
-            <div class="cart-item-name">${item.name}</div>
-            <div class="cart-item-quantity">
-                <button onclick="changeQuantity(${item.id}, -1)" style="border: none; background: #eee; padding: 5px; cursor: pointer;">-</button>
-                ${item.quantity} шт.
-                <button onclick="changeQuantity(${item.id}, 1)" style="border: none; background: #eee; padding: 5px; cursor: pointer;">+</button>
+          <div class="product-card">
+            <img src="${product.image}" alt="${product.name}" class="product-image">
+            <div class="product-info">
+              <div class="product-name">${product.name}</div>
+              <div class="product-meta" style="font-size: 12px; color: #999;">${product.manufacturer} | ${product.category}</div>
+              <div class="product-price">${product.price.toLocaleString('ru-RU')} ₸</div>
+              <button class="add-to-cart-btn ${btnClass}" onclick="addToCart(${product.id})">${btnText}</button>
             </div>
-            <div class="cart-item-price">${(item.price * item.quantity).toLocaleString('ru-RU')} ₸</div>
           </div>
         `;
       }).join('');
-      
-      // Обновляем итоговую сумму
-      const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-      cartTotalElement.textContent = `${total.toLocaleString('ru-RU')} ₸`;
-      
-      // Скрытие/показ кнопки оформления
-      document.getElementById('checkoutButton').disabled = cart.length === 0;
-      document.getElementById('clearCartButton').disabled = cart.length === 0;
     }
     
-    // Изменение количества
-    function changeQuantity(id, change) {
-        const item = cart.find(i => i.id === id);
-        if (!item) return;
+    // --- 7. ЛОГИКА АДМИН-ПАНЕЛИ (Редактирование шапки) ---
 
-        item.quantity += change;
-
-        if (item.quantity <= 0) {
-            cart = cart.filter(i => i.id !== id); // Удаляем, если 0 или меньше
-        }
+    function checkAdminMode() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const isAdmin = urlParams.get('admin') === 'true';
         
-        saveCart();
-        updateCartUI();
+        if (isAdmin) {
+            document.getElementById('openAdminPanel').style.display = 'block';
+            
+            // Загрузка текущих значений в панель
+            document.getElementById('adminTitle').value = headerState.title;
+            document.getElementById('adminDescription').value = headerState.description;
+            document.getElementById('adminImage').value = headerState.image;
+
+            // Обработчики открытия/закрытия
+            document.getElementById('openAdminPanel').onclick = () => {
+                document.getElementById('adminOverlay').style.display = 'flex';
+            };
+            
+            document.getElementById('adminCancelBtn').onclick = () => {
+                document.getElementById('adminOverlay').style.display = 'none';
+            };
+            
+            // Обработчик сохранения
+            document.getElementById('adminSaveBtn').onclick = () => {
+                headerState.title = document.getElementById('adminTitle').value;
+                headerState.description = document.getElementById('adminDescription').value;
+                headerState.image = document.getElementById('adminImage').value;
+                
+                // Применение изменений к шапке
+                document.getElementById('headerTitle').textContent = headerState.title;
+                document.getElementById('headerDescription').textContent = headerState.description;
+                document.getElementById('headerImage').src = headerState.image;
+                
+                document.getElementById('adminOverlay').style.display = 'none';
+                alert('Изменения применены (только для этой сессии. Для постоянного сохранения нужен сервер).');
+            };
+        }
     }
 
-    // Очистка корзины
-    document.getElementById('clearCartButton').onclick = () => {
-        if (confirm('Вы уверены, что хотите очистить корзину?')) {
-            cart = [];
-            saveCart();
-            updateCartUI();
-        }
-    }
-    
-    // Оформление заказа
-    document.getElementById('checkoutButton').onclick = async () => {
-        if (cart.length === 0) return;
-        
-        // 1. Получение IP
-        const ipResponse = await fetch('https://api.ipify.org?format=json');
-        const ipData = await ipResponse.json();
-        const ip = ipData.ip;
+    // --- 8. ИНИЦИАЛИЗАЦИЯ ---
 
-        // 2. Расчет общей суммы
-        const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-        
-        // 3. Текст для WhatsApp и Telegram
-        const cartDetails = cart.map(i => `${i.name} (${i.quantity} шт.) - ${(i.price * i.quantity).toLocaleString('ru-RU')} ₸`).join('\n');
-        
-        const telegramMessage = `*НОВЫЙ ЗАКАЗ:*
-Сумма: ${total.toLocaleString('ru-RU')} ₸
-IP: ${ip}
----
-*Товары:*
-${cartDetails}`;
-
-        const whatsappMessage = `Здравствуйте! Хочу оформить заказ:
-*Сумма:* ${total.toLocaleString('ru-RU')} ₸
-*Товары:*
-${cartDetails}
-(Укажите, пожалуйста, ваше имя, адрес и телефон для связи)`;
-
-        // 4. Отправка в Telegram (LOG)
-        if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
-            fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    chat_id: TELEGRAM_CHAT_ID,
-                    text: telegramMessage,
-                    parse_mode: 'Markdown'
-                })
-            }).catch(e => console.error("Ошибка отправки лога в Telegram:", e));
-        }
-
-        // 5. Переход в WhatsApp
-        const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(whatsappMessage)}`;
-        window.open(whatsappUrl, '_blank');
-        
-        // 6. Очистка корзины после отправки
-        // cart = [];
-        // saveCart();
-        // updateCartUI();
-        // cartModal.style.display = 'none';
-
-        // Вместо очистки, можно просто закрыть, чтобы дать пользователю скопировать текст
-        cartModal.style.display = 'none';
-        alert("Ваш заказ открыт в WhatsApp. Пожалуйста, отправьте сообщение.");
-    }
-
-
-    // ==============================================
-    // ИНИЦИАЛИЗАЦИЯ
-    // ==============================================
-    
     document.addEventListener('DOMContentLoaded', () => {
-        renderFilters();
-        filterAndRenderProducts();
-        updateCartUI();
-        
-        // Устанавливаем ссылку на WhatsApp
-        document.getElementById('whatsappButton').href = `https://wa.me/${WHATSAPP_NUMBER}`;
+      // Инициализация корзины и списка товаров
+      updateCartUI();
+      
+      // Инициализация фильтров
+      renderFilters('manufacturer');
+      renderFilters('category');
+      renderFilters('subCategory');
+      
+      // Первичный рендеринг списка товаров
+      updateProductList();
+      
+      // Настройка кнопки оформления заказа
+      document.getElementById('checkoutBtn').addEventListener('click', checkout);
+      
+      // Проверка режима администрирования
+      checkAdminMode();
     });
-
   </script>
-
 </body>
 </html>
