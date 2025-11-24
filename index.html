@@ -211,11 +211,44 @@
       cursor: pointer;
       white-space: nowrap;
       flex-shrink: 0;
+      position: relative;
     }
     
     .category-btn.active, .type-btn.active {
       background: var(--primary-color);
       color: white;
+    }
+    
+    .category-btn.disabled, .type-btn.disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      background: #e0e0e0;
+    }
+    
+    .filter-count {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: var(--primary-color);
+      color: white;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      font-size: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .clear-filters {
+      background: #ff6b6b;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 15px;
+      cursor: pointer;
+      font-size: 12px;
+      margin-left: 10px;
     }
     
     /* Товары */
@@ -238,7 +271,7 @@
       background-color: #f1f1f1;
       border-radius: 5px;
       border-bottom: 2px solid var(--primary-color);
-      grid-column: 1 / -1; /* Заголовок занимает всю ширину */
+      grid-column: 1 / -1;
     }
     
     .product-card {
@@ -249,6 +282,12 @@
       display: flex;
       flex-direction: column;
       position: relative;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .product-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
     }
     
     .product-image {
@@ -258,6 +297,11 @@
       border-radius: 5px;
       margin-bottom: 10px;
       cursor: pointer;
+      transition: transform 0.2s;
+    }
+    
+    .product-image:hover {
+      transform: scale(1.05);
     }
     
     .product-name {
@@ -297,6 +341,11 @@
       display: flex;
       align-items: center;
       font-size: 14px;
+      transition: background 0.2s;
+    }
+    
+    .add-to-cart:hover {
+      background: #20b858;
     }
     
     .add-to-cart::before {
@@ -320,6 +369,11 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      transition: background 0.2s;
+    }
+    
+    .quantity-btn:hover {
+      background: #e0e0e0;
     }
     
     .quantity-input {
@@ -329,6 +383,111 @@
       border: 1px solid #ddd;
       border-radius: 4px;
       padding: 2px;
+    }
+    
+    /* Lightbox для изображений */
+    .lightbox {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.9);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .lightbox.active {
+      display: flex;
+    }
+    
+    .lightbox-img {
+      max-width: 90%;
+      max-height: 90%;
+      object-fit: contain;
+    }
+    
+    .lightbox-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      color: white;
+      font-size: 30px;
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+    
+    /* Быстрый просмотр */
+    .quick-view {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      z-index: 1001;
+      max-width: 500px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    
+    .quick-view.active {
+      display: block;
+    }
+    
+    .quick-view-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+    }
+    
+    /* Хлебные крошки */
+    .breadcrumbs {
+      padding: 10px 15px;
+      background: white;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .breadcrumbs a {
+      color: var(--primary-color);
+      text-decoration: none;
+    }
+    
+    .breadcrumbs span {
+      color: #666;
+    }
+    
+    /* Прогресс корзины */
+    .cart-progress {
+      background: #e0e0e0;
+      height: 6px;
+      border-radius: 3px;
+      margin: 10px 0;
+      overflow: hidden;
+    }
+    
+    .cart-progress-bar {
+      background: var(--primary-color);
+      height: 100%;
+      transition: width 0.3s;
+    }
+    
+    .cart-progress-text {
+      font-size: 12px;
+      color: #666;
+      text-align: center;
     }
     
     /* Админ-панель */
@@ -397,8 +556,8 @@
     /* Корзина */
     .cart-toggle {
       position: fixed;
-      bottom: 90px;
-      left: 20px;
+      bottom: 20px;
+      right: 20px;
       background: var(--cart-color);
       color: white;
       width: 60px;
@@ -531,7 +690,7 @@
     /* Кнопка WhatsApp */
     .whatsapp-btn {
       position: fixed;
-      bottom: 20px;
+      bottom: 90px;
       right: 20px;
       background: var(--primary-color);
       color: white;
@@ -652,17 +811,22 @@
       }
       
       .whatsapp-btn {
-        bottom: 25px;
+        bottom: 100px;
         right: 25px;
         width: 55px;
         height: 55px;
       }
       
       .cart-toggle {
-        bottom: 100px;
-        left: 25px;
+        bottom: 25px;
+        right: 25px;
         width: 55px;
         height: 55px;
+      }
+      
+      .quick-view {
+        width: 95%;
+        padding: 15px;
       }
     }
     
@@ -684,27 +848,45 @@
   </style>
 </head>
 <body>
+  <!-- Lightbox для изображений -->
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" id="lightboxClose">✕</button>
+    <img class="lightbox-img" id="lightboxImg" src="">
+  </div>
+
+  <!-- Быстрый просмотр -->
+  <div class="quick-view" id="quickView">
+    <button class="quick-view-close" id="quickViewClose">✕</button>
+    <div id="quickViewContent"></div>
+  </div>
+
   <header class="main-header">
     <div class="header-container">
       <div class="header-top">
         <div class="logo-container">
           <img src="https://pic.maxiol.com/thumbs2/1753306101.86132844.paidaj.jpg" alt="Paida All" class="logo">
-          <div class="shop-name">Paida All</div>
+          <div class="shop-name" contenteditable="false">Paida All</div>
           <div class="admin-access" id="adminAccess">Для админа</div>
         </div>
         <div class="header-contacts">
-          <div class="contact-phone">8 (778) 085-54-78</div>
-          <div class="contact-address">г. Караганда, ул. Алиханова 37 (цокольный этаж)</div>
+          <div class="contact-phone" contenteditable="false">8 (778) 085-54-78</div>
+          <div class="contact-address" contenteditable="false">г. Караганда, ул. Алиханова 37 (цокольный этаж)</div>
         </div>
       </div>
       
       <div class="header-features">
-        <div class="feature-item">💲 Оптовые цены без посредников</div>
-        <div class="feature-item">📝 Работаем с физ. и юр. лицами</div>
-        <div class="feature-item">🚚 Отправка в другие регионы</div>
+        <div class="feature-item" contenteditable="false">💲 Оптовые цены без посредников</div>
+        <div class="feature-item" contenteditable="false">📝 Работаем с физ. и юр. лицами</div>
+        <div class="feature-item" contenteditable="false">🚚 Отправка в другие регионы</div>
       </div>
     </div>
   </header>
+
+  <!-- Хлебные крошки -->
+  <div class="breadcrumbs" id="breadcrumbs">
+    <a href="#" onclick="resetFilters()">Главная</a>
+    <span id="breadcrumbPath"></span>
+  </div>
 
   <div class="cart-toggle" id="cartToggle">
     <div class="cart-badge" id="cartBadge" style="display: none;">0</div>
@@ -716,8 +898,14 @@
       <div class="cart-title">Корзина</div>
       <div id="cartClose" style="cursor: pointer;">✕</div>
     </div>
-    <div class="cart-items" id="cartItems">
-      </div>
+    
+    <!-- Прогресс корзины -->
+    <div class="cart-progress" id="cartProgress" style="display: none;">
+      <div class="cart-progress-bar" id="cartProgressBar"></div>
+    </div>
+    <div class="cart-progress-text" id="cartProgressText"></div>
+    
+    <div class="cart-items" id="cartItems"></div>
     <div class="cart-total">
       <span>Итого:</span>
       <span id="cartTotal">0 ₸</span>
@@ -749,6 +937,7 @@
     </div>
     <div class="types" id="types">
       <button class="type-btn active" data-type="all">Все типы</button>
+      <button class="clear-filters" id="clearFilters" style="display: none;">Очистить</button>
     </div>
   </div>
   
@@ -792,8 +981,7 @@
         </select>
       </div>
       
-      <div id="quickAddItemsContainer">
-        </div>
+      <div id="quickAddItemsContainer"></div>
       
       <div style="margin-top: 10px;">
         <input type="text" id="quickCategory" placeholder="Общая категория">
@@ -820,12 +1008,15 @@
     let selectedType = "all"
     let allProducts = []
     let cart = []
+    const FREE_SHIPPING_THRESHOLD = 50000
     
     document.addEventListener('DOMContentLoaded', () => {
       loadProducts()
       setupEventListeners()
       loadCart()
       setupQuickAddFields()
+      updateBreadcrumbs()
+      setupHeaderEditing()
     })
     
     async function getClientIP() {
@@ -843,7 +1034,6 @@
         const ip = await getClientIP()
         const time = new Date().toLocaleString('ru-RU')
         
-        // Форматируем сообщение для Telegram
         const telegramMessage = `
 🛠 *Действие администратора* 🛠
 📅 *Время:* ${time}
@@ -852,7 +1042,6 @@
 ${actionText}
         `.trim()
         
-        // Логируем в Supabase
         await supabase.from('admin_logs').insert([{ 
           action: actionText,
           details: {
@@ -861,10 +1050,9 @@ ${actionText}
             screen: `${window.screen.width}x${window.screen.height}`,
             time: new Date().toISOString()
           },
-          admin_hash: 'admin_hash_placeholder' // Замените на реальный хэш
+          admin_hash: 'admin_hash_placeholder'
         }])
         
-        // Отправляем в Telegram
         await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${encodeURIComponent(telegramMessage)}&parse_mode=Markdown`)
       } catch (error) {
         console.error('Ошибка логирования:', error)
@@ -884,6 +1072,7 @@ ${actionText}
         updateCategories()
         updateTypes()
         renderProducts()
+        updateBreadcrumbs()
       } catch (error) {
         console.error('Ошибка загрузки товаров:', error)
         alert('Ошибка загрузки товаров. Проверьте консоль.')
@@ -891,22 +1080,48 @@ ${actionText}
     }
     
     function updateCategories() {
-      const categories = [...new Set(allProducts.map(p => p.category).filter(Boolean))]
       const container = document.getElementById('categories')
-      
       const allButton = document.querySelector('[data-category="all"]')
       const allButtonClone = allButton.cloneNode(true)
       container.innerHTML = ''
       container.appendChild(allButtonClone)
       
-      categories.forEach(cat => {
+      // Получаем категории в зависимости от выбранного типа
+      let availableCategories = ["all"]
+      if (selectedType !== "all") {
+        const typeProducts = allProducts.filter(p => p.type === selectedType && !p.archived)
+        availableCategories = [...new Set(typeProducts.map(p => p.category).filter(Boolean))]
+      } else {
+        availableCategories = [...new Set(allProducts.map(p => p.category).filter(Boolean))]
+      }
+      
+      // Считаем количество товаров в каждой категории
+      const categoryCounts = {}
+      allProducts.forEach(p => {
+        if (!p.archived && (selectedType === "all" || p.type === selectedType)) {
+          categoryCounts[p.category] = (categoryCounts[p.category] || 0) + 1
+        }
+      })
+      
+      availableCategories.forEach(cat => {
+        if (cat === "all") return
+        
         const btn = document.createElement('button')
         btn.className = 'category-btn'
         btn.dataset.category = cat
         btn.textContent = cat
         
+        // Добавляем счетчик
+        const count = categoryCounts[cat] || 0
+        if (count > 0) {
+          const countBadge = document.createElement('span')
+          countBadge.className = 'filter-count'
+          countBadge.textContent = count
+          btn.appendChild(countBadge)
+        }
+        
         if (selectedCategory === cat) {
-            btn.classList.add('active')
+          btn.classList.add('active')
         }
         
         if (isAdmin) {
@@ -923,7 +1138,9 @@ ${actionText}
           selectedCategory = cat
           document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'))
           btn.classList.add('active')
+          updateTypes() // Обновляем доступные типы
           renderProducts()
+          updateBreadcrumbs()
         })
         container.appendChild(btn)
       })
@@ -932,27 +1149,56 @@ ${actionText}
         selectedCategory = "all"
         document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'))
         allButtonClone.classList.add('active')
+        updateTypes()
         renderProducts()
+        updateBreadcrumbs()
       })
     }
     
     function updateTypes() {
-      const types = [...new Set(allProducts.map(p => p.type).filter(Boolean))]
       const container = document.getElementById('types')
-      
       const allButton = document.querySelector('[data-type="all"]')
       const allButtonClone = allButton.cloneNode(true)
+      const clearBtn = document.getElementById('clearFilters')
       container.innerHTML = ''
       container.appendChild(allButtonClone)
       
-      types.forEach(type => {
+      // Получаем типы в зависимости от выбранной категории
+      let availableTypes = ["all"]
+      if (selectedCategory !== "all") {
+        const categoryProducts = allProducts.filter(p => p.category === selectedCategory && !p.archived)
+        availableTypes = [...new Set(categoryProducts.map(p => p.type).filter(Boolean))]
+      } else {
+        availableTypes = [...new Set(allProducts.map(p => p.type).filter(Boolean))]
+      }
+      
+      // Считаем количество товаров в каждом типе
+      const typeCounts = {}
+      allProducts.forEach(p => {
+        if (!p.archived && (selectedCategory === "all" || p.category === selectedCategory)) {
+          typeCounts[p.type] = (typeCounts[p.type] || 0) + 1
+        }
+      })
+      
+      availableTypes.forEach(type => {
+        if (type === "all") return
+        
         const btn = document.createElement('button')
         btn.className = 'type-btn'
         btn.dataset.type = type
         btn.textContent = type
         
+        // Добавляем счетчик
+        const count = typeCounts[type] || 0
+        if (count > 0) {
+          const countBadge = document.createElement('span')
+          countBadge.className = 'filter-count'
+          countBadge.textContent = count
+          btn.appendChild(countBadge)
+        }
+        
         if (selectedType === type) {
-            btn.classList.add('active')
+          btn.classList.add('active')
         }
         
         if (isAdmin) {
@@ -969,17 +1215,61 @@ ${actionText}
           selectedType = type
           document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'))
           btn.classList.add('active')
+          updateCategories() // Обновляем доступные категории
           renderProducts()
+          updateBreadcrumbs()
         })
         container.appendChild(btn)
       })
+      
+      // Показываем кнопку очистки если есть активные фильтры
+      if (selectedCategory !== "all" || selectedType !== "all") {
+        clearBtn.style.display = 'block'
+        container.appendChild(clearBtn)
+      } else {
+        clearBtn.style.display = 'none'
+      }
       
       allButtonClone.addEventListener('click', () => {
         selectedType = "all"
         document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'))
         allButtonClone.classList.add('active')
+        updateCategories()
         renderProducts()
+        updateBreadcrumbs()
       })
+    }
+    
+    function updateBreadcrumbs() {
+      const pathElement = document.getElementById('breadcrumbPath')
+      let path = ''
+      
+      if (selectedCategory !== "all") {
+        path += ` › ${selectedCategory}`
+      }
+      
+      if (selectedType !== "all") {
+        path += ` › ${selectedType}`
+      }
+      
+      pathElement.textContent = path
+    }
+    
+    function resetFilters() {
+      selectedCategory = "all"
+      selectedType = "all"
+      
+      document.querySelectorAll('.category-btn, .type-btn').forEach(btn => {
+        btn.classList.remove('active')
+        if (btn.dataset.category === "all" || btn.dataset.type === "all") {
+          btn.classList.add('active')
+        }
+      })
+      
+      updateCategories()
+      updateTypes()
+      renderProducts()
+      updateBreadcrumbs()
     }
     
     async function updateAllProductsCategory(oldCat, newCat) {
@@ -995,9 +1285,10 @@ ${actionText}
           if (p.category === oldCat) p.category = newCat
         })
         
-        selectedCategory = newCat // Устанавливаем новую категорию как активную
+        selectedCategory = newCat
         updateCategories()
         renderProducts()
+        updateBreadcrumbs()
         logAdminAction(`Категория изменена:\n"${oldCat}" → "${newCat}"`)
       } catch (error) {
         console.error('Ошибка обновления категории:', error)
@@ -1018,9 +1309,10 @@ ${actionText}
           if (p.type === oldType) p.type = newType
         })
         
-        selectedType = newType // Устанавливаем новый тип как активный
+        selectedType = newType
         updateTypes()
         renderProducts()
+        updateBreadcrumbs()
         logAdminAction(`Тип товара изменен:\n"${oldType}" → "${newType}"`)
       } catch (error) {
         console.error('Ошибка обновления типа:', error)
@@ -1050,14 +1342,12 @@ ${actionText}
         return acc
       }, {})
       
-      // Сортируем заголовки по алфавиту, "Без типа" - в конце
       const sortedTypes = Object.keys(groupedProducts).sort((a, b) => {
           if (a === 'Без типа') return 1;
           if (b === 'Без типа') return -1;
           return a.localeCompare(b);
       })
 
-      // Отображаем товары, добавляя заголовки для каждой группы
       sortedTypes.forEach(type => {
           if (type !== 'Без типа' && groupedProducts[type].length > 0) {
               const header = document.createElement('h3')
@@ -1077,7 +1367,6 @@ ${actionText}
         archiveList.innerHTML = archivedProducts.map(product => createProductCard(product, true)).join('')
       }
       
-      // Добавляем обработчики
       setupProductEventHandlers()
     }
     
@@ -1087,7 +1376,7 @@ ${actionText}
       
       return `
         <div class="product-card" data-id="${product.id}">
-          <img src="${product.img || 'https://via.placeholder.com/150'}" class="product-image">
+          <img src="${product.img || 'https://via.placeholder.com/150'}" class="product-image" onclick="openLightbox('${product.img || 'https://via.placeholder.com/150'}')">
           <div class="product-info">
             <div class="product-name" contenteditable="${isAdmin}" onblur="updateProduct('${product.id}', 'name', this.textContent)">${product.name || 'Без названия'}</div>
             <div class="product-price" contenteditable="${isAdmin}" onblur="updateProduct('${product.id}', 'price', this.textContent)">
@@ -1111,16 +1400,18 @@ ${actionText}
             ` : ''}
             
             <div class="product-actions">
-              <button class="add-to-cart">В корзину</button>
+              <button class="add-to-cart" onclick="addToCart('${product.id}')">В корзину</button>
               ${inCart ? `
                 <div class="quantity-controls">
-                  <button class="quantity-btn">-</button>
+                  <button class="quantity-btn" onclick="updateCartItem('${product.id}', 'decrease')">-</button>
                   <input type="number" class="quantity-input" value="${quantity}" min="1" 
                     onchange="updateCartItem('${product.id}', 'set', this.value)">
-                  <button class="quantity-btn">+</button>
+                  <button class="quantity-btn" onclick="updateCartItem('${product.id}', 'increase')">+</button>
                 </div>
               ` : ''}
             </div>
+            
+            <button class="quick-view-btn" onclick="openQuickView('${product.id}')" style="margin-top: 10px; background: #f1f1f1; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">Быстрый просмотр</button>
             
             ${isAdmin ? `
               <div class="admin-controls">
@@ -1143,37 +1434,54 @@ ${actionText}
     }
     
     function setupProductEventHandlers() {
-      // Корзина
-      document.querySelectorAll('.add-to-cart').forEach(btn => {
-        btn.addEventListener('click', function() {
+      // Lightbox для изображений
+      document.querySelectorAll('.product-image').forEach(img => {
+        img.addEventListener('click', function(e) {
+          if (!isAdmin) return
           const productId = this.closest('.product-card').dataset.id
-          addToCart(productId)
+          const newUrl = prompt('Введите новую ссылку на изображение:', this.src)
+          if (newUrl && newUrl !== this.src) {
+            updateProduct(productId, 'img', newUrl)
+            this.src = newUrl
+            logAdminAction(`Изменено изображение товара:\nID: ${productId}\nНовое изображение: ${newUrl}`)
+          }
         })
       })
+    }
+    
+    // Lightbox функции
+    window.openLightbox = function(imgSrc) {
+      const lightbox = document.getElementById('lightbox')
+      const lightboxImg = document.getElementById('lightboxImg')
+      lightboxImg.src = imgSrc
+      lightbox.classList.add('active')
+    }
+    
+    window.closeLightbox = function() {
+      document.getElementById('lightbox').classList.remove('active')
+    }
+    
+    // Быстрый просмотр
+    window.openQuickView = function(productId) {
+      const product = allProducts.find(p => p.id === productId)
+      if (!product) return
       
-      document.querySelectorAll('.quantity-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-          const productId = this.closest('.product-card').dataset.id
-          const action = this.textContent === '+' ? 'increase' : 'decrease'
-          updateCartItem(productId, action)
-        })
-      })
+      const quickView = document.getElementById('quickView')
+      const quickViewContent = document.getElementById('quickViewContent')
       
-      // Изменение изображения (админ)
-      if (isAdmin) {
-        document.querySelectorAll('.product-image').forEach(img => {
-          img.addEventListener('click', function(e) {
-            if (!isAdmin) return
-            const productId = this.closest('.product-card').dataset.id
-            const newUrl = prompt('Введите новую ссылку на изображение:', this.src)
-            if (newUrl && newUrl !== this.src) {
-              updateProduct(productId, 'img', newUrl)
-              this.src = newUrl
-              logAdminAction(`Изменено изображение товара:\nID: ${productId}\nНовое изображение: ${newUrl}`)
-            }
-          })
-        })
-      }
+      quickViewContent.innerHTML = `
+        <h3>${product.name || 'Без названия'}</h3>
+        <img src="${product.img || 'https://via.placeholder.com/150'}" style="width: 100%; max-height: 200px; object-fit: contain; margin: 10px 0;">
+        <div class="product-price">${product.price ? `${product.price.toLocaleString('ru-RU')} ₸` : 'Цена не указана'}</div>
+        <div class="product-description">${product.description || ''}</div>
+        <button class="add-to-cart" onclick="addToCart('${productId}'); closeQuickView()" style="margin-top: 15px; width: 100%;">Добавить в корзину</button>
+      `
+      
+      quickView.classList.add('active')
+    }
+    
+    window.closeQuickView = function() {
+      document.getElementById('quickView').classList.remove('active')
     }
     
     function setupEventListeners() {
@@ -1220,6 +1528,21 @@ ${actionText}
       document.getElementById('cartClose').addEventListener('click', toggleCart)
       document.getElementById('clearCart').addEventListener('click', clearCart)
       document.getElementById('checkoutCart').addEventListener('click', checkoutCart)
+      
+      // Lightbox
+      document.getElementById('lightboxClose').addEventListener('click', closeLightbox)
+      document.getElementById('lightbox').addEventListener('click', function(e) {
+        if (e.target === this) closeLightbox()
+      })
+      
+      // Быстрый просмотр
+      document.getElementById('quickViewClose').addEventListener('click', closeQuickView)
+      document.getElementById('quickView').addEventListener('click', function(e) {
+        if (e.target === this) closeQuickView()
+      })
+      
+      // Очистка фильтров
+      document.getElementById('clearFilters').addEventListener('click', resetFilters)
     }
     
     function setupQuickAddFields() {
@@ -1240,15 +1563,31 @@ ${actionText}
       }
     }
     
+    function setupHeaderEditing() {
+      if (isAdmin) {
+        document.querySelectorAll('.shop-name, .contact-phone, .contact-address, .feature-item').forEach(el => {
+          el.setAttribute('contenteditable', 'true')
+          el.style.borderBottom = '1px dashed #ccc'
+        })
+      } else {
+        document.querySelectorAll('.shop-name, .contact-phone, .contact-address, .feature-item').forEach(el => {
+          el.setAttribute('contenteditable', 'false')
+          el.style.borderBottom = 'none'
+        })
+      }
+    }
+    
     async function toggleAdminMode() {
       if (isAdmin) {
         isAdmin = false
         document.body.classList.remove('admin-visible')
+        setupHeaderEditing()
       } else {
         const password = prompt('Введите пароль администратора:')
         if (password === ADMIN_PASSWORD) {
           isAdmin = true
           document.body.classList.add('admin-visible')
+          setupHeaderEditing()
           renderProducts()
           logAdminAction('Администратор вошел в систему')
         } else {
@@ -1283,7 +1622,6 @@ ${actionText}
         
         if (error) throw error
         
-        // Очищаем только обязательные поля
         document.getElementById('productName').value = ''
         document.getElementById('productPrice').value = ''
         
@@ -1317,7 +1655,7 @@ ${actionText}
           archived: false,
           order: allProducts.length + i + 1
         }))
-        .filter(p => p.name) // Фильтруем пустые названия
+        .filter(p => p.name)
       
       if (productsToAdd.length === 0) {
         alert('Добавьте хотя бы один товар')
@@ -1331,7 +1669,6 @@ ${actionText}
         
         if (error) throw error
         
-        // Очищаем поля
         document.querySelectorAll('.quick-name, .quick-price, .quick-image').forEach(el => el.value = '')
         document.getElementById('quickCategory').value = ''
         document.getElementById('quickType').value = ''
@@ -1352,7 +1689,6 @@ ${actionText}
           updateValue = value ? parseInt(value.replace(/[^\d]/g, '')) || null : null
         }
         
-        // Если поле пустое, сохраняем null
         if (updateValue === '') updateValue = null
         
         const { error } = await supabase
@@ -1510,7 +1846,7 @@ ${actionText}
       renderProducts()
     }
     
-    function addToCart(productId) {
+    window.addToCart = function(productId) {
       const product = allProducts.find(p => p.id === productId)
       if (!product) return
       
@@ -1572,6 +1908,59 @@ ${actionText}
       }
     }
     
+    function updateCartUI() {
+      const cartItems = document.getElementById('cartItems')
+      const cartTotal = document.getElementById('cartTotal')
+      const cartBadge = document.getElementById('cartBadge')
+      const cartProgress = document.getElementById('cartProgress')
+      const cartProgressBar = document.getElementById('cartProgressBar')
+      const cartProgressText = document.getElementById('cartProgressText')
+      
+      // Бейдж корзины
+      if (cart.length > 0) {
+        cartBadge.style.display = 'flex'
+        cartBadge.textContent = cart.reduce((sum, item) => sum + item.quantity, 0)
+      } else {
+        cartBadge.style.display = 'none'
+      }
+      
+      // Список товаров
+      cartItems.innerHTML = cart.map(item => {
+        const product = allProducts.find(p => p.id === item.id)
+        if (!product) return ''
+        
+        return `
+          <div class="cart-item">
+            <div class="cart-item-name">${item.name}</div>
+            <div class="cart-item-quantity">${item.quantity} шт.</div>
+            <div class="cart-item-price">${(item.price * item.quantity).toLocaleString('ru-RU')} ₸</div>
+          </div>
+        `
+      }).join('')
+      
+      // Итоговая сумма
+      const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0)
+      cartTotal.textContent = `${total.toLocaleString('ru-RU')} ₸`
+      
+      // Прогресс бесплатной доставки
+      if (total > 0) {
+        cartProgress.style.display = 'block'
+        const progress = Math.min((total / FREE_SHIPPING_THRESHOLD) * 100, 100)
+        cartProgressBar.style.width = `${progress}%`
+        
+        if (total >= FREE_SHIPPING_THRESHOLD) {
+          cartProgressText.textContent = '🎉 Бесплатная доставка!'
+          cartProgressBar.style.background = '#2ecc71'
+        } else {
+          const remaining = FREE_SHIPPING_THRESHOLD - total
+          cartProgressText.textContent = `До бесплатной доставки осталось: ${remaining.toLocaleString('ru-RU')} ₸`
+          cartProgressBar.style.background = 'var(--primary-color)'
+        }
+      } else {
+        cartProgress.style.display = 'none'
+      }
+    }
+    
     async function checkoutCart() {
       if (cart.length === 0) {
         alert('Корзина пуста!')
@@ -1587,6 +1976,14 @@ ${actionText}
       ).join('\n')
       
       message += `\n\nИтого: ${total.toLocaleString('ru-RU')} ₸`
+      
+      if (total >= FREE_SHIPPING_THRESHOLD) {
+        message += `\n🎉 Бесплатная доставка!`
+      } else {
+        const remaining = FREE_SHIPPING_THRESHOLD - total
+        message += `\n\nДо бесплатной доставки осталось: ${remaining.toLocaleString('ru-RU')} ₸`
+      }
+      
       message += `\n\nМои данные для доставки:\nИмя: \nТелефон: \nАдрес: `
       
       const phone = '77780855478'
@@ -1594,38 +1991,6 @@ ${actionText}
       window.open(`https://wa.me/${phone}?text=${encodedMessage}`, '_blank')
       
       logAdminAction(`Оформлен заказ:\nСумма: ${total.toLocaleString('ru-RU')} ₸\nIP: ${ip}\nТовары: ${cart.map(i => i.name).join(', ')}`)
-    }
-    
-    function updateCartUI() {
-      const cartItems = document.getElementById('cartItems')
-      const cartTotal = document.getElementById('cartTotal')
-      const cartBadge = document.getElementById('cartBadge')
-      
-      // Показываем/скрываем бейдж
-      if (cart.length > 0) {
-        cartBadge.style.display = 'flex'
-        cartBadge.textContent = cart.reduce((sum, item) => sum + item.quantity, 0)
-      } else {
-        cartBadge.style.display = 'none'
-      }
-      
-      // Обновляем список товаров
-      cartItems.innerHTML = cart.map(item => {
-        const product = allProducts.find(p => p.id === item.id)
-        if (!product) return ''
-        
-        return `
-          <div class="cart-item">
-            <div class="cart-item-name">${item.name}</div>
-            <div class="cart-item-quantity">${item.quantity} шт.</div>
-            <div class="cart-item-price">${(item.price * item.quantity).toLocaleString('ru-RU')} ₸</div>
-          </div>
-        `
-      }).join('')
-      
-      // Обновляем итоговую сумму
-      const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0)
-      cartTotal.textContent = `${total.toLocaleString('ru-RU')} ₸`
     }
     
     function toggleCart() {
