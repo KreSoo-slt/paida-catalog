@@ -10,7 +10,6 @@
       --admin-color: #ff4757;
       --notice-color: #fff0c4;
       --cart-color: #FF9F43;
-      --header-bg: #ffffff;
     }
     
     body {
@@ -23,7 +22,7 @@
     
     /* Шапка */
     .main-header {
-      background: var(--header-bg);
+      background: #ffffff;
       padding: 15px 0;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
       position: static;
@@ -58,6 +57,7 @@
       width: auto;
       border-radius: 5px;
       object-fit: contain;
+      transition: all 0.3s ease;
     }
     
     .shop-name {
@@ -121,6 +121,45 @@
       cursor: pointer;
       text-decoration: underline;
       white-space: nowrap;
+    }
+
+    /* Настройки шапки */
+    .header-settings {
+      display: none;
+      margin-top: 15px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 10px;
+      border: 2px dashed #ccc;
+    }
+    
+    .admin-visible .header-settings {
+      display: block;
+    }
+    
+    .header-settings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    
+    .header-settings-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    
+    .header-settings label {
+      font-size: 12px;
+      font-weight: bold;
+      color: #666;
+    }
+    
+    .header-settings input, .header-settings select {
+      padding: 5px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
     }
 
     /* Остальные стили */
@@ -569,7 +608,11 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
       z-index: 100;
       cursor: pointer;
-      transition: transform 0.2s;
+      transition: transform 0.2s, bottom 0.3s ease;
+    }
+    
+    .cart-visible .cart-toggle {
+      bottom: 280px;
     }
     
     .cart-toggle:hover {
@@ -605,6 +648,10 @@
     }
     
     .cart-container.visible {
+      transform: translateY(0);
+    }
+    
+    .cart-visible .cart-container.visible {
       transform: translateY(0);
     }
     
@@ -703,7 +750,11 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
       z-index: 100;
       text-decoration: none;
-      transition: transform 0.2s;
+      transition: transform 0.2s, bottom 0.3s ease;
+    }
+    
+    .cart-visible .whatsapp-btn {
+      bottom: 170px;
     }
     
     .whatsapp-btn:hover {
@@ -739,6 +790,102 @@
     .quick-add-item input {
       flex: 1;
       padding: 5px;
+    }
+    
+    /* Ускоренное создание товаров */
+    .smart-input {
+      position: relative;
+    }
+    
+    .smart-suggestions {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      max-height: 150px;
+      overflow-y: auto;
+      z-index: 10;
+      display: none;
+    }
+    
+    .smart-suggestions.visible {
+      display: block;
+    }
+    
+    .suggestion-item {
+      padding: 8px 12px;
+      cursor: pointer;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .suggestion-item:hover {
+      background: #f5f5f5;
+    }
+    
+    .suggestion-item:last-child {
+      border-bottom: none;
+    }
+    
+    .add-new-option {
+      background: #f8f9fa;
+      font-style: italic;
+      color: #666;
+    }
+    
+    /* Настройки доставки */
+    .shipping-settings {
+      margin-top: 15px;
+      padding: 15px;
+      background: #e8f5e8;
+      border-radius: 8px;
+      border: 1px solid #2ecc71;
+    }
+    
+    .shipping-settings h4 {
+      margin: 0 0 10px 0;
+      color: #27ae60;
+    }
+    
+    .shipping-controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    
+    .shipping-controls input {
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      width: 120px;
+    }
+    
+    /* Улучшенные поля категорий в карточках */
+    .category-selector {
+      position: relative;
+      display: inline-block;
+      min-width: 120px;
+    }
+    
+    .category-display {
+      padding: 2px 5px;
+      border: 1px dashed #ccc;
+      border-radius: 3px;
+      cursor: pointer;
+      min-height: 20px;
+    }
+    
+    .category-display:hover {
+      background: #f5f5f5;
+    }
+    
+    .category-edit-input {
+      width: 100%;
+      padding: 2px 5px;
+      border: 1px solid var(--primary-color);
+      border-radius: 3px;
     }
     
     /* Мобильная версия */
@@ -817,6 +964,10 @@
         height: 55px;
       }
       
+      .cart-visible .whatsapp-btn {
+        bottom: 180px;
+      }
+      
       .cart-toggle {
         bottom: 25px;
         right: 25px;
@@ -824,9 +975,17 @@
         height: 55px;
       }
       
+      .cart-visible .cart-toggle {
+        bottom: 285px;
+      }
+      
       .quick-view {
         width: 95%;
         padding: 15px;
+      }
+      
+      .header-settings-grid {
+        grid-template-columns: 1fr;
       }
     }
     
@@ -864,20 +1023,49 @@
     <div class="header-container">
       <div class="header-top">
         <div class="logo-container">
-          <img src="https://pic.maxiol.com/thumbs2/1753306101.86132844.paidaj.jpg" alt="Paida All" class="logo">
-          <div class="shop-name" contenteditable="false">Paida All</div>
+          <img src="https://pic.maxiol.com/thumbs2/1753306101.86132844.paidaj.jpg" alt="Paida All" class="logo" id="headerLogo">
+          <div class="shop-name" contenteditable="false" id="shopName">Paida All</div>
           <div class="admin-access" id="adminAccess">Для админа</div>
         </div>
         <div class="header-contacts">
-          <div class="contact-phone" contenteditable="false">8 (778) 085-54-78</div>
-          <div class="contact-address" contenteditable="false">г. Караганда, ул. Алиханова 37 (цокольный этаж)</div>
+          <div class="contact-phone" contenteditable="false" id="contactPhone">8 (778) 085-54-78</div>
+          <div class="contact-address" contenteditable="false" id="contactAddress">г. Караганда, ул. Алиханова 37 (цокольный этаж)</div>
         </div>
       </div>
       
-      <div class="header-features">
+      <div class="header-features" id="headerFeatures">
         <div class="feature-item" contenteditable="false">💲 Оптовые цены без посредников</div>
         <div class="feature-item" contenteditable="false">📝 Работаем с физ. и юр. лицами</div>
         <div class="feature-item" contenteditable="false">🚚 Отправка в другие регионы</div>
+      </div>
+
+      <!-- Настройки шапки -->
+      <div class="header-settings" id="headerSettings">
+        <h3>🎨 Настройки шапки</h3>
+        <div class="header-settings-grid">
+          <div class="header-settings-group">
+            <label>Ссылка на логотип:</label>
+            <input type="text" id="logoUrl" placeholder="URL логотипа">
+          </div>
+          <div class="header-settings-group">
+            <label>Высота логотипа (px):</label>
+            <input type="number" id="logoHeight" value="50" min="30" max="100">
+          </div>
+          <div class="header-settings-group">
+            <label>Название магазина:</label>
+            <input type="text" id="shopNameInput" placeholder="Название магазина">
+          </div>
+          <div class="header-settings-group">
+            <label>Телефон:</label>
+            <input type="text" id="contactPhoneInput" placeholder="Телефон">
+          </div>
+          <div class="header-settings-group">
+            <label>Адрес:</label>
+            <input type="text" id="contactAddressInput" placeholder="Адрес">
+          </div>
+        </div>
+        <button onclick="applyHeaderSettings()" style="margin-top: 10px;">Применить настройки</button>
+        <button onclick="resetHeaderSettings()" style="margin-top: 5px; background: #6c757d;">Сбросить к стандартным</button>
       </div>
     </div>
   </header>
@@ -922,7 +1110,7 @@
   
   <div class="notice">
     Заказы обрабатываются на следующий день.<br>
-    Доставка(От 50.000тг) и самовывоз доступны по Караганде.
+    Доставка(От <span id="freeShippingAmount">50.000</span>тг) и самовывоз доступны по Караганде.
   </div>
   
   <div class="filters-container">
@@ -951,12 +1139,33 @@
   </div>
   
   <div class="admin-panel" id="adminPanel">
+    <!-- Настройки доставки -->
+    <div class="shipping-settings">
+      <h4>🚚 Настройки бесплатной доставки</h4>
+      <div class="shipping-controls">
+        <input type="number" id="freeShippingInput" placeholder="Сумма доставки" value="50000">
+        <button onclick="updateFreeShipping()">Обновить</button>
+        <span>₸</span>
+      </div>
+    </div>
+
     <h3>Добавить товар</h3>
+    
+    <!-- Ускоренная форма -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+      <div class="smart-input">
+        <input type="text" id="productCategory" placeholder="Категория" list="categorySuggestions">
+        <div class="smart-suggestions" id="categorySuggestions"></div>
+      </div>
+      <div class="smart-input">
+        <input type="text" id="productType" placeholder="Тип товара" list="typeSuggestions">
+        <div class="smart-suggestions" id="typeSuggestions"></div>
+      </div>
+    </div>
+    
     <input type="text" id="productName" placeholder="Название (необязательно)">
     <input type="text" id="productPrice" placeholder="Цена (необязательно)">
     <input type="text" id="productImage" placeholder="Ссылка на фото (необязательно)">
-    <input type="text" id="productCategory" placeholder="Категория (необязательно)">
-    <input type="text" id="productType" placeholder="Тип товара (необязательно)">
     <textarea id="productDescription" placeholder="Описание (необязательно)"></textarea>
     
     <div class="admin-controls">
@@ -983,9 +1192,15 @@
       
       <div id="quickAddItemsContainer"></div>
       
-      <div style="margin-top: 10px;">
-        <input type="text" id="quickCategory" placeholder="Общая категория">
-        <input type="text" id="quickType" placeholder="Общий тип товара" style="margin-top: 5px;">
+      <div style="margin-top: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+        <div class="smart-input">
+          <input type="text" id="quickCategory" placeholder="Общая категория">
+          <div class="smart-suggestions" id="quickCategorySuggestions"></div>
+        </div>
+        <div class="smart-input">
+          <input type="text" id="quickType" placeholder="Общий тип товара">
+          <div class="smart-suggestions" id="quickTypeSuggestions"></div>
+        </div>
       </div>
       
       <button id="addMultipleBtn" style="margin-top: 10px;">Добавить все</button>
@@ -1008,7 +1223,8 @@
     let selectedType = "all"
     let allProducts = []
     let cart = []
-    const FREE_SHIPPING_THRESHOLD = 50000
+    let FREE_SHIPPING_THRESHOLD = 50000
+    let headerSettings = {}
     
     document.addEventListener('DOMContentLoaded', () => {
       loadProducts()
@@ -1017,8 +1233,339 @@
       setupQuickAddFields()
       updateBreadcrumbs()
       setupHeaderEditing()
+      loadHeaderSettings()
+      loadFreeShippingSetting()
+      setupSmartInputs()
     })
     
+    // Загрузка настроек шапки из Supabase
+    async function loadHeaderSettings() {
+      try {
+        const { data, error } = await supabase
+          .from('header_settings')
+          .select('*')
+          .single()
+        
+        if (error && error.code !== 'PGRST116') throw error
+        
+        if (data) {
+          headerSettings = data
+        } else {
+          // Настройки по умолчанию
+          headerSettings = {
+            logo_url: 'https://pic.maxiol.com/thumbs2/1753306101.86132844.paidaj.jpg',
+            logo_height: 50,
+            shop_name: 'Paida All',
+            contact_phone: '8 (778) 085-54-78',
+            contact_address: 'г. Караганда, ул. Алиханова 37 (цокольный этаж)'
+          }
+        }
+        
+        applyHeaderSettings()
+      } catch (error) {
+        console.error('Ошибка загрузки настроек шапки:', error)
+        // Используем настройки по умолчанию
+        headerSettings = {
+          logo_url: 'https://pic.maxiol.com/thumbs2/1753306101.86132844.paidaj.jpg',
+          logo_height: 50,
+          shop_name: 'Paida All',
+          contact_phone: '8 (778) 085-54-78',
+          contact_address: 'г. Караганда, ул. Алиханова 37 (цокольный этаж)'
+        }
+        applyHeaderSettings()
+      }
+    }
+    
+    // Применение настроек шапки
+    function applyHeaderSettings() {
+      // Логотип
+      document.getElementById('headerLogo').src = headerSettings.logo_url
+      document.getElementById('headerLogo').style.height = headerSettings.logo_height + 'px'
+      document.getElementById('logoUrl').value = headerSettings.logo_url
+      document.getElementById('logoHeight').value = headerSettings.logo_height
+      
+      // Название магазина
+      document.getElementById('shopName').textContent = headerSettings.shop_name
+      document.getElementById('shopNameInput').value = headerSettings.shop_name
+      
+      // Контакты
+      document.getElementById('contactPhone').textContent = headerSettings.contact_phone
+      document.getElementById('contactAddress').textContent = headerSettings.contact_address
+      document.getElementById('contactPhoneInput').value = headerSettings.contact_phone
+      document.getElementById('contactAddressInput').value = headerSettings.contact_address
+    }
+    
+    // Сохранение настроек шапки в Supabase
+    async function saveHeaderSettings() {
+      try {
+        const { error } = await supabase
+          .from('header_settings')
+          .upsert({
+            id: 1,
+            logo_url: headerSettings.logo_url,
+            logo_height: headerSettings.logo_height,
+            shop_name: headerSettings.shop_name,
+            contact_phone: headerSettings.contact_phone,
+            contact_address: headerSettings.contact_address,
+            updated_at: new Date().toISOString()
+          })
+        
+        if (error) throw error
+        
+        alert('Настройки шапки сохранены!')
+        logAdminAction('Обновлены настройки шапки магазина')
+      } catch (error) {
+        console.error('Ошибка сохранения настроек шапки:', error)
+        alert('Ошибка при сохранении настроек шапки')
+      }
+    }
+    
+    // Применение изменений шапки
+    window.applyHeaderSettings = function() {
+      headerSettings = {
+        logo_url: document.getElementById('logoUrl').value || 'https://pic.maxiol.com/thumbs2/1753306101.86132844.paidaj.jpg',
+        logo_height: parseInt(document.getElementById('logoHeight').value) || 50,
+        shop_name: document.getElementById('shopNameInput').value || 'Paida All',
+        contact_phone: document.getElementById('contactPhoneInput').value || '8 (778) 085-54-78',
+        contact_address: document.getElementById('contactAddressInput').value || 'г. Караганда, ул. Алиханова 37 (цокольный этаж)'
+      }
+      
+      applyHeaderSettings()
+      saveHeaderSettings()
+    }
+    
+    // Сброс настроек шапки
+    window.resetHeaderSettings = function() {
+      headerSettings = {
+        logo_url: 'https://pic.maxiol.com/thumbs2/1753306101.86132844.paidaj.jpg',
+        logo_height: 50,
+        shop_name: 'Paida All',
+        contact_phone: '8 (778) 085-54-78',
+        contact_address: 'г. Караганда, ул. Алиханова 37 (цокольный этаж)'
+      }
+      
+      applyHeaderSettings()
+      saveHeaderSettings()
+    }
+    
+    // Настройки бесплатной доставки
+    function loadFreeShippingSetting() {
+      const saved = localStorage.getItem('freeShippingThreshold')
+      if (saved) {
+        FREE_SHIPPING_THRESHOLD = parseInt(saved)
+        document.getElementById('freeShippingInput').value = FREE_SHIPPING_THRESHOLD
+        document.getElementById('freeShippingAmount').textContent = FREE_SHIPPING_THRESHOLD.toLocaleString('ru-RU')
+      }
+    }
+    
+    function updateFreeShipping() {
+      const newValue = parseInt(document.getElementById('freeShippingInput').value)
+      if (newValue && newValue > 0) {
+        FREE_SHIPPING_THRESHOLD = newValue
+        localStorage.setItem('freeShippingThreshold', newValue)
+        document.getElementById('freeShippingAmount').textContent = newValue.toLocaleString('ru-RU')
+        updateCartUI()
+        alert('Порог бесплатной доставки обновлен!')
+        logAdminAction(`Порог бесплатной доставки изменен на: ${newValue.toLocaleString('ru-RU')} ₸`)
+      }
+    }
+    
+    // Умные поля ввода с подсказками
+    function setupSmartInputs() {
+      // Основная форма
+      const categoryInput = document.getElementById('productCategory')
+      const typeInput = document.getElementById('productType')
+      
+      categoryInput.addEventListener('focus', showCategorySuggestions)
+      typeInput.addEventListener('focus', showTypeSuggestions)
+      
+      categoryInput.addEventListener('input', function() {
+        showCategorySuggestions()
+      })
+      
+      typeInput.addEventListener('input', function() {
+        showTypeSuggestions()
+      })
+      
+      // Форма быстрого добавления
+      const quickCategoryInput = document.getElementById('quickCategory')
+      const quickTypeInput = document.getElementById('quickType')
+      
+      quickCategoryInput.addEventListener('focus', showQuickCategorySuggestions)
+      quickTypeInput.addEventListener('focus', showQuickTypeSuggestions)
+      
+      quickCategoryInput.addEventListener('input', function() {
+        showQuickCategorySuggestions()
+      })
+      
+      quickTypeInput.addEventListener('input', function() {
+        showQuickTypeSuggestions()
+      })
+    }
+    
+    function showCategorySuggestions() {
+      const suggestions = document.getElementById('categorySuggestions')
+      const input = document.getElementById('productCategory')
+      showSuggestions(input, suggestions, 'category')
+    }
+    
+    function showTypeSuggestions() {
+      const suggestions = document.getElementById('typeSuggestions')
+      const input = document.getElementById('productType')
+      showSuggestions(input, suggestions, 'type')
+    }
+    
+    function showQuickCategorySuggestions() {
+      const suggestions = document.getElementById('quickCategorySuggestions')
+      const input = document.getElementById('quickCategory')
+      showSuggestions(input, suggestions, 'category')
+    }
+    
+    function showQuickTypeSuggestions() {
+      const suggestions = document.getElementById('quickTypeSuggestions')
+      const input = document.getElementById('quickType')
+      showSuggestions(input, suggestions, 'type')
+    }
+    
+    function showSuggestions(input, suggestions, fieldType) {
+      const existingValues = [...new Set(allProducts.map(p => p[fieldType]).filter(Boolean))]
+      
+      suggestions.innerHTML = ''
+      
+      // Фильтруем подсказки по введенному тексту
+      const filtered = existingValues.filter(value => 
+        value.toLowerCase().includes(input.value.toLowerCase())
+      )
+      
+      // Показываем подходящие варианты
+      filtered.forEach(value => {
+        const item = document.createElement('div')
+        item.className = 'suggestion-item'
+        item.textContent = value
+        item.onclick = () => {
+          input.value = value
+          suggestions.classList.remove('visible')
+        }
+        suggestions.appendChild(item)
+      })
+      
+      // Добавляем опцию "Добавить новую"
+      if (input.value && !existingValues.includes(input.value)) {
+        const newItem = document.createElement('div')
+        newItem.className = 'suggestion-item add-new-option'
+        newItem.textContent = `+ Создать "${input.value}"`
+        newItem.onclick = () => {
+          suggestions.classList.remove('visible')
+        }
+        suggestions.appendChild(newItem)
+      }
+      
+      suggestions.classList.add('visible')
+    }
+    
+    // Улучшенный селектор категорий для карточек товаров
+    function createCategorySelector(product, field) {
+      const container = document.createElement('div')
+      container.className = 'category-selector'
+      
+      const display = document.createElement('div')
+      display.className = 'category-display'
+      display.textContent = product[field] || 'Не указано'
+      display.title = 'Кликните для изменения'
+      
+      const input = document.createElement('input')
+      input.type = 'text'
+      input.className = 'category-edit-input'
+      input.value = product[field] || ''
+      input.style.display = 'none'
+      
+      const suggestions = document.createElement('div')
+      suggestions.className = 'smart-suggestions'
+      
+      // Показ input при клике
+      display.addEventListener('click', function() {
+        if (!isAdmin) return
+        display.style.display = 'none'
+        input.style.display = 'block'
+        input.focus()
+        
+        // Показать подсказки
+        showCardSuggestions(input, suggestions, field)
+      })
+      
+      // Сохранение при потере фокуса
+      input.addEventListener('blur', function() {
+        setTimeout(() => {
+          display.style.display = 'block'
+          input.style.display = 'none'
+          suggestions.classList.remove('visible')
+          
+          const newValue = input.value.trim()
+          display.textContent = newValue || 'Не указано'
+          
+          if (newValue !== product[field]) {
+            updateProduct(product.id, field, newValue)
+          }
+        }, 200)
+      })
+      
+      // Enter для сохранения
+      input.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          input.blur()
+        }
+      })
+      
+      container.appendChild(display)
+      container.appendChild(input)
+      container.appendChild(suggestions)
+      
+      return container
+    }
+    
+    function showCardSuggestions(input, suggestions, fieldType) {
+      const existingValues = [...new Set(allProducts.map(p => p[fieldType]).filter(Boolean))]
+      
+      suggestions.innerHTML = ''
+      
+      const filtered = existingValues.filter(value => 
+        value.toLowerCase().includes(input.value.toLowerCase())
+      )
+      
+      filtered.forEach(value => {
+        const item = document.createElement('div')
+        item.className = 'suggestion-item'
+        item.textContent = value
+        item.onclick = () => {
+          input.value = value
+          suggestions.classList.remove('visible')
+          input.blur()
+        }
+        suggestions.appendChild(item)
+      })
+      
+      if (input.value && !existingValues.includes(input.value)) {
+        const newItem = document.createElement('div')
+        newItem.className = 'suggestion-item add-new-option'
+        newItem.textContent = `+ Создать "${input.value}"`
+        newItem.onclick = () => {
+          suggestions.classList.remove('visible')
+        }
+        suggestions.appendChild(newItem)
+      }
+      
+      suggestions.classList.add('visible')
+    }
+    
+    // Закрытие подсказок при клике вне
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.smart-input') && !e.target.closest('.category-selector')) {
+        document.querySelectorAll('.smart-suggestions').forEach(s => {
+          s.classList.remove('visible')
+        })
+      }
+    })
+
     async function getClientIP() {
       try {
         const response = await fetch('https://api.ipify.org?format=json')
@@ -1049,8 +1596,7 @@ ${actionText}
             userAgent: navigator.userAgent,
             screen: `${window.screen.width}x${window.screen.height}`,
             time: new Date().toISOString()
-          },
-          admin_hash: 'admin_hash_placeholder'
+          }
         }])
         
         await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${encodeURIComponent(telegramMessage)}&parse_mode=Markdown`)
@@ -1086,7 +1632,6 @@ ${actionText}
       container.innerHTML = ''
       container.appendChild(allButtonClone)
       
-      // Получаем категории в зависимости от выбранного типа
       let availableCategories = ["all"]
       if (selectedType !== "all") {
         const typeProducts = allProducts.filter(p => p.type === selectedType && !p.archived)
@@ -1095,7 +1640,6 @@ ${actionText}
         availableCategories = [...new Set(allProducts.map(p => p.category).filter(Boolean))]
       }
       
-      // Считаем количество товаров в каждой категории
       const categoryCounts = {}
       allProducts.forEach(p => {
         if (!p.archived && (selectedType === "all" || p.type === selectedType)) {
@@ -1111,7 +1655,6 @@ ${actionText}
         btn.dataset.category = cat
         btn.textContent = cat
         
-        // Добавляем счетчик
         const count = categoryCounts[cat] || 0
         if (count > 0) {
           const countBadge = document.createElement('span')
@@ -1138,7 +1681,7 @@ ${actionText}
           selectedCategory = cat
           document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'))
           btn.classList.add('active')
-          updateTypes() // Обновляем доступные типы
+          updateTypes()
           renderProducts()
           updateBreadcrumbs()
         })
@@ -1163,7 +1706,6 @@ ${actionText}
       container.innerHTML = ''
       container.appendChild(allButtonClone)
       
-      // Получаем типы в зависимости от выбранной категории
       let availableTypes = ["all"]
       if (selectedCategory !== "all") {
         const categoryProducts = allProducts.filter(p => p.category === selectedCategory && !p.archived)
@@ -1172,7 +1714,6 @@ ${actionText}
         availableTypes = [...new Set(allProducts.map(p => p.type).filter(Boolean))]
       }
       
-      // Считаем количество товаров в каждом типе
       const typeCounts = {}
       allProducts.forEach(p => {
         if (!p.archived && (selectedCategory === "all" || p.category === selectedCategory)) {
@@ -1188,7 +1729,6 @@ ${actionText}
         btn.dataset.type = type
         btn.textContent = type
         
-        // Добавляем счетчик
         const count = typeCounts[type] || 0
         if (count > 0) {
           const countBadge = document.createElement('span')
@@ -1215,19 +1755,21 @@ ${actionText}
           selectedType = type
           document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'))
           btn.classList.add('active')
-          updateCategories() // Обновляем доступные категории
+          updateCategories()
           renderProducts()
           updateBreadcrumbs()
         })
         container.appendChild(btn)
       })
       
-      // Показываем кнопку очистки если есть активные фильтры
-      if (selectedCategory !== "all" || selectedType !== "all") {
-        clearBtn.style.display = 'block'
-        container.appendChild(clearBtn)
-      } else {
-        clearBtn.style.display = 'none'
+      // Исправление ошибки с clearBtn
+      if (clearBtn) {
+        if (selectedCategory !== "all" || selectedType !== "all") {
+          clearBtn.style.display = 'block'
+          container.appendChild(clearBtn)
+        } else {
+          clearBtn.style.display = 'none'
+        }
       }
       
       allButtonClone.addEventListener('click', () => {
@@ -1342,12 +1884,14 @@ ${actionText}
         return acc
       }, {})
       
+      // Сортируем заголовки по алфавиту, "Без типа" - в конце
       const sortedTypes = Object.keys(groupedProducts).sort((a, b) => {
           if (a === 'Без типа') return 1;
           if (b === 'Без типа') return -1;
           return a.localeCompare(b);
       })
 
+      // Отображаем товары, добавляя заголовки для каждой группы
       sortedTypes.forEach(type => {
           if (type !== 'Без типа' && groupedProducts[type].length > 0) {
               const header = document.createElement('h3')
@@ -1357,80 +1901,182 @@ ${actionText}
           }
 
           groupedProducts[type].forEach(product => {
-              const cardHtml = createProductCard(product, false)
-              productsList.insertAdjacentHTML('beforeend', cardHtml)
+              const card = createProductCard(product, false)
+              productsList.appendChild(card)
           })
       })
       
       if (isAdmin) {
         const archiveList = document.getElementById('archiveList')
-        archiveList.innerHTML = archivedProducts.map(product => createProductCard(product, true)).join('')
+        archiveList.innerHTML = ''
+        archivedProducts.forEach(product => {
+          const card = createProductCard(product, true)
+          archiveList.appendChild(card)
+        })
       }
-      
-      setupProductEventHandlers()
     }
     
     function createProductCard(product, isArchived) {
       const inCart = cart.find(item => item.id === product.id)
       const quantity = inCart ? inCart.quantity : 1
       
-      return `
-        <div class="product-card" data-id="${product.id}">
-          <img src="${product.img || 'https://via.placeholder.com/150'}" class="product-image" onclick="openLightbox('${product.img || 'https://via.placeholder.com/150'}')">
-          <div class="product-info">
-            <div class="product-name" contenteditable="${isAdmin}" onblur="updateProduct('${product.id}', 'name', this.textContent)">${product.name || 'Без названия'}</div>
-            <div class="product-price" contenteditable="${isAdmin}" onblur="updateProduct('${product.id}', 'price', this.textContent)">
-              ${product.price ? `${product.price.toLocaleString('ru-RU')} ₸` : 'Цена не указана'}
-            </div>
-            <div class="product-description" contenteditable="${isAdmin}" onblur="updateProduct('${product.id}', 'description', this.textContent)">
-              ${product.description || ''}
-            </div>
-            
-            ${isAdmin ? `
-              <div style="margin: 5px 0; font-size: 12px;">
-                <div>
-                  Категория: 
-                  <span contenteditable="true" onblur="updateProduct('${product.id}', 'category', this.textContent)">${product.category || ''}</span>
-                </div>
-                <div>
-                  Тип: 
-                  <span contenteditable="true" onblur="updateProduct('${product.id}', 'type', this.textContent)">${product.type || ''}</span>
-                </div>
-              </div>
-            ` : ''}
-            
-            <div class="product-actions">
-              <button class="add-to-cart" onclick="addToCart('${product.id}')">В корзину</button>
-              ${inCart ? `
-                <div class="quantity-controls">
-                  <button class="quantity-btn" onclick="updateCartItem('${product.id}', 'decrease')">-</button>
-                  <input type="number" class="quantity-input" value="${quantity}" min="1" 
-                    onchange="updateCartItem('${product.id}', 'set', this.value)">
-                  <button class="quantity-btn" onclick="updateCartItem('${product.id}', 'increase')">+</button>
-                </div>
-              ` : ''}
-            </div>
-            
-            <button class="quick-view-btn" onclick="openQuickView('${product.id}')" style="margin-top: 10px; background: #f1f1f1; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">Быстрый просмотр</button>
-            
-            ${isAdmin ? `
-              <div class="admin-controls">
-                <button class="${isArchived ? 'archive-btn' : 'delete-btn'}" 
-                  onclick="${isArchived ? 'restoreFromArchive' : 'moveToArchive'}('${product.id}')">
-                  ${isArchived ? 'Восстановить' : 'Архив'}
-                </button>
-                <button class="delete-btn" onclick="deleteProduct('${product.id}')">Удалить</button>
-              </div>
-              ${!isArchived ? `
-                <div class="move-btns">
-                  <button onclick="moveProduct('${product.id}', 'up')">↑ Вверх</button>
-                  <button onclick="moveProduct('${product.id}', 'down')">↓ Вниз</button>
-                </div>
-              ` : ''}
-            ` : ''}
-          </div>
-        </div>
-      `
+      const card = document.createElement('div')
+      card.className = 'product-card'
+      card.dataset.id = product.id
+      
+      // Создаем элементы карточки
+      const image = document.createElement('img')
+      image.src = product.img || 'https://via.placeholder.com/150'
+      image.className = 'product-image'
+      image.onclick = () => openLightbox(image.src)
+      
+      const productInfo = document.createElement('div')
+      productInfo.className = 'product-info'
+      
+      // Название товара
+      const name = document.createElement('div')
+      name.className = 'product-name'
+      name.contentEditable = isAdmin
+      name.textContent = product.name || 'Без названия'
+      name.onblur = () => updateProduct(product.id, 'name', name.textContent)
+      
+      // Цена
+      const price = document.createElement('div')
+      price.className = 'product-price'
+      price.contentEditable = isAdmin
+      price.textContent = product.price ? `${product.price.toLocaleString('ru-RU')} ₸` : 'Цена не указана'
+      price.onblur = () => updateProduct(product.id, 'price', price.textContent)
+      
+      // Описание
+      const description = document.createElement('div')
+      description.className = 'product-description'
+      description.contentEditable = isAdmin
+      description.textContent = product.description || ''
+      description.onblur = () => updateProduct(product.id, 'description', description.textContent)
+      
+      productInfo.appendChild(name)
+      productInfo.appendChild(price)
+      productInfo.appendChild(description)
+      
+      // Категория и тип (только для админа)
+      if (isAdmin) {
+        const adminInfo = document.createElement('div')
+        adminInfo.style.margin = '5px 0'
+        adminInfo.style.fontSize = '12px'
+        
+        const categoryRow = document.createElement('div')
+        categoryRow.textContent = 'Категория: '
+        const categorySelector = createCategorySelector(product, 'category')
+        categoryRow.appendChild(categorySelector)
+        
+        const typeRow = document.createElement('div')
+        typeRow.style.marginTop = '5px'
+        typeRow.textContent = 'Тип: '
+        const typeSelector = createCategorySelector(product, 'type')
+        typeRow.appendChild(typeSelector)
+        
+        adminInfo.appendChild(categoryRow)
+        adminInfo.appendChild(typeRow)
+        productInfo.appendChild(adminInfo)
+      }
+      
+      // Кнопки действий
+      const actions = document.createElement('div')
+      actions.className = 'product-actions'
+      
+      const addToCartBtn = document.createElement('button')
+      addToCartBtn.className = 'add-to-cart'
+      addToCartBtn.textContent = 'В корзину'
+      addToCartBtn.onclick = () => addToCart(product.id)
+      
+      actions.appendChild(addToCartBtn)
+      
+      // Управление количеством (если товар в корзине)
+      if (inCart) {
+        const quantityControls = document.createElement('div')
+        quantityControls.className = 'quantity-controls'
+        
+        const decreaseBtn = document.createElement('button')
+        decreaseBtn.className = 'quantity-btn'
+        decreaseBtn.textContent = '-'
+        decreaseBtn.onclick = () => updateCartItem(product.id, 'decrease')
+        
+        const quantityInput = document.createElement('input')
+        quantityInput.type = 'number'
+        quantityInput.className = 'quantity-input'
+        quantityInput.value = quantity
+        quantityInput.min = 1
+        quantityInput.onchange = (e) => updateCartItem(product.id, 'set', e.target.value)
+        
+        const increaseBtn = document.createElement('button')
+        increaseBtn.className = 'quantity-btn'
+        increaseBtn.textContent = '+'
+        increaseBtn.onclick = () => updateCartItem(product.id, 'increase')
+        
+        quantityControls.appendChild(decreaseBtn)
+        quantityControls.appendChild(quantityInput)
+        quantityControls.appendChild(increaseBtn)
+        actions.appendChild(quantityControls)
+      }
+      
+      productInfo.appendChild(actions)
+      
+      // Кнопка быстрого просмотра
+      const quickViewBtn = document.createElement('button')
+      quickViewBtn.className = 'quick-view-btn'
+      quickViewBtn.textContent = 'Быстрый просмотр'
+      quickViewBtn.style.marginTop = '10px'
+      quickViewBtn.style.background = '#f1f1f1'
+      quickViewBtn.style.border = 'none'
+      quickViewBtn.style.padding = '5px 10px'
+      quickViewBtn.style.borderRadius = '5px'
+      quickViewBtn.style.cursor = 'pointer'
+      quickViewBtn.onclick = () => openQuickView(product.id)
+      
+      productInfo.appendChild(quickViewBtn)
+      
+      // Админ-контролы
+      if (isAdmin) {
+        const adminControls = document.createElement('div')
+        adminControls.className = 'admin-controls'
+        
+        const archiveBtn = document.createElement('button')
+        archiveBtn.className = isArchived ? 'archive-btn' : 'delete-btn'
+        archiveBtn.textContent = isArchived ? 'Восстановить' : 'Архив'
+        archiveBtn.onclick = () => isArchived ? restoreFromArchive(product.id) : moveToArchive(product.id)
+        
+        const deleteBtn = document.createElement('button')
+        deleteBtn.className = 'delete-btn'
+        deleteBtn.textContent = 'Удалить'
+        deleteBtn.onclick = () => deleteProduct(product.id)
+        
+        adminControls.appendChild(archiveBtn)
+        adminControls.appendChild(deleteBtn)
+        productInfo.appendChild(adminControls)
+        
+        if (!isArchived) {
+          const moveBtns = document.createElement('div')
+          moveBtns.className = 'move-btns'
+          
+          const upBtn = document.createElement('button')
+          upBtn.textContent = '↑ Вверх'
+          upBtn.onclick = () => moveProduct(product.id, 'up')
+          
+          const downBtn = document.createElement('button')
+          downBtn.textContent = '↓ Вниз'
+          downBtn.onclick = () => moveProduct(product.id, 'down')
+          
+          moveBtns.appendChild(upBtn)
+          moveBtns.appendChild(downBtn)
+          productInfo.appendChild(moveBtns)
+        }
+      }
+      
+      // Собираем карточку
+      card.appendChild(image)
+      card.appendChild(productInfo)
+      
+      return card
     }
     
     function setupProductEventHandlers() {
@@ -1994,7 +2640,8 @@ ${actionText}
     }
     
     function toggleCart() {
-      document.getElementById('cartContainer').classList.toggle('visible')
+      const cartVisible = document.getElementById('cartContainer').classList.toggle('visible')
+      document.body.classList.toggle('cart-visible', cartVisible)
     }
   </script>
 </body>
