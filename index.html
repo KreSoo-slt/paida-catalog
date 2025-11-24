@@ -876,6 +876,32 @@
       width: 120px;
     }
     
+    /* Улучшенные поля категорий в карточках */
+    .category-selector {
+      position: relative;
+      display: inline-block;
+      min-width: 120px;
+    }
+    
+    .category-display {
+      padding: 2px 5px;
+      border: 1px dashed #ccc;
+      border-radius: 3px;
+      cursor: pointer;
+      min-height: 20px;
+    }
+    
+    .category-display:hover {
+      background: #f5f5f5;
+    }
+    
+    .category-edit-input {
+      width: 100%;
+      padding: 2px 5px;
+      border: 1px solid var(--primary-color);
+      border-radius: 3px;
+    }
+    
     /* Мобильная версия */
     @media (max-width: 768px) {
       .header-top {
@@ -1180,9 +1206,15 @@
       
       <div id="quickAddItemsContainer"></div>
       
-      <div style="margin-top: 10px;">
-        <input type="text" id="quickCategory" placeholder="Общая категория">
-        <input type="text" id="quickType" placeholder="Общий тип товара" style="margin-top: 5px;">
+      <div style="margin-top: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+        <div class="smart-input">
+          <input type="text" id="quickCategory" placeholder="Общая категория">
+          <div class="smart-suggestions" id="quickCategorySuggestions"></div>
+        </div>
+        <div class="smart-input">
+          <input type="text" id="quickType" placeholder="Общий тип товара">
+          <div class="smart-suggestions" id="quickTypeSuggestions"></div>
+        </div>
       </div>
       
       <button id="addMultipleBtn" style="margin-top: 10px;">Добавить все</button>
@@ -1302,6 +1334,7 @@
     
     // Умные поля ввода с подсказками
     function setupSmartInputs() {
+      // Основная форма
       const categoryInput = document.getElementById('productCategory')
       const typeInput = document.getElementById('productType')
       
@@ -1315,34 +1348,71 @@
       typeInput.addEventListener('input', function() {
         showTypeSuggestions()
       })
+      
+      // Форма быстрого добавления
+      const quickCategoryInput = document.getElementById('quickCategory')
+      const quickTypeInput = document.getElementById('quickType')
+      
+      quickCategoryInput.addEventListener('focus', showQuickCategorySuggestions)
+      quickTypeInput.addEventListener('focus', showQuickTypeSuggestions)
+      
+      quickCategoryInput.addEventListener('input', function() {
+        showQuickCategorySuggestions()
+      })
+      
+      quickTypeInput.addEventListener('input', function() {
+        showQuickTypeSuggestions()
+      })
     }
     
     function showCategorySuggestions() {
       const suggestions = document.getElementById('categorySuggestions')
       const input = document.getElementById('productCategory')
-      const existingCategories = [...new Set(allProducts.map(p => p.category).filter(Boolean))]
+      showSuggestions(input, suggestions, 'category')
+    }
+    
+    function showTypeSuggestions() {
+      const suggestions = document.getElementById('typeSuggestions')
+      const input = document.getElementById('productType')
+      showSuggestions(input, suggestions, 'type')
+    }
+    
+    function showQuickCategorySuggestions() {
+      const suggestions = document.getElementById('quickCategorySuggestions')
+      const input = document.getElementById('quickCategory')
+      showSuggestions(input, suggestions, 'category')
+    }
+    
+    function showQuickTypeSuggestions() {
+      const suggestions = document.getElementById('quickTypeSuggestions')
+      const input = document.getElementById('quickType')
+      showSuggestions(input, suggestions, 'type')
+    }
+    
+    function showSuggestions(input, suggestions, fieldType) {
+      const existingValues = [...new Set(allProducts.map(p => p[fieldType]).filter(Boolean))]
       
       suggestions.innerHTML = ''
       
       // Фильтруем подсказки по введенному тексту
-      const filtered = existingCategories.filter(cat => 
-        cat.toLowerCase().includes(input.value.toLowerCase())
+      const filtered = existingValues.filter(value => 
+        value.toLowerCase().includes(input.value.toLowerCase())
       )
       
       // Показываем подходящие варианты
-      filtered.forEach(cat => {
+      filtered.forEach(value => {
         const item = document.createElement('div')
         item.className = 'suggestion-item'
-        item.textContent = cat
+        item.textContent = value
         item.onclick = () => {
-          input.value = cat
+          input.value = value
           suggestions.classList.remove('visible')
         }
         suggestions.appendChild(item)
       })
       
       // Добавляем опцию "Добавить новую"
-      if (input.value && !existingCategories.includes(input.value)) {
+      if (input.value && !existingValues.includes(input.value)) {
         const newItem = document.createElement('div')
         newItem.className = 'suggestion-item add-new-option'
         newItem.textContent = `+ Создать "${input.value}"`
@@ -1355,29 +1425,88 @@
       suggestions.classList.add('visible')
     }
     
-    function showTypeSuggestions() {
-      const suggestions = document.getElementById('typeSuggestions')
-      const input = document.getElementById('productType')
-      const existingTypes = [...new Set(allProducts.map(p => p.type).filter(Boolean))]
+    // Улучшенный селектор категорий для карточек товаров
+    function createCategorySelector(product, field) {
+      const container = document.createElement('div')
+      container.className = 'category-selector'
+      
+      const display = document.createElement('div')
+      display.className = 'category-display'
+      display.textContent = product[field] || 'Не указано'
+      display.title = 'Кликните для изменения'
+      
+      const input = document.createElement('input')
+      input.type = 'text'
+      input.className = 'category-edit-input'
+      input.value = product[field] || ''
+      input.style.display = 'none'
+      
+      const suggestions = document.createElement('div')
+      suggestions.className = 'smart-suggestions'
+      
+      // Показ input при клике
+      display.addEventListener('click', function() {
+        if (!isAdmin) return
+        display.style.display = 'none'
+        input.style.display = 'block'
+        input.focus()
+        
+        // Показать подсказки
+        showCardSuggestions(input, suggestions, field)
+      })
+      
+      // Сохранение при потере фокуса
+      input.addEventListener('blur', function() {
+        setTimeout(() => {
+          display.style.display = 'block'
+          input.style.display = 'none'
+          suggestions.classList.remove('visible')
+          
+          const newValue = input.value.trim()
+          display.textContent = newValue || 'Не указано'
+          
+          if (newValue !== product[field]) {
+            updateProduct(product.id, field, newValue)
+          }
+        }, 200)
+      })
+      
+      // Enter для сохранения
+      input.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          input.blur()
+        }
+      })
+      
+      container.appendChild(display)
+      container.appendChild(input)
+      container.appendChild(suggestions)
+      
+      return container
+    }
+    
+    function showCardSuggestions(input, suggestions, fieldType) {
+      const existingValues = [...new Set(allProducts.map(p => p[fieldType]).filter(Boolean))]
       
       suggestions.innerHTML = ''
       
-      const filtered = existingTypes.filter(type => 
-        type.toLowerCase().includes(input.value.toLowerCase())
+      const filtered = existingValues.filter(value => 
+        value.toLowerCase().includes(input.value.toLowerCase())
       )
       
-      filtered.forEach(type => {
+      filtered.forEach(value => {
         const item = document.createElement('div')
         item.className = 'suggestion-item'
-        item.textContent = type
+        item.textContent = value
         item.onclick = () => {
-          input.value = type
+          input.value = value
           suggestions.classList.remove('visible')
+          input.blur()
         }
         suggestions.appendChild(item)
       })
       
-      if (input.value && !existingTypes.includes(input.value)) {
+      if (input.value && !existingValues.includes(input.value)) {
         const newItem = document.createElement('div')
         newItem.className = 'suggestion-item add-new-option'
         newItem.textContent = `+ Создать "${input.value}"`
@@ -1392,7 +1521,7 @@
     
     // Закрытие подсказок при клике вне
     document.addEventListener('click', function(e) {
-      if (!e.target.closest('.smart-input')) {
+      if (!e.target.closest('.smart-input') && !e.target.closest('.category-selector')) {
         document.querySelectorAll('.smart-suggestions').forEach(s => {
           s.classList.remove('visible')
         })
@@ -1596,11 +1725,14 @@ ${actionText}
         container.appendChild(btn)
       })
       
-      if (selectedCategory !== "all" || selectedType !== "all") {
-        clearBtn.style.display = 'block'
-        container.appendChild(clearBtn)
-      } else {
-        clearBtn.style.display = 'none'
+      // Исправление ошибки с clearBtn
+      if (clearBtn) {
+        if (selectedCategory !== "all" || selectedType !== "all") {
+          clearBtn.style.display = 'block'
+          container.appendChild(clearBtn)
+        } else {
+          clearBtn.style.display = 'none'
+        }
       }
       
       allButtonClone.addEventListener('click', () => {
@@ -1749,6 +1881,10 @@ ${actionText}
       const inCart = cart.find(item => item.id === product.id)
       const quantity = inCart ? inCart.quantity : 1
       
+      // Создаем улучшенные селекторы для категории и типа
+      const categorySelector = createCategorySelector(product, 'category').outerHTML
+      const typeSelector = createCategorySelector(product, 'type').outerHTML
+      
       return `
         <div class="product-card" data-id="${product.id}">
           <img src="${product.img || 'https://via.placeholder.com/150'}" class="product-image" onclick="openLightbox('${product.img || 'https://via.placeholder.com/150'}')">
@@ -1765,11 +1901,11 @@ ${actionText}
               <div style="margin: 5px 0; font-size: 12px;">
                 <div>
                   Категория: 
-                  <span contenteditable="true" onblur="updateProduct('${product.id}', 'category', this.textContent)">${product.category || ''}</span>
+                  ${categorySelector}
                 </div>
-                <div>
+                <div style="margin-top: 5px;">
                   Тип: 
-                  <span contenteditable="true" onblur="updateProduct('${product.id}', 'type', this.textContent)">${product.type || ''}</span>
+                  ${typeSelector}
                 </div>
               </div>
             ` : ''}
