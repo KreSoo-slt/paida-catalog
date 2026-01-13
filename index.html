@@ -1204,20 +1204,7 @@
     <div class="products-list" id="archiveList"></div>
   </div>
   
-  <div class="admin-panel" id="adminPanel">
-    <!-- ДОБАВЬ ЭТОТ БЛОК В АДМИН-ПАНЕЛЬ -->
-<div class="shipping-settings" style="margin-top: 15px;">
-  <h4>🔗 Генерация SEO-ссылок (slug)</h4>
-  <div style="display: flex; gap: 10px; align-items: center;">
-    <button onclick="generateAllSlugs()" style="background: #2ecc71; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">
-      Создать SEO-ссылки для всех товаров
-    </button>
-    <span style="font-size: 12px; color: #666;">
-      Создаст красивые URL: /product/mylo-hozyaystvennoe-72
-    </span>
-  </div>
-  <div id="slugStatus" style="margin-top: 10px; font-size: 12px; color: #666;"></div>
-</div>
+ 
     <!-- Настройки доставки -->
     <div class="shipping-settings">
       <h4>🚚 Настройки бесплатной доставки</h4>
@@ -1248,6 +1235,20 @@
     <textarea id="productDescription" placeholder="Описание (необязательно)"></textarea>
     
     <div class="admin-controls">
+      <!-- Ручное редактирование slug -->
+<div style="margin-top: 10px; padding: 10px; background: #f0f8ff; border-radius: 5px; border: 1px solid #007bff;">
+  <h4 style="margin: 0 0 10px 0; font-size: 14px;">✏️ Ручное редактирование slug</h4>
+  <div style="display: grid; grid-template-columns: 1fr 2fr 1fr; gap: 10px; align-items: center;">
+    <select id="productSelect" style="padding: 5px; border: 1px solid #ddd; border-radius: 4px;">
+      <option value="">Выберите товар</option>
+    </select>
+    <input type="text" id="manualSlug" placeholder="Новый slug (например: mylo-zhidkoe-aquatell)" style="padding: 5px; border: 1px solid #ddd; border-radius: 4px;">
+    <button onclick="updateManualSlug()" style="background: #007bff; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">
+      Обновить
+    </button>
+  </div>
+  <div id="manualSlugStatus" style="margin-top: 5px; font-size: 12px;"></div>
+</div>
       <button id="addProductBtn">Добавить</button>
       <button id="quickAddToggle">Быстрое добавление</button>
     </div>
@@ -2795,17 +2796,56 @@ actions.appendChild(moreLink)
     });
   // ================== ФУНКЦИИ ДЛЯ SEO-ССЫЛОК (SLUG) ==================
 
-// Функция для создания SEO-friendly slug из названия
+
+// Функция для создания SEO-friendly slug из названия (поддерживает русский)
 function createSlug(text) {
-  return text
-    .toString()
-    .toLowerCase()
-    .trim()
-    .replace(/\s+/g, '-')           // пробелы на дефисы
-    .replace(/[^\w\-]+/g, '')       // удаляем не-буквы
-    .replace(/\-\-+/g, '-')         // заменяем двойные дефисы
-    .replace(/^-+/, '')             // удаляем дефисы в начале
-    .replace(/-+$/, '');            // удаляем дефисы в конце
+  if (!text) return '';
+  
+  // Транслитерация русских букв
+  const translitMap = {
+    'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd',
+    'е': 'e', 'ё': 'yo', 'ж': 'zh', 'з': 'z', 'и': 'i',
+    'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n',
+    'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't',
+    'у': 'u', 'ф': 'f', 'х': 'h', 'ц': 'ts', 'ч': 'ch',
+    'ш': 'sh', 'щ': 'sch', 'ъ': '', 'ы': 'y', 'ь': '',
+    'э': 'e', 'ю': 'yu', 'я': 'ya',
+    ' ': '-', '_': '-', ',': '', '.': '', '!': '', '?': '',
+    '(': '', ')': '', '[': '', ']': '', '{': '', '}': '',
+    '/': '-', '\\': '-', '|': '-', '+': '-', '=': '-',
+    '*': '', '%': '', '$': '', '#': '', '@': '', '&': '',
+    '^': '', '~': '', '`': '', '"': '', "'": '', ':': '',
+    ';': '', '<': '', '>': ''
+  };
+  
+  let result = '';
+  
+  // Преобразуем каждый символ
+  for (let char of text.toLowerCase()) {
+    if (translitMap[char] !== undefined) {
+      result += translitMap[char];
+    } else if (/[a-z0-9-]/.test(char)) {
+      result += char; // Оставляем английские буквы и цифры
+    }
+  }
+  
+  // Убираем множественные дефисы
+  result = result.replace(/-+/g, '-');
+  
+  // Убираем дефисы с начала и конца
+  result = result.replace(/^-+/, '').replace(/-+$/, '');
+  
+  // Если после обработки ничего не осталось, создаём ID
+  if (!result) {
+    return 'product-' + Math.random().toString(36).substr(2, 9);
+  }
+  
+  // Ограничиваем длину
+  if (result.length > 100) {
+    result = result.substring(0, 100);
+  }
+  
+  return result;
 }
 
 // Генерация slug для всех товаров
@@ -2917,6 +2957,20 @@ closeProductModal = function() {
 // Запускаем проверку URL
 setTimeout(checkURLForProduct, 500);
 // ================== КОНЕЦ ОБРАБОТКИ SEO-URL ==================
+<!-- Ручное редактирование slug -->
+<div style="margin-top: 10px; padding: 10px; background: #f0f8ff; border-radius: 5px; border: 1px solid #007bff;">
+  <h4 style="margin: 0 0 10px 0; font-size: 14px;">✏️ Ручное редактирование slug</h4>
+  <div style="display: grid; grid-template-columns: 1fr 2fr 1fr; gap: 10px; align-items: center;">
+    <select id="productSelect" style="padding: 5px; border: 1px solid #ddd; border-radius: 4px;">
+      <option value="">Выберите товар</option>
+    </select>
+    <input type="text" id="manualSlug" placeholder="Новый slug (например: mylo-zhidkoe-aquatell)" style="padding: 5px; border: 1px solid #ddd; border-radius: 4px;">
+    <button onclick="updateManualSlug()" style="background: #007bff; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">
+      Обновить
+    </button>
+  </div>
+  <div id="manualSlugStatus" style="margin-top: 5px; font-size: 12px;"></div>
+</div>
   </script>
 </body>
 </html>
