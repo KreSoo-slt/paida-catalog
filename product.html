@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Загрузка товара...</title>
+  <meta name="description" content="Каталог Paida All">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<a href="index.html">← Назад</a>
+
+<h1 id="name">Загрузка...</h1>
+
+<img id="image" src="" alt="" width="300">
+
+<p id="description"></p>
+
+<p><b>Цена:</b> <span id="price"></span> ₸</p>
+
+<button onclick="order()">Заказать в WhatsApp</button>
+
+<script>
+const SUPABASE_URL = "https://qmnnbotyzwftlhwakbnz.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtbm5ib3R5endmdGxod2FrYm56Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIwOTE3MzYsImV4cCI6MjA2NzY2NzczNn0.QaHkN4M4_Deh4HN4CZ-spv8QKbGKzhrfGwMvr6Pbyv4";
+
+const slug = new URLSearchParams(location.search).get("slug");
+
+async function loadProduct() {
+  const res = await fetch(
+    `${SUPABASE_URL}/rest/v1/products?slug=eq.${slug}`,
+    {
+      headers: {
+        apikey: SUPABASE_KEY,
+        Authorization: "Bearer " + SUPABASE_KEY
+      }
+    }
+  );
+
+  const data = await res.json();
+  if (!data.length) {
+    document.body.innerHTML = "Товар не найден";
+    return;
+  }
+
+  const p = data[0];
+
+  document.title = `${p.name} – купить в Караганде | Paida All`;
+  document.querySelector('meta[name="description"]').content =
+    `Купить ${p.name} по выгодной цене. Paida All, Караганда.`;
+
+  document.getElementById("name").innerText = p.name;
+  document.getElementById("price").innerText = p.price;
+  document.getElementById("description").innerText = p.description;
+  document.getElementById("image").src = p.image;
+  document.getElementById("image").alt = p.name;
+}
+
+function order() {
+  window.open(
+    "https://wa.me/77780855478?text=Хочу заказать: " +
+    encodeURIComponent(document.title)
+  );
+}
+
+loadProduct();
+</script>
+
+</body>
+</html>
