@@ -1205,6 +1205,19 @@
   </div>
   
   <div class="admin-panel" id="adminPanel">
+    <!-- ДОБАВЬ ЭТОТ БЛОК В АДМИН-ПАНЕЛЬ -->
+<div class="shipping-settings" style="margin-top: 15px;">
+  <h4>🔗 Генерация SEO-ссылок (slug)</h4>
+  <div style="display: flex; gap: 10px; align-items: center;">
+    <button onclick="generateAllSlugs()" style="background: #2ecc71; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">
+      Создать SEO-ссылки для всех товаров
+    </button>
+    <span style="font-size: 12px; color: #666;">
+      Создаст красивые URL: /product/mylo-hozyaystvennoe-72
+    </span>
+  </div>
+  <div id="slugStatus" style="margin-top: 10px; font-size: 12px; color: #666;"></div>
+</div>
     <!-- Настройки доставки -->
     <div class="shipping-settings">
       <h4>🚚 Настройки бесплатной доставки</h4>
@@ -2057,20 +2070,34 @@ ${actionText}
       
       actions.appendChild(addToCartBtn)
       
-      // Ссылка "Подробнее" (открывает модальное окно)
-      const moreLink = document.createElement('a')
-      moreLink.href = '#'
-      moreLink.onclick = (e) => {
-        e.preventDefault()
-        openProductModal(product) // ← открывает окно с товаром
-      }
-      moreLink.textContent = 'Подробнее'
-      moreLink.style.display = 'inline-block'
-      moreLink.style.marginLeft = '10px'
-      moreLink.style.color = '#007bff'
-      moreLink.style.textDecoration = 'underline'
+      // Ссылка "Подробнее" (открывает модальное окно + меняет URL для SEO)
+const moreLink = document.createElement('a')
 
-      actions.appendChild(moreLink)
+// Если есть slug - делаем SEO-ссылку, иначе обычную
+if (product.slug) {
+  moreLink.href = `/product/${product.slug}` // ← SEO-ссылка
+  moreLink.title = `${product.name} - купить в Караганде` // ← подсказка для SEO
+} else {
+  moreLink.href = '#'
+}
+
+moreLink.onclick = (e) => {
+  e.preventDefault()
+  openProductModal(product) // ← открывает окно с товаром
+  
+  // Если есть slug, меняем URL в браузере для SEO
+  if (product.slug) {
+    window.history.pushState({ productId: product.id }, '', `/product/${product.slug}`)
+  }
+}
+
+moreLink.textContent = 'Подробнее'
+moreLink.style.display = 'inline-block'
+moreLink.style.marginLeft = '10px'
+moreLink.style.color = '#007bff'
+moreLink.style.textDecoration = 'underline'
+
+actions.appendChild(moreLink)
       
       // Управление количеством (если товар в корзине)
       if (inCart) {
@@ -2766,6 +2793,130 @@ ${actionText}
         closeProductModal();
       }
     });
+  // ================== ФУНКЦИИ ДЛЯ SEO-ССЫЛОК (SLUG) ==================
+
+// Функция для создания SEO-friendly slug из названия
+function createSlug(text) {
+  return text
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-')           // пробелы на дефисы
+    .replace(/[^\w\-]+/g, '')       // удаляем не-буквы
+    .replace(/\-\-+/g, '-')         // заменяем двойные дефисы
+    .replace(/^-+/, '')             // удаляем дефисы в начале
+    .replace(/-+$/, '');            // удаляем дефисы в конце
+}
+
+// Генерация slug для всех товаров
+async function generateAllSlugs() {
+  const statusEl = document.getElementById('slugStatus');
+  
+  if (!confirm('Создать SEO-ссылки для всех товаров? Это обновит поле "slug" в Supabase.')) {
+    return;
+  }
+  
+  try {
+    statusEl.textContent = '⏳ Генерация SEO-ссылок...';
+    statusEl.style.color = '#666';
+    
+    let updatedCount = 0;
+    
+    // Для каждого товара создаём slug
+    for (const product of allProducts) {
+      if (!product.name) continue;
+      
+      const slug = createSlug(product.name);
+      
+      // Обновляем в Supabase
+      const { error } = await supabase
+        .from('products')
+        .update({ slug: slug })
+        .eq('id', product.id);
+      
+      if (error) {
+        console.error(`Ошибка для товара ${product.id}:`, error);
+        continue;
+      }
+      
+      // Обновляем локально
+      product.slug = slug;
+      updatedCount++;
+    }
+    
+    statusEl.textContent = `✅ Создано ${updatedCount} SEO-ссылок!`;
+    statusEl.style.color = '#2ecc71';
+    
+    logAdminAction(`Сгенерированы SEO-ссылки для ${updatedCount} товаров`);
+    
+    // Перезагружаем товары для отображения
+    await loadProducts();
+    
+  } catch (error) {
+    console.error('Ошибка генерации slug:', error);
+    statusEl.textContent = '❌ Ошибка генерации';
+    statusEl.style.color = '#ff4757';
+  }
+}
+
+// Проверка slug при добавлении/редактировании товара
+function checkAndGenerateSlug(name) {
+  if (!name) return '';
+  return createSlug(name);
+}
+// ================== КОНЕЦ ФУНКЦИЙ ДЛЯ SLUG ==================
+// ================== ОБРАБОТКА SEO-URL ==================
+
+// Проверка текущего URL при загрузке
+function checkURLForProduct() {
+  const path = window.location.pathname;
+  
+  // Если URL вида /product/название-товара
+  if (path.startsWith('/product/')) {
+    const slug = path.replace('/product/', '');
+    
+    if (slug) {
+      // Ищем товар по slug
+      const product = allProducts.find(p => p.slug === slug);
+      
+      if (product) {
+        // Показываем товар в модальном окне
+        openProductModal(product);
+      } else {
+        // Если не нашли, перенаправляем на главную
+        console.log('Товар не найден по slug:', slug);
+        window.history.replaceState({}, '', '/');
+      }
+    }
+  }
+}
+
+// Обработка кнопки "Назад" в браузере
+window.addEventListener('popstate', function(event) {
+  const path = window.location.pathname;
+  
+  if (path === '/' || path === '/index.html' || path === '') {
+    // Если вернулись на главную, закрываем модальное окно
+    closeProductModal();
+  } else if (path.startsWith('/product/')) {
+    // Если перешли на товар, показываем его
+    checkURLForProduct();
+  }
+});
+
+// Обновляем closeProductModal чтобы сбрасывать URL
+const originalCloseProductModal = closeProductModal;
+closeProductModal = function() {
+  originalCloseProductModal();
+  // Возвращаем URL на главную при закрытии окна
+  if (window.location.pathname.startsWith('/product/')) {
+    window.history.pushState({}, '', '/');
+  }
+};
+
+// Запускаем проверку URL
+setTimeout(checkURLForProduct, 500);
+// ================== КОНЕЦ ОБРАБОТКИ SEO-URL ==================
   </script>
 </body>
 </html>
