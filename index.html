@@ -888,6 +888,43 @@
       border-radius: 3px;
     }
     
+    /* Модальное окно товара */
+    #productModal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal-content {
+      background: #fff;
+      max-width: 800px;
+      width: 90%;
+      max-height: 90vh;
+      margin: 5% auto;
+      padding: 20px;
+      border-radius: 12px;
+      position: relative;
+      overflow-y: auto;
+    }
+    
+    .modal-close {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 24px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #333;
+    }
+    
     /* Мобильная версия */
     @media (max-width: 768px) {
       .header-top {
@@ -987,6 +1024,12 @@
       .header-settings-grid {
         grid-template-columns: 1fr;
       }
+      
+      .modal-content {
+        width: 95%;
+        padding: 15px;
+        margin: 10% auto;
+      }
     }
     
     @media (min-width: 768px) {
@@ -1017,6 +1060,29 @@
   <div class="quick-view" id="quickView">
     <button class="quick-view-close" id="quickViewClose">✕</button>
     <div id="quickViewContent"></div>
+  </div>
+
+  <!-- Модальное окно товара -->
+  <div id="productModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeProductModal()">×</button>
+      
+      <div class="product-card" style="border: none; box-shadow: none; padding: 0;">
+        <img id="modalImage" class="product-image" src="" alt="" style="max-height: 300px; object-fit: contain;">
+        
+        <div class="product-info" style="margin-top: 15px;">
+          <div id="modalName" class="product-name" style="font-size: 24px; margin-bottom: 10px;"></div>
+          <div id="modalPrice" class="product-price" style="font-size: 20px; color: #2ecc71; margin-bottom: 15px;"></div>
+          <div id="modalDescription" class="product-description" style="font-size: 16px; line-height: 1.5; padding: 15px; background: #f9f9f9; border-radius: 8px;"></div>
+          
+          <div class="product-actions" style="margin-top: 20px;">
+            <button class="add-to-cart" onclick="orderFromModal()" style="padding: 12px 20px; font-size: 16px;">
+              Заказать в WhatsApp
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <header class="main-header">
@@ -1990,21 +2056,21 @@ ${actionText}
       addToCartBtn.onclick = () => addToCart(product.id)
       
       actions.appendChild(addToCartBtn)
-      // Ссылка "Подробнее"
-const moreLink = document.createElement('a')
- moreLink.href = '#'
-moreLink.onclick = (e) => {
-  e.preventDefault()
-  alert('Подробнее нажато')
-}
- moreLink.textContent = 'Подробнее'
- moreLink.style.display = 'inline-block'
- moreLink.style.marginLeft = '10px'
- moreLink.style.color = '#007bff'
- moreLink.style.textDecoration = 'underline'
+      
+      // Ссылка "Подробнее" (открывает модальное окно)
+      const moreLink = document.createElement('a')
+      moreLink.href = '#'
+      moreLink.onclick = (e) => {
+        e.preventDefault()
+        openProductModal(product) // ← открывает окно с товаром
+      }
+      moreLink.textContent = 'Подробнее'
+      moreLink.style.display = 'inline-block'
+      moreLink.style.marginLeft = '10px'
+      moreLink.style.color = '#007bff'
+      moreLink.style.textDecoration = 'underline'
 
-  actions.appendChild(moreLink)
-
+      actions.appendChild(moreLink)
       
       // Управление количеством (если товар в корзине)
       if (inCart) {
@@ -2144,6 +2210,41 @@ moreLink.onclick = (e) => {
     window.closeQuickView = function() {
       document.getElementById('quickView').classList.remove('active')
     }
+    
+    // ================== ФУНКЦИИ ДЛЯ МОДАЛЬНОГО ОКНА ТОВАРА ==================
+    let currentProductForModal = null;
+    
+    function openProductModal(product) {
+      currentProductForModal = product;
+    
+      // Заполняем данные в модальном окне
+      document.getElementById('modalName').textContent = product.name || 'Без названия';
+      document.getElementById('modalPrice').textContent = 
+        product.price ? `${product.price.toLocaleString('ru-RU')} ₸` : 'Цена не указана';
+      document.getElementById('modalDescription').textContent = product.description || '';
+      document.getElementById('modalImage').src = 
+        product.img || 'https://via.placeholder.com/300';
+      document.getElementById('modalImage').alt = product.name || '';
+    
+      // Показываем окно
+      document.getElementById('productModal').style.display = 'block';
+    }
+    
+    function closeProductModal() {
+      document.getElementById('productModal').style.display = 'none';
+      currentProductForModal = null;
+    }
+    
+    function orderFromModal() {
+      if (!currentProductForModal) return;
+      
+      const message = `Здравствуйте! Хочу заказать: ${currentProductForModal.name || 'Товар'}`;
+      window.open(
+        'https://wa.me/77780855478?text=' + encodeURIComponent(message),
+        '_blank'
+      );
+    }
+    // ================== КОНЕЦ ФУНКЦИЙ МОДАЛЬНОГО ОКНА ==================
     
     function setupEventListeners() {
       // Админ-доступ
@@ -2658,28 +2759,13 @@ moreLink.onclick = (e) => {
       const cartVisible = document.getElementById('cartContainer').classList.toggle('visible')
       document.body.classList.toggle('cart-visible', cartVisible)
     }
-  </script>
-  <!-- Окно товара -->
-<div id="productModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999;">
-  <div style="background:#fff; max-width:800px; margin:5% auto; padding:20px; border-radius:12px; position:relative;">
     
-    <button onclick="closeProductModal()" style="position:absolute; top:10px; right:15px; font-size:24px;">×</button>
-
-    <div class="product-card">
-      <img id="modalImage" class="product-image" src="" alt="">
-
-      <div class="product-info">
-        <div id="modalName" class="product-name"></div>
-        <div id="modalPrice" class="product-price"></div>
-        <div id="modalDescription" class="product-description"></div>
-
-        <button class="add-to-cart" onclick="orderFromModal()">
-          Заказать в WhatsApp
-        </button>
-      </div>
-    </div>
-
-  </div>
-</div>
+    // Закрытие модального окна при клике на фон
+    document.getElementById('productModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeProductModal();
+      }
+    });
+  </script>
 </body>
 </html>
