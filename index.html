@@ -1234,21 +1234,51 @@
     <input type="text" id="productImage" placeholder="Ссылка на фото (необязательно)">
     <textarea id="productDescription" placeholder="Описание (необязательно)"></textarea>
     
+    <div class="admin-panel" id="adminPanel">
+    <!-- ДОБАВЬ ЭТОТ БЛОК В АДМИН-ПАНЕЛЬ -->
+    <div class="shipping-settings" style="margin-top: 15px;">
+      <h4>🔗 Генерация SEO-ссылок (slug)</h4>
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <button onclick="generateAllSlugs()" style="background: #2ecc71; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">
+          Создать SEO-ссылки для всех товаров
+        </button>
+        <span style="font-size: 12px; color: #666;">
+          Создаст красивые URL: /product/mylo-hozyaystvennoe-72
+        </span>
+      </div>
+      <div id="slugStatus" style="margin-top: 10px; font-size: 12px; color: #666;"></div>
+    </div>
+
+    <!-- Настройки доставки -->
+    <div class="shipping-settings">
+      <h4>🚚 Настройки бесплатной доставки</h4>
+      <div class="shipping-controls">
+        <input type="number" id="freeShippingInput" placeholder="Сумма доставки" value="50000">
+        <button onclick="updateFreeShipping()">Обновить</button>
+        <span>₸</span>
+      </div>
+    </div>
+
+    <h3>Добавить товар</h3>
+    
+    <!-- Ускоренная форма -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+      <div class="smart-input">
+        <input type="text" id="productCategory" placeholder="Категория" list="categorySuggestions">
+        <div class="smart-suggestions" id="categorySuggestions"></div>
+      </div>
+      <div class="smart-input">
+        <input type="text" id="productType" placeholder="Тип товара" list="typeSuggestions">
+        <div class="smart-suggestions" id="typeSuggestions"></div>
+      </div>
+    </div>
+    
+    <input type="text" id="productName" placeholder="Название (необязательно)">
+    <input type="text" id="productPrice" placeholder="Цена (необязательно)">
+    <input type="text" id="productImage" placeholder="Ссылка на фото (необязательно)">
+    <textarea id="productDescription" placeholder="Описание (необязательно)"></textarea>
+    
     <div class="admin-controls">
-      <!-- Ручное редактирование slug -->
-<div style="margin-top: 10px; padding: 10px; background: #f0f8ff; border-radius: 5px; border: 1px solid #007bff;">
-  <h4 style="margin: 0 0 10px 0; font-size: 14px;">✏️ Ручное редактирование slug</h4>
-  <div style="display: grid; grid-template-columns: 1fr 2fr 1fr; gap: 10px; align-items: center;">
-    <select id="productSelect" style="padding: 5px; border: 1px solid #ddd; border-radius: 4px;">
-      <option value="">Выберите товар</option>
-    </select>
-    <input type="text" id="manualSlug" placeholder="Новый slug (например: mylo-zhidkoe-aquatell)" style="padding: 5px; border: 1px solid #ddd; border-radius: 4px;">
-    <button onclick="updateManualSlug()" style="background: #007bff; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">
-      Обновить
-    </button>
-  </div>
-  <div id="manualSlugStatus" style="margin-top: 5px; font-size: 12px;"></div>
-</div>
       <button id="addProductBtn">Добавить</button>
       <button id="quickAddToggle">Быстрое добавление</button>
     </div>
@@ -2797,9 +2827,11 @@ actions.appendChild(moreLink)
   // ================== ФУНКЦИИ ДЛЯ SEO-ССЫЛОК (SLUG) ==================
 
 
+=
+
 // Функция для создания SEO-friendly slug из названия (поддерживает русский)
 function createSlug(text) {
-  if (!text) return '';
+  if (!text || typeof text !== 'string') return '';
   
   // Транслитерация русских букв
   const translitMap = {
@@ -2810,12 +2842,7 @@ function createSlug(text) {
     'у': 'u', 'ф': 'f', 'х': 'h', 'ц': 'ts', 'ч': 'ch',
     'ш': 'sh', 'щ': 'sch', 'ъ': '', 'ы': 'y', 'ь': '',
     'э': 'e', 'ю': 'yu', 'я': 'ya',
-    ' ': '-', '_': '-', ',': '', '.': '', '!': '', '?': '',
-    '(': '', ')': '', '[': '', ']': '', '{': '', '}': '',
-    '/': '-', '\\': '-', '|': '-', '+': '-', '=': '-',
-    '*': '', '%': '', '$': '', '#': '', '@': '', '&': '',
-    '^': '', '~': '', '`': '', '"': '', "'": '', ':': '',
-    ';': '', '<': '', '>': ''
+    ' ': '-', '_': '-'
   };
   
   let result = '';
@@ -2834,16 +2861,6 @@ function createSlug(text) {
   
   // Убираем дефисы с начала и конца
   result = result.replace(/^-+/, '').replace(/-+$/, '');
-  
-  // Если после обработки ничего не осталось, создаём ID
-  if (!result) {
-    return 'product-' + Math.random().toString(36).substr(2, 9);
-  }
-  
-  // Ограничиваем длину
-  if (result.length > 100) {
-    result = result.substring(0, 100);
-  }
   
   return result;
 }
@@ -2867,6 +2884,7 @@ async function generateAllSlugs() {
       if (!product.name) continue;
       
       const slug = createSlug(product.name);
+      if (!slug) continue;
       
       // Обновляем в Supabase
       const { error } = await supabase
@@ -2897,12 +2915,6 @@ async function generateAllSlugs() {
     statusEl.textContent = '❌ Ошибка генерации';
     statusEl.style.color = '#ff4757';
   }
-}
-
-// Проверка slug при добавлении/редактировании товара
-function checkAndGenerateSlug(name) {
-  if (!name) return '';
-  return createSlug(name);
 }
 // ================== КОНЕЦ ФУНКЦИЙ ДЛЯ SLUG ==================
 // ================== ОБРАБОТКА SEO-URL ==================
