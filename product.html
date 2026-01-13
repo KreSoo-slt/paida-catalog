@@ -2,87 +2,159 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Товар</title>
-  <meta name="description" content="Товар магазина Paida All">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- Подключаем твои стили -->
-  <link rel="stylesheet" href="style.css">
+  <title>Товар - Paida All</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #f9f9f9;
+    }
+    .product-page {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .product-image {
+      width: 100%;
+      max-height: 400px;
+      object-fit: contain;
+      margin-bottom: 20px;
+    }
+    .product-name {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .product-price {
+      font-size: 20px;
+      color: #2ecc71;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+    .product-description {
+      font-size: 16px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+      padding: 15px;
+      background: #f9f9f9;
+      border-radius: 8px;
+    }
+    .back-link {
+      display: inline-block;
+      margin-top: 20px;
+      color: #007bff;
+      text-decoration: none;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
-
-<header class="header">
-  <h1 class="logo">Paida All</h1>
-</header>
-
-<main class="container">
-  <div class="product-card product-page">
-
-    <img id="product-image" class="product-image" src="" alt="">
-
-    <div class="product-info">
-      <div id="product-name" class="product-name"></div>
-      <div id="product-price" class="product-price"></div>
-      <div id="product-description" class="product-description"></div>
-
-      <div class="product-actions">
-        <button class="add-to-cart" onclick="orderWhatsapp()">
-          Заказать в WhatsApp
-        </button>
-        <a href="index.html" style="margin-left:10px">← Назад</a>
-      </div>
-    </div>
-
+  <div class="product-page" id="productPage">
+    <a href="/" class="back-link">← Назад в каталог</a>
+    
+    <img id="productImage" class="product-image" src="" alt="">
+    
+    <h1 id="productName" class="product-name"></h1>
+    <div id="productPrice" class="product-price"></div>
+    <div id="productDescription" class="product-description"></div>
+    
+    <button onclick="orderWhatsapp()" style="
+      background: #25D366;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    ">
+      Заказать в WhatsApp
+    </button>
   </div>
-</main>
 
-<script>
-const SUPABASE_URL = "https://qmnnbotyzwftlhwakbnz.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtbm5ib3R5endmdGxod2FrYm56Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIwOTE3MzYsImV4cCI6MjA2NzY2NzczNn0.QaHkN4M4_Deh4HN4CZ-spv8QKbGKzhrfGwMvr6Pbyv4";
-
-const slug = new URLSearchParams(location.search).get("slug");
-
-async function loadProduct() {
-  const res = await fetch(
-    `${SUPABASE_URL}/rest/v1/products?slug=eq.${slug}`,
-    {
-      headers: {
-        apikey: SUPABASE_KEY,
-        Authorization: "Bearer " + SUPABASE_KEY
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+    
+    const supabaseUrl = 'https://qmnnbotyzwftlhwakbnz.supabase.co'
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtbm5ib3R5endmdGxod2FrYm56Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIwOTE3MzYsImV4cCI6MjA2NzY2NzczNn0.QaHkN4M4_Deh4HN4CZ-spv8QKbGKzhrfGwMvr6Pbyv4'
+    const supabase = createClient(supabaseUrl, supabaseKey)
+    
+    // Получаем slug из URL
+    const path = window.location.pathname
+    const slug = path.replace('/product/', '')
+    
+    async function loadProduct() {
+      if (!slug) {
+        document.getElementById('productPage').innerHTML = '<p>Товар не найден</p>'
+        return
+      }
+      
+      try {
+        const { data, error } = await supabase
+          .from('products')
+          .select('*')
+          .eq('slug', slug)
+          .single()
+        
+        if (error || !data) {
+          document.getElementById('productPage').innerHTML = '<p>Товар не найден</p>'
+          return
+        }
+        
+        const p = data
+        
+        // Устанавливаем заголовок страницы
+        document.title = `${p.name} – купить в Караганде | Paida All`
+        
+        // Заполняем данные
+        document.getElementById('productName').textContent = p.name || 'Без названия'
+        document.getElementById('productPrice').textContent = 
+          p.price ? `${p.price.toLocaleString('ru-RU')} ₸` : 'Цена не указана'
+        document.getElementById('productDescription').textContent = p.description || ''
+        document.getElementById('productImage').src = 
+          p.img || 'https://via.placeholder.com/400'
+        document.getElementById('productImage').alt = p.name || ''
+        
+        // Добавляем микроразметку для SEO
+        const script = document.createElement('script')
+        script.type = 'application/ld+json'
+        script.textContent = JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Product",
+          "name": p.name,
+          "image": p.img,
+          "description": p.description,
+          "offers": {
+            "@type": "Offer",
+            "price": p.price,
+            "priceCurrency": "KZT"
+          }
+        })
+        document.head.appendChild(script)
+        
+      } catch (error) {
+        console.error('Ошибка загрузки товара:', error)
+        document.getElementById('productPage').innerHTML = '<p>Ошибка загрузки товара</p>'
       }
     }
-  );
-
-  const data = await res.json();
-  if (!data.length) {
-    document.body.innerHTML = "Товар не найден";
-    return;
-  }
-
-  const p = data[0];
-
-  document.title = `${p.name} – купить | Paida All`;
-  document.querySelector('meta[name="description"]').content =
-    `Купить ${p.name} по выгодной цене. Paida All.`;
-
-  document.getElementById("product-name").textContent = p.name;
-  document.getElementById("product-price").textContent =
-    p.price ? `${p.price.toLocaleString('ru-RU')} ₸` : '';
-  document.getElementById("product-description").textContent = p.description || '';
-  document.getElementById("product-image").src =
-    p.img || 'https://via.placeholder.com/300';
-  document.getElementById("product-image").alt = p.name;
-}
-
-function orderWhatsapp() {
-  window.open(
-    "https://wa.me/77780855478?text=" +
-    encodeURIComponent("Здравствуйте! Хочу заказать: " + document.title)
-  );
-}
-
-loadProduct();
-</script>
-
+    
+    function orderWhatsapp() {
+      const productName = document.getElementById('productName').textContent
+      window.open(
+        'https://wa.me/77780855478?text=' +
+        encodeURIComponent(`Здравствуйте! Хочу заказать: ${productName}`),
+        '_blank'
+      )
+    }
+    
+    // Загружаем товар при открытии страницы
+    loadProduct()
+  </script>
 </body>
 </html>
