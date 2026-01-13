@@ -2,23 +2,39 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Загрузка товара...</title>
-  <meta name="description" content="Каталог Paida All">
+  <title>Товар</title>
+  <meta name="description" content="Товар магазина Paida All">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Подключаем твои стили -->
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<a href="index.html">← Назад</a>
+<header class="header">
+  <h1 class="logo">Paida All</h1>
+</header>
 
-<h1 id="name">Загрузка...</h1>
+<main class="container">
+  <div class="product-card product-page">
 
-<img id="image" src="" alt="" width="300">
+    <img id="product-image" class="product-image" src="" alt="">
 
-<p id="description"></p>
+    <div class="product-info">
+      <div id="product-name" class="product-name"></div>
+      <div id="product-price" class="product-price"></div>
+      <div id="product-description" class="product-description"></div>
 
-<p><b>Цена:</b> <span id="price"></span> ₸</p>
+      <div class="product-actions">
+        <button class="add-to-cart" onclick="orderWhatsapp()">
+          Заказать в WhatsApp
+        </button>
+        <a href="index.html" style="margin-left:10px">← Назад</a>
+      </div>
+    </div>
 
-<button onclick="order()">Заказать в WhatsApp</button>
+  </div>
+</main>
 
 <script>
 const SUPABASE_URL = "https://qmnnbotyzwftlhwakbnz.supabase.co";
@@ -45,21 +61,23 @@ async function loadProduct() {
 
   const p = data[0];
 
-  document.title = `${p.name} – купить в Караганде | Paida All`;
+  document.title = `${p.name} – купить | Paida All`;
   document.querySelector('meta[name="description"]').content =
-    `Купить ${p.name} по выгодной цене. Paida All, Караганда.`;
+    `Купить ${p.name} по выгодной цене. Paida All.`;
 
-  document.getElementById("name").innerText = p.name;
-  document.getElementById("price").innerText = p.price;
-  document.getElementById("description").innerText = p.description;
-  document.getElementById("image").src = p.image;
-  document.getElementById("image").alt = p.name;
+  document.getElementById("product-name").textContent = p.name;
+  document.getElementById("product-price").textContent =
+    p.price ? `${p.price.toLocaleString('ru-RU')} ₸` : '';
+  document.getElementById("product-description").textContent = p.description || '';
+  document.getElementById("product-image").src =
+    p.img || 'https://via.placeholder.com/300';
+  document.getElementById("product-image").alt = p.name;
 }
 
-function order() {
+function orderWhatsapp() {
   window.open(
-    "https://wa.me/77780855478?text=Хочу заказать: " +
-    encodeURIComponent(document.title)
+    "https://wa.me/77780855478?text=" +
+    encodeURIComponent("Здравствуйте! Хочу заказать: " + document.title)
   );
 }
 
