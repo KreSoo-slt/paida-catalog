@@ -1992,7 +1992,11 @@ ${actionText}
       actions.appendChild(addToCartBtn)
       // Ссылка "Подробнее"
 const moreLink = document.createElement('a')
- moreLink.href = `product.html?slug=${product.slug}`  // slug берём из продукта
+ moreLink.href = '#'
+moreLink.onclick = (e) => {
+  e.preventDefault()
+  alert('Подробнее нажато')
+}
  moreLink.textContent = 'Подробнее'
  moreLink.style.display = 'inline-block'
  moreLink.style.marginLeft = '10px'
@@ -2655,5 +2659,27 @@ const moreLink = document.createElement('a')
       document.body.classList.toggle('cart-visible', cartVisible)
     }
   </script>
+  <!-- Окно товара -->
+<div id="productModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999;">
+  <div style="background:#fff; max-width:800px; margin:5% auto; padding:20px; border-radius:12px; position:relative;">
+    
+    <button onclick="closeProductModal()" style="position:absolute; top:10px; right:15px; font-size:24px;">×</button>
+
+    <div class="product-card">
+      <img id="modalImage" class="product-image" src="" alt="">
+
+      <div class="product-info">
+        <div id="modalName" class="product-name"></div>
+        <div id="modalPrice" class="product-price"></div>
+        <div id="modalDescription" class="product-description"></div>
+
+        <button class="add-to-cart" onclick="orderFromModal()">
+          Заказать в WhatsApp
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
 </body>
 </html>
