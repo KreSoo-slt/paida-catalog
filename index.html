@@ -1990,6 +1990,17 @@ ${actionText}
       addToCartBtn.onclick = () => addToCart(product.id)
       
       actions.appendChild(addToCartBtn)
+      // Ссылка "Подробнее"
+const moreLink = document.createElement('a')
+ moreLink.href = `product.html?slug=${product.slug}`  // slug берём из продукта
+ moreLink.textContent = 'Подробнее'
+ moreLink.style.display = 'inline-block'
+ moreLink.style.marginLeft = '10px'
+ moreLink.style.color = '#007bff'
+ moreLink.style.textDecoration = 'underline'
+
+  actions.appendChild(moreLink)
+
       
       // Управление количеством (если товар в корзине)
       if (inCart) {
