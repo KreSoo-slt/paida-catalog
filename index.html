@@ -2057,16 +2057,12 @@ ${actionText}
       
       actions.appendChild(addToCartBtn)
       
-      // Ссылка "Подробнее" (открывает отдельную страницу с красивым URL)
-const moreLink = document.createElement('a')
-moreLink.href = `/product/${product.slug}` // ← красивая ссылка!
-moreLink.textContent = 'Подробнее'
-moreLink.onclick = (e) => {
-  e.preventDefault()
-  // Открываем и модальное окно, и меняем URL в браузере
-  openProductModal(product)
-  window.history.pushState({}, '', `/product/${product.slug}`)
-}
+      // Ссылка "Подробнее" (открывает модальное окно)
+      const moreLink = document.createElement('a')
+      moreLink.href = '#'
+      moreLink.onclick = (e) => {
+        e.preventDefault()
+        openProductModal(product) // ← открывает окно с товаром
       }
       moreLink.textContent = 'Подробнее'
       moreLink.style.display = 'inline-block'
@@ -2233,15 +2229,12 @@ moreLink.onclick = (e) => {
       // Показываем окно
       document.getElementById('productModal').style.display = 'block';
     }
-
     
     function closeProductModal() {
-  document.getElementById('productModal').style.display = 'none';
-  currentProductForModal = null;
-  
-  // Меняем URL обратно на главную при закрытии
-  window.history.pushState({}, '', '/');
-}
+      document.getElementById('productModal').style.display = 'none';
+      currentProductForModal = null;
+    }
+    
     function orderFromModal() {
       if (!currentProductForModal) return;
       
@@ -2773,67 +2766,6 @@ moreLink.onclick = (e) => {
         closeProductModal();
       }
     });
-    // ================== ОБРАБОТКА КРАСИВЫХ URL ==================
-
-// Функция для загрузки товара по slug
-async function loadProductBySlug(slug) {
-  try {
-    const { data, error } = await supabase
-      .from('products')
-      .select('*')
-      .eq('slug', slug)
-      .single()
-    
-    if (error || !data) {
-      console.error('Товар не найден:', error)
-      return null
-    }
-    
-    return data
-  } catch (error) {
-    console.error('Ошибка загрузки товара:', error)
-    return null
-  }
-}
-
-// Проверка текущего URL при загрузке страницы
-function checkCurrentURL() {
-  const path = window.location.pathname
-  
-  // Если URL вида /product/название-товара
-  if (path.startsWith('/product/')) {
-    const slug = path.replace('/product/', '')
-    
-    if (slug) {
-      // Показываем модальное окно с товаром
-      loadProductBySlug(slug).then(product => {
-        if (product) {
-          openProductModal(product)
-        } else {
-          // Если товар не найден, перенаправляем на главную
-          window.location.href = '/'
-        }
-      })
-    }
-  }
-}
-
-// Обработка кнопки "Назад" в браузере
-window.addEventListener('popstate', function(event) {
-  const path = window.location.pathname
-  
-  if (path === '/' || path === '/index.html') {
-    // Если вернулись на главную, закрываем модальное окно
-    closeProductModal()
-  } else if (path.startsWith('/product/')) {
-    // Если перешли на товар, открываем его
-    checkCurrentURL()
-  }
-})
-
-// Запускаем проверку при загрузке
-setTimeout(checkCurrentURL, 100)
-// ================== КОНЕЦ ОБРАБОТКИ URL ==================
   </script>
 </body>
 </html>
