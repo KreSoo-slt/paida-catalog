@@ -3502,7 +3502,7 @@ ${actionText}
       }
     }
     
-    window.moveProduct = async (id, direction) {
+    window.moveProduct = async function(id, direction) {
       try {
         const product = allProducts.find(p => p.id === id)
         if (!product) return
