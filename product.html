@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Товар - Paida All</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #f9f9f9;
+    }
+    .product-page {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .product-image {
+      width: 100%;
+      max-height: 400px;
+      object-fit: contain;
+      margin-bottom: 20px;
+    }
+    .product-name {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .product-price {
+      font-size: 20px;
+      color: #2ecc71;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+    .product-description {
+      font-size: 16px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+      padding: 15px;
+      background: #f9f9f9;
+      border-radius: 8px;
+    }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 20px;
+      color: #007bff;
+      text-decoration: none;
+      font-size: 16px;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+    .whatsapp-btn {
+      background: #25D366;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+      display: inline-block;
+      text-decoration: none;
+    }
+    .whatsapp-btn:hover {
+      background: #20b858;
+    }
+  </style>
+</head>
+<body>
+  <a href="/" class="back-link">← Назад в каталог</a>
+  
+  <div class="product-page" id="productPage">
+    <img id="productImage" class="product-image" src="" alt="">
+    
+    <h1 id="productName" class="product-name"></h1>
+    <div id="productPrice" class="product-price"></div>
+    <div id="productDescription" class="product-description"></div>
+    
+    <button onclick="orderWhatsapp()" class="whatsapp-btn">
+      Заказать в WhatsApp
+    </button>
+  </div>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+    
+    const supabaseUrl = 'https://qmnnbotyzwftlhwakbnz.supabase.co'
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtbm5ib3R5endmdGxod2FrYm56Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIwOTE3MzYsImV4cCI6MjA2NzY2NzczNn0.QaHkN4M4_Deh4HN4CZ-spv8QKbGKzhrfGwMvr6Pbyv4'
+    const supabase = createClient(supabaseUrl, supabaseKey)
+    
+    // Получаем slug из URL
+    const path = window.location.pathname
+    const slug = path.replace('/product/', '')
+    
+    async function loadProduct() {
+      if (!slug) {
+        document.getElementById('productPage').innerHTML = '<p>Товар не найден</p>'
+        return
+      }
+      
+      try {
+        const { data, error } = await supabase
+          .from('products')
+          .select('*')
+          .eq('slug', slug)
+          .single()
+        
+        if (error || !data) {
+          document.getElementById('productPage').innerHTML = '<p>Товар не найден</p>'
+          return
+        }
+        
+        const product = data
+        
+        // Устанавливаем SEO-заголовок
+        document.title = `${product.name} – купить в Караганде | Paida All`
+        
+        // Добавляем SEO-описание
+        const metaDescription = document.querySelector('meta[name="description"]') || document.createElement('meta')
+        metaDescription.name = 'description'
+        metaDescription.content = `Купить ${product.name} по выгодной цене в Караганде. ${product.description || ''}`
+        if (!document.querySelector('meta[name="description"]')) {
+          document.head.appendChild(metaDescription)
+        }
+        
+        // Заполняем данные
+        document.getElementById('productName').textContent = product.name || 'Без названия'
+        document.getElementById('productPrice').textContent = 
+          product.price ? `${product.price.toLocaleString('ru-RU')} ₸` : 'Цена не указана'
+        document.getElementById('productDescription').textContent = product.description || ''
+        document.getElementById('productImage').src = 
+          product.img || 'https://via.placeholder.com/400'
+        document.getElementById('productImage').alt = product.name || ''
+        
+        // Добавляем микроразметку Schema.org для SEO
+        const schemaScript = document.createElement('script')
+        schemaScript.type = 'application/ld+json'
+        schemaScript.textContent = JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Product",
+          "name": product.name,
+          "image": product.img,
+          "description": product.description,
+          "offers": {
+            "@type": "Offer",
+            "price": product.price,
+            "priceCurrency": "KZT",
+            "availability": "https://schema.org/InStock"
+          }
+        })
+        document.head.appendChild(schemaScript)
+        
+      } catch (error) {
+        console.error('Ошибка загрузки товара:', error)
+        document.getElementById('productPage').innerHTML = '<p>Ошибка загрузки товара</p>'
+      }
+    }
+    
+    function orderWhatsapp() {
+      const productName = document.getElementById('productName').textContent
+      const message = `Здравствуйте! Хочу заказать: ${productName} (${window.location.href})`
+      window.open(
+        'https://wa.me/77780855478?text=' + encodeURIComponent(message),
+        '_blank'
+      )
+    }
+    
+    // Загружаем товар при открытии страницы
+    loadProduct()
+  </script>
+</body>
+</html>
