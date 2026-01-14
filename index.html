@@ -22,15 +22,23 @@
       box-sizing: border-box;
     }
     
-    body {
-      font-family: Arial, sans-serif;
-      background: #f9f9f9;
-      margin: 0;
-      padding: 0;
-      min-height: 100vh;
-      color: #333;
-      line-height: 1.5;
-    }
+    html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f9f9f9;
+  color: #333;
+  line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
     
     /* Шапка */
     .main-header {
@@ -498,14 +506,61 @@
       margin-bottom: 5px;
     }
     
-    .product-description {
-      font-size: 14px;
-      color: #666;
-      margin-bottom: 10px;
-      padding: 8px;
-      background: rgba(0,0,0,0.03);
-      border-radius: 5px;
-    }
+  /* В разделе Товары (.product-description) добавьте: */
+.product-description {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 10px;
+    padding: 8px;
+    background: rgba(0,0,0,0.03);
+    border-radius: 5px;
+    position: relative; /* Добавить */
+}
+/* Кнопка Подробнее */
+.more-details-btn {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #25D366, #1da851);
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(37, 211, 102, 0.2);
+}
+
+.more-details-btn:hover {
+  background: linear-gradient(135deg, #1da851, #25D366);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(37, 211, 102, 0.3);
+}
+
+/* Новая стилизация кнопки "Подробнее" */
+.more-details-btn {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 6px 12px;
+    background: linear-gradient(135deg, #25D366, #1da851);
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(37, 211, 102, 0.2);
+}
+
+.more-details-btn:hover {
+    background: linear-gradient(135deg, #1da851, #25D366);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(37, 211, 102, 0.3);
+}
     
     .product-actions {
       display: flex;
@@ -1033,6 +1088,62 @@
     
     /* Мобильная версия */
     @media (max-width: 768px) {
+  /* Добавьте эти стили первыми */
+  .main-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    padding: 8px 0;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid #eee;
+    max-height: 60px;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+  
+  .main-header.expanded {
+    max-height: 400px;
+  }
+  
+  .header-toggle-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1001;
+  }
+  
+  .header-features {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .header-features.active {
+    display: flex;
+    opacity: 1;
+  }
+  
+  /* Существующие стили остаются ниже */
+  .header-top {
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+  }
+  /* ... остальной существующий код ... */
+}
+    @media (max-width: 768px) {
       .header-top {
         flex-direction: column;
         align-items: center;
@@ -1343,6 +1454,24 @@
   </style>
 </head>
 <body>
+  <style>
+  /* ВСЕ ВАШИ СТИЛИ ЗДЕСЬ */
+  :root {
+    --primary-color: #25D366;
+    ...
+  }
+  
+  * {
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: Arial, sans-serif;
+    ...
+  }
+  
+  /* и так далее - сотни строк CSS */
+</style>
   <!-- Lightbox для изображений -->
   <div class="lightbox" id="lightbox">
     <button class="lightbox-close" id="lightboxClose">✕</button>
@@ -2266,20 +2395,32 @@
       productInfo.appendChild(description)
       
       // Кнопка для открытия улучшенного модального окна
-      const moreLink = document.createElement('a')
-      moreLink.href = '#'
-      moreLink.onclick = (e) => {
-        e.preventDefault()
-        openProductModal(product)
-      }
-      moreLink.textContent = 'Подробнее'
-      moreLink.style.display = 'inline-block'
-      moreLink.style.marginLeft = '10px'
-      moreLink.style.color = '#007bff'
-      moreLink.style.textDecoration = 'underline'
-      moreLink.style.cursor = 'pointer'
-      
-      productInfo.appendChild(moreLink)
+     // УДАЛИТЕ ЭТОТ БЛОК (примерно строки 2230-2245):
+const moreLink = document.createElement('a')
+moreLink.href = '#'
+moreLink.onclick = (e) => {
+  e.preventDefault()
+  openProductModal(product)
+}
+moreLink.textContent = 'Подробнее'
+moreLink.style.display = 'inline-block'
+moreLink.style.marginLeft = '10px'
+moreLink.style.color = '#007bff'
+moreLink.style.textDecoration = 'underline'
+moreLink.style.cursor = 'pointer'
+
+productInfo.appendChild(moreLink)
+
+// ЗАМЕНИТЕ НА:
+const moreBtn = document.createElement('button')
+moreBtn.className = 'more-details-btn'
+moreBtn.textContent = '🔍 Подробнее'
+moreBtn.onclick = (e) => {
+  e.preventDefault()
+  e.stopPropagation()
+  openProductModal(product)
+}
+productInfo.appendChild(moreBtn)
       
       const actions = document.createElement('div')
       actions.className = 'product-actions'
@@ -3265,6 +3406,35 @@ ${actionText}
         }
       })
     }
+     // Добавьте это после существующих слушателей:
+  
+  // Кнопка для развертывания шапки на мобильных
+  if (window.innerWidth <= 768) {
+    const headerToggle = document.createElement('button')
+    headerToggle.className = 'header-toggle-btn'
+    headerToggle.innerHTML = '▼'
+    headerToggle.onclick = toggleMobileHeader
+    document.querySelector('.header-top').appendChild(headerToggle)
+    
+    // Скрываем features по умолчанию на мобильных
+    document.querySelector('.header-features').classList.remove('active')
+  }
+}
+
+function toggleMobileHeader() {
+  const header = document.querySelector('.main-header')
+  const features = document.querySelector('.header-features')
+  const toggleBtn = document.querySelector('.header-toggle-btn')
+  
+  header.classList.toggle('expanded')
+  features.classList.toggle('active')
+  
+  if (header.classList.contains('expanded')) {
+    toggleBtn.innerHTML = '▲'
+  } else {
+    toggleBtn.innerHTML = '▼'
+  }
+}
     
     function setupQuickAddFields() {
       const container = document.getElementById('quickAddItemsContainer')
