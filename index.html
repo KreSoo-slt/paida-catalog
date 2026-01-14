@@ -2818,7 +2818,7 @@ actions.appendChild(moreLink)
       document.body.classList.toggle('cart-visible', cartVisible)
     }
     
-    // Закрытие модального окна при клике на фон
+        // Закрытие модального окна при клике на фон
     document.getElementById('productModal').addEventListener('click', function(e) {
       if (e.target === this) {
         closeProductModal();
@@ -2826,100 +2826,97 @@ actions.appendChild(moreLink)
     });
   // ================== ФУНКЦИИ ДЛЯ SEO-ССЫЛОК (SLUG) ==================
 
-
-=
-
-// Функция для создания SEO-friendly slug из названия (поддерживает русский)
-function createSlug(text) {
-  if (!text || typeof text !== 'string') return '';
-  
-  // Транслитерация русских букв
-  const translitMap = {
-    'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd',
-    'е': 'e', 'ё': 'yo', 'ж': 'zh', 'з': 'z', 'и': 'i',
-    'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n',
-    'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't',
-    'у': 'u', 'ф': 'f', 'х': 'h', 'ц': 'ts', 'ч': 'ch',
-    'ш': 'sh', 'щ': 'sch', 'ъ': '', 'ы': 'y', 'ь': '',
-    'э': 'e', 'ю': 'yu', 'я': 'ya',
-    ' ': '-', '_': '-'
-  };
-  
-  let result = '';
-  
-  // Преобразуем каждый символ
-  for (let char of text.toLowerCase()) {
-    if (translitMap[char] !== undefined) {
-      result += translitMap[char];
-    } else if (/[a-z0-9-]/.test(char)) {
-      result += char; // Оставляем английские буквы и цифры
+  // Функция для создания SEO-friendly slug из названия (поддерживает русский)
+  function createSlug(text) {
+    if (!text || typeof text !== 'string') return '';
+    
+    // Транслитерация русских букв
+    const translitMap = {
+      'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd',
+      'е': 'e', 'ё': 'yo', 'ж': 'zh', 'з': 'z', 'и': 'i',
+      'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n',
+      'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't',
+      'у': 'u', 'ф': 'f', 'х': 'h', 'ц': 'ts', 'ч': 'ch',
+      'ш': 'sh', 'щ': 'sch', 'ъ': '', 'ы': 'y', 'ь': '',
+      'э': 'e', 'ю': 'yu', 'я': 'ya',
+      ' ': '-', '_': '-'
+    };
+    
+    let result = '';
+    
+    // Преобразуем каждый символ
+    for (let char of text.toLowerCase()) {
+      if (translitMap[char] !== undefined) {
+        result += translitMap[char];
+      } else if (/[a-z0-9-]/.test(char)) {
+        result += char; // Оставляем английские буквы и цифры
+      }
     }
+    
+    // Убираем множественные дефисы
+    result = result.replace(/-+/g, '-');
+    
+    // Убираем дефисы с начала и конца
+    result = result.replace(/^-+/, '').replace(/-+$/, '');
+    
+    return result;
   }
-  
-  // Убираем множественные дефисы
-  result = result.replace(/-+/g, '-');
-  
-  // Убираем дефисы с начала и конца
-  result = result.replace(/^-+/, '').replace(/-+$/, '');
-  
-  return result;
-}
 
-// Генерация slug для всех товаров
-async function generateAllSlugs() {
-  const statusEl = document.getElementById('slugStatus');
-  
-  if (!confirm('Создать SEO-ссылки для всех товаров? Это обновит поле "slug" в Supabase.')) {
-    return;
-  }
-  
-  try {
-    statusEl.textContent = '⏳ Генерация SEO-ссылок...';
-    statusEl.style.color = '#666';
+  // Генерация slug для всех товаров
+  async function generateAllSlugs() {
+    const statusEl = document.getElementById('slugStatus');
     
-    let updatedCount = 0;
+    if (!confirm('Создать SEO-ссылки для всех товаров? Это обновит поле "slug" в Supabase.')) {
+      return;
+    }
     
-    // Для каждого товара создаём slug
-    for (const product of allProducts) {
-      if (!product.name) continue;
+    try {
+      statusEl.textContent = '⏳ Генерация SEO-ссылок...';
+      statusEl.style.color = '#666';
       
-      const slug = createSlug(product.name);
-      if (!slug) continue;
+      let updatedCount = 0;
       
-      // Обновляем в Supabase
-      const { error } = await supabase
-        .from('products')
-        .update({ slug: slug })
-        .eq('id', product.id);
-      
-      if (error) {
-        console.error(`Ошибка для товара ${product.id}:`, error);
-        continue;
+      // Для каждого товара создаём slug
+      for (const product of allProducts) {
+        if (!product.name) continue;
+        
+        const slug = createSlug(product.name);
+        if (!slug) continue;
+        
+        // Обновляем в Supabase
+        const { error } = await supabase
+          .from('products')
+          .update({ slug: slug })
+          .eq('id', product.id);
+        
+        if (error) {
+          console.error(`Ошибка для товара ${product.id}:`, error);
+          continue;
+        }
+        
+        // Обновляем локально
+        product.slug = slug;
+        updatedCount++;
       }
       
-      // Обновляем локально
-      product.slug = slug;
-      updatedCount++;
+      statusEl.textContent = `✅ Создано ${updatedCount} SEO-ссылок!`;
+      statusEl.style.color = '#2ecc71';
+      
+      logAdminAction(`Сгенерированы SEO-ссылки для ${updatedCount} товаров`);
+      
+      // Перезагружаем товары для отображения
+      await loadProducts();
+      
+    } catch (error) {
+      console.error('Ошибка генерации slug:', error);
+      statusEl.textContent = '❌ Ошибка генерации';
+      statusEl.style.color = '#ff4757';
     }
-    
-    statusEl.textContent = `✅ Создано ${updatedCount} SEO-ссылок!`;
-    statusEl.style.color = '#2ecc71';
-    
-    logAdminAction(`Сгенерированы SEO-ссылки для ${updatedCount} товаров`);
-    
-    // Перезагружаем товары для отображения
-    await loadProducts();
-    
-  } catch (error) {
-    console.error('Ошибка генерации slug:', error);
-    statusEl.textContent = '❌ Ошибка генерации';
-    statusEl.style.color = '#ff4757';
   }
-}
-// ================== КОНЕЦ ФУНКЦИЙ ДЛЯ SLUG ==================
-// ================== ОБРАБОТКА SEO-URL ==================
+  // ================== КОНЕЦ ФУНКЦИЙ ДЛЯ SLUG ==================
+  // ================== ОБРАБОТКА SEO-URL ==================
 
-// Проверка текущего URL при загрузке
+  // Проверка текущего URL при загрузке
 function checkURLForProduct() {
   const path = window.location.pathname;
   
