@@ -3,7 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-  <title>Paida All — Каталог</title>
+  <title>Paida All — Оптовые поставки товаров в Караганде | 8 (778) 085-54-78</title>
+  <meta name="description" content="Paida All — оптовый поставщик товаров в Караганде. Низкие цены, быстрая доставка, работаем с физ. и юр. лицами. Бесплатная доставка от 50 000₸">
+  <meta name="keywords" content="оптовые поставки Караганда, купить оптом Караганда, поставщики товаров, оптовая база, товары для бизнеса">
+  <link rel="icon" type="image/x-icon" href="https://pic.maxiol.com/thumbs2/1753306101.86132844.paidaj.jpg">
+  <link rel="apple-touch-icon" href="https://pic.maxiol.com/thumbs2/1753306101.86132844.paidaj.jpg">
+  
   <style>
     :root {
       --primary-color: #25D366;
@@ -12,12 +17,18 @@
       --cart-color: #FF9F43;
     }
     
+    * {
+      box-sizing: border-box;
+    }
+    
     body {
       font-family: Arial, sans-serif;
       background: #f9f9f9;
       margin: 0;
       padding: 0;
       min-height: 100vh;
+      color: #333;
+      line-height: 1.5;
     }
     
     /* Шапка */
@@ -121,6 +132,18 @@
       cursor: pointer;
       text-decoration: underline;
       white-space: nowrap;
+    }
+
+    /* Баннер спецпредложения */
+    .special-offer {
+      background: linear-gradient(to right, #FF6B6B, #FF8E53);
+      color: white;
+      text-align: center;
+      padding: 12px;
+      font-weight: bold;
+      border-radius: 8px;
+      margin: 10px 0;
+      box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
     }
 
     /* Настройки шапки */
@@ -925,6 +948,129 @@
       color: #333;
     }
     
+    /* Отзывы */
+    .reviews-section {
+      background: #f9f9f9;
+      padding: 30px 20px;
+      margin: 30px 0;
+    }
+    
+    .reviews-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .reviews-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+    
+    .review-card {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .review-stars {
+      color: #FFD700;
+      margin-bottom: 10px;
+    }
+    
+    /* Информационные секции */
+    .info-section {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+    
+    .info-card {
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+    }
+    
+    /* Подвал */
+    .main-footer {
+      background: #2c3e50;
+      color: white;
+      padding: 40px 20px;
+      margin-top: 50px;
+    }
+    
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+    }
+    
+    .footer-section h3 {
+      color: var(--primary-color);
+      margin-bottom: 15px;
+      font-size: 18px;
+    }
+    
+    .footer-section p {
+      margin: 5px 0;
+      font-size: 14px;
+      color: #ddd;
+    }
+    
+    .footer-section a {
+      color: #ddd;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    
+    .footer-section a:hover {
+      color: var(--primary-color);
+    }
+    
+    .footer-bottom {
+      text-align: center;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #34495e;
+      font-size: 12px;
+      color: #95a5a6;
+    }
+    
+    /* Cookie уведомление */
+    .cookie-notice {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(44, 62, 80, 0.95);
+      color: white;
+      padding: 15px 20px;
+      z-index: 1000;
+      display: none;
+    }
+    
+    .cookie-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    
+    .cookie-notice p {
+      margin: 0;
+      font-size: 14px;
+      flex: 1;
+      min-width: 300px;
+    }
+    
     /* Мобильная версия */
     @media (max-width: 768px) {
       .header-top {
@@ -1030,6 +1176,23 @@
         padding: 15px;
         margin: 10% auto;
       }
+      
+      .reviews-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .footer-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .cookie-content {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .cookie-notice p {
+        min-width: auto;
+      }
     }
     
     @media (min-width: 768px) {
@@ -1053,7 +1216,7 @@
   <!-- Lightbox для изображений -->
   <div class="lightbox" id="lightbox">
     <button class="lightbox-close" id="lightboxClose">✕</button>
-    <img class="lightbox-img" id="lightboxImg" src="">
+    <img class="lightbox-img" id="lightboxImg" src="" alt="">
   </div>
 
   <!-- Быстрый просмотр -->
@@ -1085,16 +1248,27 @@
     </div>
   </div>
 
+  <!-- Cookie уведомление -->
+  <div class="cookie-notice" id="cookieNotice">
+    <div class="cookie-content">
+      <p>Мы используем cookies для улучшения работы сайта. Продолжая использовать сайт, вы соглашаетесь с использованием cookies.</p>
+      <button onclick="acceptCookies()" style="background: var(--primary-color); color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Понятно</button>
+    </div>
+  </div>
+
+  <!-- Шапка сайта -->
   <header class="main-header">
     <div class="header-container">
       <div class="header-top">
         <div class="logo-container">
-          <img src="https://pic.maxiol.com/thumbs2/1753306101.86132844.paidaj.jpg" alt="Paida All" class="logo" id="headerLogo">
+          <img src="https://pic.maxiol.com/thumbs2/1753306101.86132844.paidaj.jpg" alt="Paida All - оптовые поставки в Караганде" class="logo" id="headerLogo">
           <div class="shop-name" contenteditable="false" id="shopName">Paida All</div>
           <div class="admin-access" id="adminAccess">Для админа</div>
         </div>
         <div class="header-contacts">
-          <div class="contact-phone" contenteditable="false" id="contactPhone">8 (778) 085-54-78</div>
+          <div class="contact-phone" contenteditable="false" id="contactPhone">
+            <a href="tel:+77780855478" style="color: #333; text-decoration: none;">8 (778) 085-54-78</a>
+          </div>
           <div class="contact-address" contenteditable="false" id="contactAddress">г. Караганда, ул. Алиханова 37 (цокольный этаж)</div>
         </div>
       </div>
@@ -1103,6 +1277,11 @@
         <div class="feature-item" contenteditable="false">💲 Оптовые цены без посредников</div>
         <div class="feature-item" contenteditable="false">📝 Работаем с физ. и юр. лицами</div>
         <div class="feature-item" contenteditable="false">🚚 Отправка в другие регионы</div>
+      </div>
+
+      <!-- Баннер спецпредложения -->
+      <div class="special-offer">
+        <p>🔥 ГОРЯЧЕЕ ПРЕДЛОЖЕНИЕ! Первым 10 клиентам скидка 10% по промокоду: <strong>PAIDA10</strong></p>
       </div>
 
       <!-- Настройки шапки -->
@@ -1142,11 +1321,13 @@
     <span id="breadcrumbPath"></span>
   </div>
 
+  <!-- Кнопка корзины -->
   <div class="cart-toggle" id="cartToggle">
     <div class="cart-badge" id="cartBadge" style="display: none;">0</div>
     🛒
   </div>
   
+  <!-- Корзина -->
   <div class="cart-container" id="cartContainer">
     <div class="cart-header">
       <div class="cart-title">Корзина</div>
@@ -1170,21 +1351,26 @@
     </div>
   </div>
   
-  <a class="whatsapp-btn" href="https://wa.me/77780855478" target="_blank">
+  <!-- Кнопка WhatsApp -->
+  <a class="whatsapp-btn" href="https://wa.me/77780855478" target="_blank" title="Написать в WhatsApp">
     <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
   </a>
   
+  <!-- Уведомление о доставке -->
   <div class="notice">
+    <strong>Информация о доставке:</strong><br>
     Заказы обрабатываются на следующий день.<br>
-    Доставка(От <span id="freeShippingAmount">50.000</span>тг) и самовывоз доступны по Караганде.
+    Доставка (от <span id="freeShippingAmount">50.000</span> ₸) и самовывоз доступны по Караганде.
   </div>
   
+  <!-- Поиск и фильтры -->
   <div class="filters-container">
     <div class="search-container">
       <input type="text" id="searchInput" placeholder="Поиск товаров...">
     </div>
   </div>
   
+  <!-- Категории и типы -->
   <div class="categories-container">
     <div class="categories" id="categories">
       <button class="category-btn active" data-category="all">Все</button>
@@ -1195,15 +1381,126 @@
     </div>
   </div>
   
+  <!-- Основной контент -->
   <div class="products-container">
     <div class="products-list" id="productsList"></div>
   </div>
   
+  <!-- Отзывы -->
+  <section class="reviews-section">
+    <div class="reviews-container">
+      <h2 style="text-align: center; color: #333;">Отзывы наших клиентов</h2>
+      <div class="reviews-grid">
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p>"Быстрая доставка, хорошие цены. Рекомендую всем предпринимателям Караганды!"</p>
+          <p><strong>Мария, магазин "Ромашка"</strong><br>
+          <small>12 января 2024</small></p>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p>"Работаем уже полгода, всегда вовремя и качественно. Цены ниже чем у конкурентов."</p>
+          <p><strong>Айдар, ИП "Султан"</strong><br>
+          <small>5 декабря 2023</small></p>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★☆</div>
+          <p>"Отличный ассортимент, оперативная доставка. Буду рекомендовать партнерам."</p>
+          <p><strong>Елена, кафе "Уют"</strong><br>
+          <small>20 ноября 2023</small></p>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Информационные разделы -->
+  <section id="about" class="info-section">
+    <div class="info-card">
+      <h2>О компании Paida All</h2>
+      <p><strong>Paida All</strong> — надежный оптовый поставщик товаров в Караганде. Мы работаем с 2023 года, специализируемся на поставках качественных товаров по доступным ценам.</p>
+      <p><strong>Наша миссия:</strong> обеспечивать карагандинские предприятия и частных клиентов качественными товарами с быстрой доставкой и профессиональным сервисом.</p>
+      <p><strong>Преимущества работы с нами:</strong></p>
+      <ul>
+        <li>Прямые поставки от производителей</li>
+        <li>Гибкая система скидок для постоянных клиентов</li>
+        <li>Быстрая доставка по Караганде и области</li>
+        <li>Индивидуальный подход к каждому клиенту</li>
+        <li>Гарантия качества на всю продукцию</li>
+      </ul>
+    </div>
+    
+    <div class="info-card" id="contacts">
+      <h2>Контакты</h2>
+      <div>
+        <p><strong>📍 Адрес:</strong> г. Караганда, ул. Алиханова 37 (цокольный этаж)</p>
+        <p><strong>📞 Телефон:</strong> <a href="tel:+77780855478">8 (778) 085-54-78</a></p>
+        <p><strong>✉️ Email:</strong> <a href="mailto:paidall.krg@gmail.com">paidall.krg@gmail.com</a></p>
+        <p><strong>🕒 Режим работы:</strong><br>
+        Пн-Пт: 9:00-18:00<br>
+        Сб: 10:00-16:00<br>
+        Вс: выходной</p>
+      </div>
+    </div>
+    
+    <div class="info-card" id="delivery">
+      <h2>Условия доставки и оплаты</h2>
+      <p><strong>Самовывоз:</strong><br>
+      г. Караганда, ул. Алиханова 37 (цокольный этаж)<br>
+      Бесплатно, без минимальной суммы заказа</p>
+      
+      <p><strong>Доставка по Караганде:</strong><br>
+      • От 1 000 ₸ — в зависимости от района<br>
+      • <strong>Бесплатно</strong> при заказе от 50 000 ₸<br>
+      • Срок доставки: 1-2 рабочих дня</p>
+      
+      <p><strong>Доставка в другие города:</strong><br>
+      Доставляем через транспортные компании (Казпочта, СДЭК, другие)<br>
+      Стоимость рассчитывается индивидуально</p>
+      
+      <p><strong>Способы оплаты:</strong><br>
+      • Наличными при получении<br>
+      • Перевод на банковскую карту<br>
+      • Для юридических лиц — безналичный расчет</p>
+    </div>
+    
+    <div class="info-card" id="privacy">
+      <h2>Политика конфиденциальности</h2>
+      <p><strong>1. Общие положения</strong><br>
+      Настоящая политика конфиденциальности регулирует порядок сбора, использования и раскрытия информации, полученной от пользователей сайта Paida All.</p>
+      
+      <p><strong>2. Собираемая информация</strong><br>
+      Мы собираем только необходимую информацию для обработки заказов: имя, контактный телефон, адрес доставки.</p>
+      
+      <p><strong>3. Использование информации</strong><br>
+      Собранная информация используется исключительно для:
+      • Обработки и выполнения заказов
+      • Связи с клиентами
+      • Улучшения качества обслуживания</p>
+      
+      <p><strong>4. Защита информации</strong><br>
+      Мы предпринимаем все необходимые меры для защиты ваших персональных данных от несанкционированного доступа.</p>
+      
+      <p><strong>5. Использование cookies</strong><br>
+      Наш сайт использует технологию cookies для:
+      • Запоминания товаров в корзине
+      • Сохранения настроек фильтров
+      • Анализа посещаемости сайта (анонимно)
+      Вы можете отключить cookies в настройках браузера.</p>
+      
+      <p><strong>6. Контакты</strong><br>
+      По вопросам конфиденциальности обращайтесь: <a href="mailto:paidall.krg@gmail.com">paidall.krg@gmail.com</a></p>
+      
+      <p><strong>Дата вступления в силу:</strong> 01 января 2024 года</p>
+    </div>
+  </section>
+  
+  <!-- Архив -->
   <div class="archive-section" id="archiveSection">
     <div class="archive-title">📦 Архив (только для админа)</div>
     <div class="products-list" id="archiveList"></div>
   </div>
   
+  <!-- Админ-панель -->
   <div class="admin-panel" id="adminPanel">
     <!-- SEO-ссылки -->
     <div class="shipping-settings" style="margin-top: 15px;">
@@ -1258,10 +1555,10 @@
       </div>
     </div>
     
-    <input type="text" id="productName" placeholder="Название (необязательно)">
-    <input type="text" id="productPrice" placeholder="Цена (необязательно)">
-    <input type="text" id="productImage" placeholder="Ссылка на фото (необязательно)">
-    <textarea id="productDescription" placeholder="Описание (необязательно)"></textarea>
+    <input type="text" id="productName" placeholder="Название (необязательно)" style="width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px;">
+    <input type="text" id="productPrice" placeholder="Цена (необязательно)" style="width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px;">
+    <input type="text" id="productImage" placeholder="Ссылка на фото (необязательно)" style="width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px;">
+    <textarea id="productDescription" placeholder="Описание (необязательно)" style="width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px; height: 80px;"></textarea>
     
     <div class="admin-controls">
       <button id="addProductBtn">Добавить</button>
@@ -1271,7 +1568,7 @@
     <div class="quick-add-panel" id="quickAddPanel">
       <div style="margin-bottom: 10px;">
         <label>Количество товаров:</label>
-        <select id="quickItemsCount" style="margin-left: 10px;">
+        <select id="quickItemsCount" style="margin-left: 10px; padding: 5px; border: 1px solid #ddd; border-radius: 4px;">
           <option value="1">1</option>
           <option value="2">2</option>
           <option value="3" selected>3</option>
@@ -1298,9 +1595,52 @@
         </div>
       </div>
       
-      <button id="addMultipleBtn" style="margin-top: 10px;">Добавить все</button>
+      <button id="addMultipleBtn" style="margin-top: 10px; padding: 8px 15px; background: var(--primary-color); color: white; border: none; border-radius: 5px; cursor: pointer;">Добавить все</button>
     </div>
   </div>
+
+  <!-- Подвал -->
+  <footer class="main-footer">
+    <div class="footer-container">
+      <div class="footer-section">
+        <h3>Paida All</h3>
+        <p>Оптовые поставки товаров в Караганде</p>
+        <p>Надежный партнер для вашего бизнеса</p>
+        <p>Работаем с 2023 года</p>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Контакты</h3>
+        <p>📍 г. Караганда, ул. Алиханова 37</p>
+        <p>📞 <a href="tel:+77780855478">8 (778) 085-54-78</a></p>
+        <p>✉️ <a href="mailto:paidall.krg@gmail.com">paidall.krg@gmail.com</a></p>
+        <p>🕒 Пн-Пт: 9:00-18:00</p>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Информация</h3>
+        <p><a href="#about">О компании</a></p>
+        <p><a href="#contacts">Контакты</a></p>
+        <p><a href="#delivery">Доставка и оплата</a></p>
+        <p><a href="#privacy">Политика конфиденциальности</a></p>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Мы в соцсетях</h3>
+        <p>
+          <a href="https://wa.me/77780855478" target="_blank">WhatsApp</a> |
+          <a href="https://instagram.com/paida_all" target="_blank">Instagram</a>
+        </p>
+        <p>Быстрая связь и консультации</p>
+        <p>Спецпредложения для подписчиков</p>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>© 2024 Paida All. Все права защищены.</p>
+      <p>Используя сайт, вы соглашаетесь с <a href="#privacy" style="color: var(--primary-color);">политикой конфиденциальности</a></p>
+    </div>
+  </footer>
 
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
@@ -1331,7 +1671,22 @@
       loadHeaderSettings()
       loadFreeShippingSetting()
       setupSmartInputs()
+      showCookieNotice()
     })
+    
+    // Cookie уведомление
+    function showCookieNotice() {
+      if (!localStorage.getItem('cookiesAccepted')) {
+        setTimeout(() => {
+          document.getElementById('cookieNotice').style.display = 'block'
+        }, 2000)
+      }
+    }
+    
+    function acceptCookies() {
+      localStorage.setItem('cookiesAccepted', 'true')
+      document.getElementById('cookieNotice').style.display = 'none'
+    }
     
     // Загрузка настроек шапки из Supabase
     async function loadHeaderSettings() {
@@ -1359,7 +1714,6 @@
         applyHeaderSettings()
       } catch (error) {
         console.error('Ошибка загрузки настроек шапки:', error)
-        // Используем настройки по умолчанию
         headerSettings = {
           logo_url: 'https://pic.maxiol.com/thumbs2/1753306101.86132844.paidaj.jpg',
           logo_height: 50,
@@ -2100,6 +2454,7 @@ ${actionText}
       const image = document.createElement('img')
       image.src = product.img || 'https://via.placeholder.com/150'
       image.className = 'product-image'
+      image.alt = product.name || 'Изображение товара'
       image.onclick = () => openLightbox(image.src)
       
       const productInfo = document.createElement('div')
@@ -2163,7 +2518,7 @@ ${actionText}
       
       actions.appendChild(addToCartBtn)
       
-      // Ссылка "Подробнее" (открывает модальное окно + меняет URL для SEO)
+      // Ссылка "Подробнее"
       const moreLink = document.createElement('a')
       moreLink.href = '#'
       moreLink.onclick = (e) => {
@@ -2417,6 +2772,9 @@ ${actionText}
       
       // Очистка фильтров
       document.getElementById('clearFilters').addEventListener('click', resetFilters)
+      
+      // Cookie
+      window.acceptCookies = acceptCookies
     }
     
     function setupQuickAddFields() {
@@ -2904,7 +3262,7 @@ ${actionText}
         if (translitMap[char] !== undefined) {
           result += translitMap[char];
         } else if (/[a-z0-9-]/.test(char)) {
-          result += char; // Оставляем английские буквы и цифры
+          result += char;
         }
       }
       
@@ -2984,10 +3342,8 @@ ${actionText}
           const product = allProducts.find(p => p.slug === slug);
           
           if (product) {
-            // Показываем товар в модальном окне
             openProductModal(product);
           } else {
-            // Если не нашли, перенаправляем на главную
             console.log('Товар не найден по slug:', slug);
             window.history.replaceState({}, '', '/');
           }
@@ -3000,10 +3356,8 @@ ${actionText}
       const path = window.location.pathname;
       
       if (path === '/' || path === '/index.html' || path === '') {
-        // Если вернулись на главную, закрываем модальное окно
         closeProductModal();
       } else if (path.startsWith('/product/')) {
-        // Если перешли на товар, показываем его
         checkURLForProduct();
       }
     });
