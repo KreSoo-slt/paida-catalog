@@ -1204,38 +1204,8 @@
     <div class="products-list" id="archiveList"></div>
   </div>
   
- 
-    <!-- Настройки доставки -->
-    <div class="shipping-settings">
-      <h4>🚚 Настройки бесплатной доставки</h4>
-      <div class="shipping-controls">
-        <input type="number" id="freeShippingInput" placeholder="Сумма доставки" value="50000">
-        <button onclick="updateFreeShipping()">Обновить</button>
-        <span>₸</span>
-      </div>
-    </div>
-
-    <h3>Добавить товар</h3>
-    
-    <!-- Ускоренная форма -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
-      <div class="smart-input">
-        <input type="text" id="productCategory" placeholder="Категория" list="categorySuggestions">
-        <div class="smart-suggestions" id="categorySuggestions"></div>
-      </div>
-      <div class="smart-input">
-        <input type="text" id="productType" placeholder="Тип товара" list="typeSuggestions">
-        <div class="smart-suggestions" id="typeSuggestions"></div>
-      </div>
-    </div>
-    
-    <input type="text" id="productName" placeholder="Название (необязательно)">
-    <input type="text" id="productPrice" placeholder="Цена (необязательно)">
-    <input type="text" id="productImage" placeholder="Ссылка на фото (необязательно)">
-    <textarea id="productDescription" placeholder="Описание (необязательно)"></textarea>
-    
-    <div class="admin-panel" id="adminPanel">
-    <!-- ДОБАВЬ ЭТОТ БЛОК В АДМИН-ПАНЕЛЬ -->
+  <div class="admin-panel" id="adminPanel">
+    <!-- SEO-ссылки -->
     <div class="shipping-settings" style="margin-top: 15px;">
       <h4>🔗 Генерация SEO-ссылок (slug)</h4>
       <div style="display: flex; gap: 10px; align-items: center;">
@@ -1247,6 +1217,21 @@
         </span>
       </div>
       <div id="slugStatus" style="margin-top: 10px; font-size: 12px; color: #666;"></div>
+    </div>
+
+    <!-- Ручное редактирование slug -->
+    <div style="margin-top: 10px; padding: 10px; background: #f0f8ff; border-radius: 5px; border: 1px solid #007bff;">
+      <h4 style="margin: 0 0 10px 0; font-size: 14px;">✏️ Ручное редактирование slug</h4>
+      <div style="display: grid; grid-template-columns: 1fr 2fr 1fr; gap: 10px; align-items: center;">
+        <select id="productSelect" style="padding: 5px; border: 1px solid #ddd; border-radius: 4px;">
+          <option value="">Выберите товар</option>
+        </select>
+        <input type="text" id="manualSlug" placeholder="Новый slug (например: mylo-zhidkoe-aquatell)" style="padding: 5px; border: 1px solid #ddd; border-radius: 4px;">
+        <button onclick="updateManualSlug()" style="background: #007bff; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">
+          Обновить
+        </button>
+      </div>
+      <div id="manualSlugStatus" style="margin-top: 5px; font-size: 12px;"></div>
     </div>
 
     <!-- Настройки доставки -->
@@ -1511,6 +1496,9 @@
       quickTypeInput.addEventListener('input', function() {
         showQuickTypeSuggestions()
       })
+      
+      // Заполняем выпадающий список для ручного редактирования slug
+      updateProductSelect()
     }
     
     function showCategorySuggestions() {
@@ -1571,6 +1559,67 @@
       }
       
       suggestions.classList.add('visible')
+    }
+    
+    // Обновление выпадающего списка товаров для ручного редактирования slug
+    function updateProductSelect() {
+      const select = document.getElementById('productSelect')
+      select.innerHTML = '<option value="">Выберите товар</option>'
+      
+      allProducts.forEach(product => {
+        const option = document.createElement('option')
+        option.value = product.id
+        option.textContent = product.name || `Товар ID: ${product.id}`
+        select.appendChild(option)
+      })
+    }
+    
+    // Ручное обновление slug
+    async function updateManualSlug() {
+      const select = document.getElementById('productSelect')
+      const manualSlug = document.getElementById('manualSlug')
+      const status = document.getElementById('manualSlugStatus')
+      
+      const productId = select.value
+      const newSlug = manualSlug.value.trim()
+      
+      if (!productId) {
+        status.textContent = 'Выберите товар'
+        status.style.color = '#ff4757'
+        return
+      }
+      
+      if (!newSlug) {
+        status.textContent = 'Введите slug'
+        status.style.color = '#ff4757'
+        return
+      }
+      
+      try {
+        const { error } = await supabase
+          .from('products')
+          .update({ slug: newSlug })
+          .eq('id', productId)
+        
+        if (error) throw error
+        
+        // Обновляем локально
+        const product = allProducts.find(p => p.id === productId)
+        if (product) {
+          product.slug = newSlug
+        }
+        
+        status.textContent = '✅ Slug обновлен!'
+        status.style.color = '#2ecc71'
+        
+        manualSlug.value = ''
+        
+        logAdminAction(`Ручное обновление slug:\nID товара: ${productId}\nНовый slug: ${newSlug}`)
+      } catch (error) {
+        console.error('Ошибка обновления slug:', error)
+        status.textContent = '❌ Ошибка обновления'
+        status.style.color = '#ff4757'
+      }
     }
     
     // Улучшенный селектор категорий для карточек товаров
@@ -1717,18 +1766,31 @@ ${actionText}
     
     async function loadProducts() {
       try {
+        console.log('Загрузка товаров...')
+        
         const { data, error } = await supabase
           .from('products')
           .select('*')
           .order('order', { ascending: true })
         
-        if (error) throw error
+        if (error) {
+          console.error('Ошибка Supabase:', error)
+          throw error
+        }
+        
+        console.log('Загружено товаров:', data?.length || 0)
         
         allProducts = data || []
+        
+        if (allProducts.length === 0) {
+          console.warn('Нет товаров в базе данных!')
+        }
+        
         updateCategories()
         updateTypes()
         renderProducts()
         updateBreadcrumbs()
+        updateProductSelect()
       } catch (error) {
         console.error('Ошибка загрузки товаров:', error)
         alert('Ошибка загрузки товаров. Проверьте консоль.')
@@ -2102,33 +2164,25 @@ ${actionText}
       actions.appendChild(addToCartBtn)
       
       // Ссылка "Подробнее" (открывает модальное окно + меняет URL для SEO)
-const moreLink = document.createElement('a')
-
-// Если есть slug - делаем SEO-ссылку, иначе обычную
-if (product.slug) {
-  moreLink.href = `/product/${product.slug}` // ← SEO-ссылка
-  moreLink.title = `${product.name} - купить в Караганде` // ← подсказка для SEO
-} else {
-  moreLink.href = '#'
-}
-
-moreLink.onclick = (e) => {
-  e.preventDefault()
-  openProductModal(product) // ← открывает окно с товаром
-  
-  // Если есть slug, меняем URL в браузере для SEO
-  if (product.slug) {
-    window.history.pushState({ productId: product.id }, '', `/product/${product.slug}`)
-  }
-}
-
-moreLink.textContent = 'Подробнее'
-moreLink.style.display = 'inline-block'
-moreLink.style.marginLeft = '10px'
-moreLink.style.color = '#007bff'
-moreLink.style.textDecoration = 'underline'
-
-actions.appendChild(moreLink)
+      const moreLink = document.createElement('a')
+      moreLink.href = '#'
+      moreLink.onclick = (e) => {
+        e.preventDefault()
+        openProductModal(product)
+        if (product.slug) {
+          window.history.pushState({ productId: product.id }, '', `/product/${product.slug}`)
+        }
+      }
+      moreLink.textContent = 'Подробнее'
+      moreLink.style.display = 'inline-block'
+      moreLink.style.marginLeft = '10px'
+      moreLink.style.color = '#007bff'
+      moreLink.style.textDecoration = 'underline'
+      if (product.slug) {
+        moreLink.title = `${product.name} - купить в Караганде`
+      }
+      
+      actions.appendChild(moreLink)
       
       // Управление количеством (если товар в корзине)
       if (inCart) {
@@ -2818,168 +2872,157 @@ actions.appendChild(moreLink)
       document.body.classList.toggle('cart-visible', cartVisible)
     }
     
-        // Закрытие модального окна при клике на фон
+    // Закрытие модального окна при клике на фон
     document.getElementById('productModal').addEventListener('click', function(e) {
       if (e.target === this) {
         closeProductModal();
       }
     });
-  // ================== ФУНКЦИИ ДЛЯ SEO-ССЫЛОК (SLUG) ==================
-
-  // Функция для создания SEO-friendly slug из названия (поддерживает русский)
-  function createSlug(text) {
-    if (!text || typeof text !== 'string') return '';
     
-    // Транслитерация русских букв
-    const translitMap = {
-      'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd',
-      'е': 'e', 'ё': 'yo', 'ж': 'zh', 'з': 'z', 'и': 'i',
-      'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n',
-      'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't',
-      'у': 'u', 'ф': 'f', 'х': 'h', 'ц': 'ts', 'ч': 'ch',
-      'ш': 'sh', 'щ': 'sch', 'ъ': '', 'ы': 'y', 'ь': '',
-      'э': 'e', 'ю': 'yu', 'я': 'ya',
-      ' ': '-', '_': '-'
-    };
+    // ================== ФУНКЦИИ ДЛЯ SEO-ССЫЛОК (SLUG) ==================
     
-    let result = '';
-    
-    // Преобразуем каждый символ
-    for (let char of text.toLowerCase()) {
-      if (translitMap[char] !== undefined) {
-        result += translitMap[char];
-      } else if (/[a-z0-9-]/.test(char)) {
-        result += char; // Оставляем английские буквы и цифры
+    // Функция для создания SEO-friendly slug из названия (поддерживает русский)
+    function createSlug(text) {
+      if (!text || typeof text !== 'string') return '';
+      
+      // Транслитерация русских букв
+      const translitMap = {
+        'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd',
+        'е': 'e', 'ё': 'yo', 'ж': 'zh', 'з': 'z', 'и': 'i',
+        'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n',
+        'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't',
+        'у': 'u', 'ф': 'f', 'х': 'h', 'ц': 'ts', 'ч': 'ch',
+        'ш': 'sh', 'щ': 'sch', 'ъ': '', 'ы': 'y', 'ь': '',
+        'э': 'e', 'ю': 'yu', 'я': 'ya',
+        ' ': '-', '_': '-'
+      };
+      
+      let result = '';
+      
+      // Преобразуем каждый символ
+      for (let char of text.toLowerCase()) {
+        if (translitMap[char] !== undefined) {
+          result += translitMap[char];
+        } else if (/[a-z0-9-]/.test(char)) {
+          result += char; // Оставляем английские буквы и цифры
+        }
       }
+      
+      // Убираем множественные дефисы
+      result = result.replace(/-+/g, '-');
+      
+      // Убираем дефисы с начала и конца
+      result = result.replace(/^-+/, '').replace(/-+$/, '');
+      
+      return result;
     }
     
-    // Убираем множественные дефисы
-    result = result.replace(/-+/g, '-');
-    
-    // Убираем дефисы с начала и конца
-    result = result.replace(/^-+/, '').replace(/-+$/, '');
-    
-    return result;
-  }
-
-  // Генерация slug для всех товаров
-  async function generateAllSlugs() {
-    const statusEl = document.getElementById('slugStatus');
-    
-    if (!confirm('Создать SEO-ссылки для всех товаров? Это обновит поле "slug" в Supabase.')) {
-      return;
-    }
-    
-    try {
-      statusEl.textContent = '⏳ Генерация SEO-ссылок...';
-      statusEl.style.color = '#666';
+    // Генерация slug для всех товаров
+    window.generateAllSlugs = async function() {
+      const statusEl = document.getElementById('slugStatus');
       
-      let updatedCount = 0;
+      if (!confirm('Создать SEO-ссылки для всех товаров? Это обновит поле "slug" в Supabase.')) {
+        return;
+      }
       
-      // Для каждого товара создаём slug
-      for (const product of allProducts) {
-        if (!product.name) continue;
+      try {
+        statusEl.textContent = '⏳ Генерация SEO-ссылок...';
+        statusEl.style.color = '#666';
         
-        const slug = createSlug(product.name);
-        if (!slug) continue;
+        let updatedCount = 0;
         
-        // Обновляем в Supabase
-        const { error } = await supabase
-          .from('products')
-          .update({ slug: slug })
-          .eq('id', product.id);
-        
-        if (error) {
-          console.error(`Ошибка для товара ${product.id}:`, error);
-          continue;
+        // Для каждого товара создаём slug
+        for (const product of allProducts) {
+          if (!product.name) continue;
+          
+          const slug = createSlug(product.name);
+          if (!slug) continue;
+          
+          // Обновляем в Supabase
+          const { error } = await supabase
+            .from('products')
+            .update({ slug: slug })
+            .eq('id', product.id);
+          
+          if (error) {
+            console.error(`Ошибка для товара ${product.id}:`, error);
+            continue;
+          }
+          
+          // Обновляем локально
+          product.slug = slug;
+          updatedCount++;
         }
         
-        // Обновляем локально
-        product.slug = slug;
-        updatedCount++;
+        statusEl.textContent = `✅ Создано ${updatedCount} SEO-ссылок!`;
+        statusEl.style.color = '#2ecc71';
+        
+        logAdminAction(`Сгенерированы SEO-ссылки для ${updatedCount} товаров`);
+        
+        // Перезагружаем товары для отображения
+        await loadProducts();
+        
+      } catch (error) {
+        console.error('Ошибка генерации slug:', error);
+        statusEl.textContent = '❌ Ошибка генерации';
+        statusEl.style.color = '#ff4757';
       }
-      
-      statusEl.textContent = `✅ Создано ${updatedCount} SEO-ссылок!`;
-      statusEl.style.color = '#2ecc71';
-      
-      logAdminAction(`Сгенерированы SEO-ссылки для ${updatedCount} товаров`);
-      
-      // Перезагружаем товары для отображения
-      await loadProducts();
-      
-    } catch (error) {
-      console.error('Ошибка генерации slug:', error);
-      statusEl.textContent = '❌ Ошибка генерации';
-      statusEl.style.color = '#ff4757';
     }
-  }
-  // ================== КОНЕЦ ФУНКЦИЙ ДЛЯ SLUG ==================
-  // ================== ОБРАБОТКА SEO-URL ==================
-
-  // Проверка текущего URL при загрузке
-function checkURLForProduct() {
-  const path = window.location.pathname;
-  
-  // Если URL вида /product/название-товара
-  if (path.startsWith('/product/')) {
-    const slug = path.replace('/product/', '');
     
-    if (slug) {
-      // Ищем товар по slug
-      const product = allProducts.find(p => p.slug === slug);
+    // ================== ОБРАБОТКА SEO-URL ==================
+    
+    // Проверка текущего URL при загрузке
+    function checkURLForProduct() {
+      const path = window.location.pathname;
       
-      if (product) {
-        // Показываем товар в модальном окне
-        openProductModal(product);
-      } else {
-        // Если не нашли, перенаправляем на главную
-        console.log('Товар не найден по slug:', slug);
-        window.history.replaceState({}, '', '/');
+      // Если URL вида /product/название-товара
+      if (path.startsWith('/product/')) {
+        const slug = path.replace('/product/', '');
+        
+        if (slug) {
+          // Ищем товар по slug
+          const product = allProducts.find(p => p.slug === slug);
+          
+          if (product) {
+            // Показываем товар в модальном окне
+            openProductModal(product);
+          } else {
+            // Если не нашли, перенаправляем на главную
+            console.log('Товар не найден по slug:', slug);
+            window.history.replaceState({}, '', '/');
+          }
+        }
       }
     }
-  }
-}
-
-// Обработка кнопки "Назад" в браузере
-window.addEventListener('popstate', function(event) {
-  const path = window.location.pathname;
-  
-  if (path === '/' || path === '/index.html' || path === '') {
-    // Если вернулись на главную, закрываем модальное окно
-    closeProductModal();
-  } else if (path.startsWith('/product/')) {
-    // Если перешли на товар, показываем его
-    checkURLForProduct();
-  }
-});
-
-// Обновляем closeProductModal чтобы сбрасывать URL
-const originalCloseProductModal = closeProductModal;
-closeProductModal = function() {
-  originalCloseProductModal();
-  // Возвращаем URL на главную при закрытии окна
-  if (window.location.pathname.startsWith('/product/')) {
-    window.history.pushState({}, '', '/');
-  }
-};
-
-// Запускаем проверку URL
-setTimeout(checkURLForProduct, 500);
-// ================== КОНЕЦ ОБРАБОТКИ SEO-URL ==================
-<!-- Ручное редактирование slug -->
-<div style="margin-top: 10px; padding: 10px; background: #f0f8ff; border-radius: 5px; border: 1px solid #007bff;">
-  <h4 style="margin: 0 0 10px 0; font-size: 14px;">✏️ Ручное редактирование slug</h4>
-  <div style="display: grid; grid-template-columns: 1fr 2fr 1fr; gap: 10px; align-items: center;">
-    <select id="productSelect" style="padding: 5px; border: 1px solid #ddd; border-radius: 4px;">
-      <option value="">Выберите товар</option>
-    </select>
-    <input type="text" id="manualSlug" placeholder="Новый slug (например: mylo-zhidkoe-aquatell)" style="padding: 5px; border: 1px solid #ddd; border-radius: 4px;">
-    <button onclick="updateManualSlug()" style="background: #007bff; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">
-      Обновить
-    </button>
-  </div>
-  <div id="manualSlugStatus" style="margin-top: 5px; font-size: 12px;"></div>
-</div>
+    
+    // Обработка кнопки "Назад" в браузере
+    window.addEventListener('popstate', function(event) {
+      const path = window.location.pathname;
+      
+      if (path === '/' || path === '/index.html' || path === '') {
+        // Если вернулись на главную, закрываем модальное окно
+        closeProductModal();
+      } else if (path.startsWith('/product/')) {
+        // Если перешли на товар, показываем его
+        checkURLForProduct();
+      }
+    });
+    
+    // Обновляем closeProductModal чтобы сбрасывать URL
+    const originalCloseProductModal = closeProductModal;
+    window.closeProductModal = function() {
+      originalCloseProductModal();
+      // Возвращаем URL на главную при закрытии окна
+      if (window.location.pathname.startsWith('/product/')) {
+        window.history.pushState({}, '', '/');
+      }
+    };
+    
+    // Запускаем проверку URL
+    setTimeout(checkURLForProduct, 500);
+    // ================== КОНЕЦ ОБРАБОТКИ SEO-URL ==================
+    
+    window.updateManualSlug = updateManualSlug;
   </script>
 </body>
 </html>
