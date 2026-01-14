@@ -22,23 +22,15 @@
       box-sizing: border-box;
     }
     
-    html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  overflow-x: hidden;
-  min-height: 100vh;
-}
-
-body {
-  font-family: Arial, sans-serif;
-  background: #f9f9f9;
-  color: #333;
-  line-height: 1.5;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      color: #333;
+      line-height: 1.5;
+    }
     
     /* Шапка */
     .main-header {
@@ -506,61 +498,14 @@ body {
       margin-bottom: 5px;
     }
     
-  /* В разделе Товары (.product-description) добавьте: */
-.product-description {
-    font-size: 14px;
-    color: #666;
-    margin-bottom: 10px;
-    padding: 8px;
-    background: rgba(0,0,0,0.03);
-    border-radius: 5px;
-    position: relative; /* Добавить */
-}
-/* Кнопка Подробнее */
-.more-details-btn {
-  display: inline-block;
-  margin-top: 8px;
-  padding: 8px 16px;
-  background: linear-gradient(135deg, #25D366, #1da851);
-  color: white;
-  text-decoration: none;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 5px rgba(37, 211, 102, 0.2);
-}
-
-.more-details-btn:hover {
-  background: linear-gradient(135deg, #1da851, #25D366);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(37, 211, 102, 0.3);
-}
-
-/* Новая стилизация кнопки "Подробнее" */
-.more-details-btn {
-    display: inline-block;
-    margin-top: 8px;
-    padding: 6px 12px;
-    background: linear-gradient(135deg, #25D366, #1da851);
-    color: white;
-    text-decoration: none;
-    border-radius: 4px;
-    font-size: 13px;
-    font-weight: 500;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 5px rgba(37, 211, 102, 0.2);
-}
-
-.more-details-btn:hover {
-    background: linear-gradient(135deg, #1da851, #25D366);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(37, 211, 102, 0.3);
-}
+    .product-description {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 10px;
+      padding: 8px;
+      background: rgba(0,0,0,0.03);
+      border-radius: 5px;
+    }
     
     .product-actions {
       display: flex;
@@ -1048,7 +993,7 @@ body {
       color: #95a5a6;
     }
     
-    /* Модальное окно товара (УЛУЧШЕННОЕ) */
+    /* Модальное окно товара */
     #productModal {
       display: none;
       position: fixed;
@@ -1064,8 +1009,8 @@ body {
     
     .modal-content {
       background: #fff;
-      max-width: 1000px;
-      width: 95%;
+      max-width: 800px;
+      width: 90%;
       max-height: 90vh;
       margin: 5% auto;
       padding: 20px;
@@ -1083,66 +1028,9 @@ body {
       border: none;
       cursor: pointer;
       color: #333;
-      z-index: 10;
     }
     
     /* Мобильная версия */
-    @media (max-width: 768px) {
-  /* Добавьте эти стили первыми */
-  .main-header {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    padding: 8px 0;
-    background: rgba(255, 255, 255, 0.98);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid #eee;
-    max-height: 60px;
-    overflow: hidden;
-    transition: max-height 0.3s ease;
-  }
-  
-  .main-header.expanded {
-    max-height: 400px;
-  }
-  
-  .header-toggle-btn {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    font-size: 16px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1001;
-  }
-  
-  .header-features {
-    display: none;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-  
-  .header-features.active {
-    display: flex;
-    opacity: 1;
-  }
-  
-  /* Существующие стили остаются ниже */
-  .header-top {
-    flex-direction: column;
-    align-items: center;
-    gap: 5px;
-  }
-  /* ... остальной существующий код ... */
-}
     @media (max-width: 768px) {
       .header-top {
         flex-direction: column;
@@ -1295,183 +1183,9 @@ body {
         width: auto;
       }
     }
-    
-    /* НОВЫЕ СТИЛИ ДЛЯ ДОБАВЛЕННЫХ ФУНКЦИЙ */
-    
-    /* Боковая панель категорий для мобильных */
-    .mobile-categories-sidebar {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: -280px;
-        width: 280px;
-        height: 100vh;
-        background: white;
-        z-index: 1002;
-        box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-        transition: left 0.3s ease;
-        padding: 20px;
-        overflow-y: auto;
-    }
-    
-    .mobile-categories-sidebar.active {
-        left: 0;
-    }
-    
-    .mobile-categories-overlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.5);
-        z-index: 1001;
-    }
-    
-    .mobile-categories-overlay.active {
-        display: block;
-    }
-    
-    .mobile-categories-toggle {
-        display: none;
-        position: fixed;
-        top: 70px;
-        left: 10px;
-        z-index: 1000;
-        background: var(--primary-color);
-        color: white;
-        border: none;
-        border-radius: 5px;
-        padding: 8px 12px;
-        font-size: 14px;
-        cursor: pointer;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-    }
-    
-    @media (max-width: 768px) {
-        .mobile-categories-toggle {
-            display: block;
-        }
-        
-        .categories {
-            display: none;
-        }
-        
-        .mobile-categories-sidebar .categories {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-        }
-        
-        .mobile-categories-sidebar .category-btn {
-            margin: 5px 0;
-            width: 100%;
-            text-align: left;
-        }
-    }
-    
-    /* Блоки похожих товаров */
-    .related-products-section {
-        margin-top: 30px;
-        padding-top: 20px;
-        border-top: 1px solid #eee;
-    }
-    
-    .related-title {
-        font-size: 18px;
-        font-weight: bold;
-        margin-bottom: 15px;
-        color: #333;
-    }
-    
-    .related-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 15px;
-    }
-    
-    /* Улучшенный поиск */
-    .search-suggestions {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        background: white;
-        border: 1px solid #ddd;
-        border-radius: 0 0 10px 10px;
-        max-height: 300px;
-        overflow-y: auto;
-        display: none;
-        z-index: 100;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    }
-    
-    .search-suggestions.active {
-        display: block;
-    }
-    
-    .suggestion-item {
-        padding: 10px 15px;
-        cursor: pointer;
-        border-bottom: 1px solid #f0f0f0;
-    }
-    
-    .suggestion-item:hover {
-        background: #f8f9fa;
-    }
-    
-    /* Импорт/экспорт Excel */
-    .excel-actions {
-        display: flex;
-        gap: 10px;
-        margin-bottom: 15px;
-    }
-    
-    .excel-btn {
-        background: #2ecc71;
-        color: white;
-        border: none;
-        padding: 8px 15px;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 14px;
-    }
-    
-    .excel-btn:hover {
-        background: #27ae60;
-    }
-    
-    /* Lazy load для изображений */
-    .lazy-image {
-        opacity: 0;
-        transition: opacity 0.3s;
-    }
-    
-    .lazy-image.loaded {
-        opacity: 1;
-    }
   </style>
 </head>
 <body>
-  <style>
-  /* ВСЕ ВАШИ СТИЛИ ЗДЕСЬ */
-  :root {
-    --primary-color: #25D366;
-    ...
-  }
-  
-  * {
-    box-sizing: border-box;
-  }
-  
-  body {
-    font-family: Arial, sans-serif;
-    ...
-  }
-  
-  /* и так далее - сотни строк CSS */
-</style>
   <!-- Lightbox для изображений -->
   <div class="lightbox" id="lightbox">
     <button class="lightbox-close" id="lightboxClose">✕</button>
@@ -1484,27 +1198,28 @@ body {
     <div id="quickViewContent"></div>
   </div>
 
-  <!-- Модальное окно товара (УЛУЧШЕННОЕ) -->
+  <!-- Модальное окно товара -->
   <div id="productModal">
     <div class="modal-content">
       <button class="modal-close" onclick="closeProductModal()">×</button>
-      <div id="productModalContent">
-        <!-- Контент загружается динамически -->
+      
+      <div class="product-card" style="border: none; box-shadow: none; padding: 0;">
+        <img id="modalImage" class="product-image" src="" alt="" style="max-height: 300px; object-fit: contain;">
+        
+        <div class="product-info" style="margin-top: 15px;">
+          <div id="modalName" class="product-name" style="font-size: 24px; margin-bottom: 10px;"></div>
+          <div id="modalPrice" class="product-price" style="font-size: 20px; color: #2ecc71; margin-bottom: 15px;"></div>
+          <div id="modalDescription" class="product-description" style="font-size: 16px; line-height: 1.5; padding: 15px; background: #f9f9f9; border-radius: 8px;"></div>
+          
+          <div class="product-actions" style="margin-top: 20px;">
+            <button class="add-to-cart" onclick="orderFromModal()" style="padding: 12px 20px; font-size: 16px;">
+              Заказать в WhatsApp
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-
-  <!-- Мобильная боковая панель категорий -->
-  <div class="mobile-categories-overlay" id="mobileCategoriesOverlay"></div>
-  <div class="mobile-categories-sidebar" id="mobileCategoriesSidebar">
-    <button class="mobile-categories-close" onclick="closeMobileCategories()" style="position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 20px; cursor: pointer;">✕</button>
-    <h3 style="margin-top: 30px; color: var(--primary-color);">Категории</h3>
-    <div class="categories" id="mobileCategoriesList"></div>
-  </div>
-
-  <button class="mobile-categories-toggle" id="mobileCategoriesToggle" onclick="openMobileCategories()">
-    📂 Категории
-  </button>
 
   <!-- Шапка сайта -->
   <header class="main-header">
@@ -1686,7 +1401,6 @@ body {
       <div class="filters-container">
         <div class="search-container">
           <input type="text" id="searchInput" placeholder="Поиск товаров...">
-          <div class="search-suggestions" id="searchSuggestions"></div>
         </div>
       </div>
       
@@ -1817,11 +1531,6 @@ body {
   <!-- Архив -->
   <div class="archive-section" id="archiveSection">
     <div class="archive-title">📦 Архив (только для админа)</div>
-    <div class="excel-actions">
-      <button class="excel-btn" onclick="exportToExcel()">📥 Экспорт в Excel</button>
-      <button class="excel-btn" onclick="importFromExcel()">📤 Импорт из Excel</button>
-      <input type="file" id="excelFileInput" accept=".xlsx, .xls" style="display: none;">
-    </div>
     <div class="products-list" id="archiveList"></div>
   </div>
   
@@ -1998,684 +1707,52 @@ body {
       loadFreeShippingSetting()
       setupSmartInputs()
       setupSidebarNavigation()
-      setupMobileCategories()
-      setupSearchSuggestions()
-      setupLazyLoading()
     })
-    
-    // ================== МОБИЛЬНАЯ БОКОВАЯ ПАНЕЛЬ КАТЕГОРИЙ ==================
-    function setupMobileCategories() {
-      const toggleBtn = document.getElementById('mobileCategoriesToggle')
-      const sidebar = document.getElementById('mobileCategoriesSidebar')
-      const overlay = document.getElementById('mobileCategoriesOverlay')
-      
-      toggleBtn?.addEventListener('click', openMobileCategories)
-      
-      overlay?.addEventListener('click', closeMobileCategories)
-      
-      // Закрытие при клике на Escape
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeMobileCategories()
-      })
-    }
-    
-    function openMobileCategories() {
-      document.getElementById('mobileCategoriesSidebar').classList.add('active')
-      document.getElementById('mobileCategoriesOverlay').classList.add('active')
-      updateMobileCategoriesList()
-    }
-    
-    function closeMobileCategories() {
-      document.getElementById('mobileCategoriesSidebar').classList.remove('active')
-      document.getElementById('mobileCategoriesOverlay').classList.remove('active')
-    }
-    
-    function updateMobileCategoriesList() {
-      const container = document.getElementById('mobileCategoriesList')
-      if (!container) return
-      
-      container.innerHTML = ''
-      
-      // Кнопка "Все"
-      const allBtn = document.createElement('button')
-      allBtn.className = 'category-btn' + (selectedCategory === 'all' ? ' active' : '')
-      allBtn.dataset.category = 'all'
-      allBtn.textContent = 'Все товары'
-      allBtn.onclick = () => {
-        selectedCategory = 'all'
-        selectedType = 'all'
-        document.querySelectorAll('.category-btn, .type-btn').forEach(b => b.classList.remove('active'))
-        document.querySelectorAll('[data-category="all"], [data-type="all"]').forEach(b => b.classList.add('active'))
-        renderProducts()
-        updateBreadcrumbs()
-        closeMobileCategories()
-      }
-      container.appendChild(allBtn)
-      
-      // Уникальные категории
-      const categories = [...new Set(allProducts.map(p => p.category).filter(Boolean))]
-      categories.forEach(category => {
-        const btn = document.createElement('button')
-        btn.className = 'category-btn' + (selectedCategory === category ? ' active' : '')
-        btn.dataset.category = category
-        btn.textContent = category
-        
-        // Подсчет товаров в категории
-        const count = allProducts.filter(p => 
-          p.category === category && !p.archived && 
-          (selectedType === "all" || p.type === selectedType)
-        ).length
-        
-        if (count > 0) {
-          const badge = document.createElement('span')
-          badge.className = 'filter-count'
-          badge.textContent = count
-          btn.appendChild(badge)
-        }
-        
-        btn.onclick = () => {
-          selectedCategory = category
-          document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'))
-          btn.classList.add('active')
-          renderProducts()
-          updateBreadcrumbs()
-          closeMobileCategories()
-        }
-        
-        container.appendChild(btn)
-      })
-    }
-    
-    // ================== УЛУЧШЕННОЕ МОДАЛЬНОЕ ОКНО ТОВАРА ==================
-    let currentProductForModal = null
-    
-    function openProductModal(product) {
-      currentProductForModal = product
-      
-      // Находим похожие товары
-      const similarProducts = allProducts.filter(p => 
-        p.id !== product.id && 
-        !p.archived && 
-        (p.category === product.category || p.type === product.type)
-      ).slice(0, 4)
-      
-      // Находим товары "с этим покупают"
-      const boughtTogether = allProducts.filter(p => 
-        p.id !== product.id && 
-        !p.archived && 
-        p.category === product.category && 
-        p.type !== product.type
-      ).slice(0, 3)
-      
-      // Если мало товаров "с этим покупают", добавляем случайные
-      if (boughtTogether.length < 2) {
-        const randomProducts = allProducts
-          .filter(p => p.id !== product.id && !p.archived)
-          .sort(() => Math.random() - 0.5)
-          .slice(0, 3 - boughtTogether.length)
-        
-        boughtTogether.push(...randomProducts)
-      }
-      
-      // Формируем характеристики
-      const characteristics = `
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0;">
-          <div><strong>Категория:</strong> ${product.category || 'Не указана'}</div>
-          <div><strong>Тип:</strong> ${product.type || 'Не указан'}</div>
-          ${product.subcategory ? `<div><strong>Подкатегория:</strong> ${product.subcategory}</div>` : ''}
-          ${product.archived ? `<div><strong>Статус:</strong> В архиве</div>` : ''}
-        </div>
-      `
-      
-      // Формируем похожие товары
-      const similarProductsHTML = similarProducts.map(p => `
-        <div onclick="openProductModalFromList('${p.id}')" style="cursor: pointer; background: #f8f9fa; padding: 10px; border-radius: 8px; border: 1px solid #eee;">
-          <img src="${p.img || 'https://via.placeholder.com/100'}" 
-               alt="${p.name}" 
-               style="width: 100%; height: 80px; object-fit: contain; margin-bottom: 8px;">
-          <div style="font-size: 12px; font-weight: bold;">${p.name || 'Без названия'}</div>
-          <div style="font-size: 14px; color: #2ecc71; font-weight: bold;">${p.price ? `${p.price.toLocaleString('ru-RU')} ₸` : 'Цена не указана'}</div>
-        </div>
-      `).join('')
-      
-      // Формируем "с этим покупают"
-      const boughtTogetherHTML = boughtTogether.map(p => `
-        <div onclick="openProductModalFromList('${p.id}')" style="cursor: pointer; background: #f8f9fa; padding: 10px; border-radius: 8px; border: 1px solid #eee;">
-          <img src="${p.img || 'https://via.placeholder.com/100'}" 
-               alt="${p.name}" 
-               style="width: 100%; height: 80px; object-fit: contain; margin-bottom: 8px;">
-          <div style="font-size: 12px; font-weight: bold;">${p.name || 'Без названия'}</div>
-          <div style="font-size: 14px; color: #2ecc71; font-weight: bold;">${p.price ? `${p.price.toLocaleString('ru-RU')} ₸` : 'Цена не указана'}</div>
-        </div>
-      `).join('')
-      
-      const modalContent = document.getElementById('productModalContent')
-      modalContent.innerHTML = `
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 30px;">
-          <div>
-            <img src="${product.img || 'https://via.placeholder.com/400'}" 
-                 alt="${product.name}" 
-                 style="width: 100%; max-height: 400px; object-fit: contain; border-radius: 8px; margin-bottom: 15px;">
-          </div>
-          
-          <div>
-            <h2 style="margin-top: 0; font-size: 24px;">${product.name || 'Без названия'}</h2>
-            <div style="font-size: 20px; color: #2ecc71; font-weight: bold; margin: 10px 0;">
-              ${product.price ? `${product.price.toLocaleString('ru-RU')} ₸` : 'Цена не указана'}
-            </div>
-            <div style="color: #666; font-size: 14px; margin-bottom: 15px;">Артикул: ${product.id}</div>
-            
-            ${characteristics}
-            
-            <div style="margin: 20px 0;">
-              <h4 style="margin-bottom: 10px;">Описание</h4>
-              <div style="padding: 15px; background: #f9f9f9; border-radius: 8px;">
-                ${product.description || 'Описание отсутствует'}
-              </div>
-            </div>
-            
-            <div style="display: flex; gap: 10px; margin-top: 20px;">
-              <button onclick="orderFromModal()" style="background: #25D366; color: white; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer; font-size: 16px; flex: 1;">
-                💬 Заказать в WhatsApp
-              </button>
-              <button onclick="addToCartFromModal('${product.id}')" style="background: var(--primary-color); color: white; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer; font-size: 16px; flex: 1;">
-                🛒 Добавить в корзину
-              </button>
-            </div>
-          </div>
-        </div>
-        
-        ${similarProducts.length > 0 ? `
-        <div class="related-products-section">
-          <div class="related-title">Похожие товары</div>
-          <div class="related-grid" style="grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));">
-            ${similarProductsHTML}
-          </div>
-        </div>` : ''}
-        
-        ${boughtTogether.length > 0 ? `
-        <div class="related-products-section">
-          <div class="related-title">С этим товаром покупают</div>
-          <div class="related-grid" style="grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));">
-            ${boughtTogetherHTML}
-          </div>
-        </div>` : ''}
-      `
-      
-      document.getElementById('productModal').style.display = 'block'
-      
-      // Обновляем URL без перезагрузки страницы
-      if (product.slug) {
-        window.history.pushState({ productId: product.id }, '', `/product/${product.slug}`)
-      } else {
-        window.history.pushState({ productId: product.id }, '', `?product=${product.id}`)
-      }
-    }
-    
-    function openProductModalFromList(productId) {
-      const product = allProducts.find(p => p.id === productId)
-      if (product) {
-        closeProductModal()
-        setTimeout(() => openProductModal(product), 100)
-      }
-    }
-    
-    function orderFromModal() {
-      if (!currentProductForModal) return
-      
-      const message = `Здравствуйте! Хочу заказать: ${currentProductForModal.name || 'Товар'}`
-      window.open(
-        'https://wa.me/77780855478?text=' + encodeURIComponent(message),
-        '_blank'
-      )
-    }
-    
-    function addToCartFromModal(productId) {
-      addToCart(productId)
-      alert('Товар добавлен в корзину!')
-    }
-    
-    function closeProductModal() {
-      document.getElementById('productModal').style.display = 'none'
-      currentProductForModal = null
-      window.history.pushState({}, '', '/')
-    }
-    
-    // ================== УЛУЧШЕННЫЙ ПОИСК ==================
-    function setupSearchSuggestions() {
-      const searchInput = document.getElementById('searchInput')
-      const suggestions = document.getElementById('searchSuggestions')
-      
-      if (!searchInput || !suggestions) return
-      
-      searchInput.addEventListener('input', function() {
-        const searchTerm = this.value.toLowerCase().trim()
-        
-        if (searchTerm.length < 2) {
-          suggestions.classList.remove('active')
-          return
-        }
-        
-        // Ищем товары по названию, описанию, категории, типу
-        const filtered = allProducts.filter(p => 
-          !p.archived &&
-          (
-            (p.name && p.name.toLowerCase().includes(searchTerm)) ||
-            (p.description && p.description.toLowerCase().includes(searchTerm)) ||
-            (p.category && p.category.toLowerCase().includes(searchTerm)) ||
-            (p.type && p.type.toLowerCase().includes(searchTerm))
-          )
-        ).slice(0, 10) // Ограничиваем 10 результатами
-        
-        if (filtered.length === 0) {
-          suggestions.classList.remove('active')
-          return
-        }
-        
-        suggestions.innerHTML = filtered.map(product => `
-          <div class="suggestion-item" onclick="selectSearchSuggestion('${product.id}')">
-            <div style="font-weight: bold;">${product.name || 'Без названия'}</div>
-            <div style="font-size: 12px; color: #666;">
-              ${product.category || ''} ${product.type ? '• ' + product.type : ''}
-            </div>
-            <div style="font-size: 14px; color: #2ecc71; margin-top: 5px;">
-              ${product.price ? `${product.price.toLocaleString('ru-RU')} ₸` : 'Цена не указана'}
-            </div>
-          </div>
-        `).join('')
-        
-        suggestions.classList.add('active')
-      })
-      
-      // Закрытие подсказок при клике вне поля
-      document.addEventListener('click', (e) => {
-        if (!searchInput.contains(e.target) && !suggestions.contains(e.target)) {
-          suggestions.classList.remove('active')
-        }
-      })
-    }
-    
-    function selectSearchSuggestion(productId) {
-      const product = allProducts.find(p => p.id === productId)
-      if (product) {
-        openProductModal(product)
-        document.getElementById('searchInput').value = ''
-        document.getElementById('searchSuggestions').classList.remove('active')
-      }
-    }
-    
-    // ================== LAZY LOAD ДЛЯ ИЗОБРАЖЕНИЙ ==================
-    function setupLazyLoading() {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            const img = entry.target
-            if (img.dataset.src) {
-              img.src = img.dataset.src
-              img.classList.add('loaded')
-              observer.unobserve(img)
-            }
-          }
-        })
-      }, {
-        rootMargin: '50px 0px',
-        threshold: 0.1
-      })
-      
-      // Применяем lazy loading ко всем изображениям при загрузке
-      setTimeout(() => {
-        document.querySelectorAll('.product-image').forEach(img => {
-          if (!img.src.includes('placeholder')) {
-            img.dataset.src = img.src
-            img.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="300" height="200" viewBox="0 0 300 200"%3E%3Crect width="300" height="200" fill="%23f0f0f0"/%3E%3C/svg%3E'
-            img.classList.add('lazy-image')
-            observer.observe(img)
-          }
-        })
-      }, 1000)
-    }
-    
-    // Обновляем функцию createProductCard для использования lazy loading
-    function createProductCard(product, isArchived) {
-      const inCart = cart.find(item => item.id === product.id)
-      const quantity = inCart ? inCart.quantity : 1
-      
-      const card = document.createElement('div')
-      card.className = 'product-card'
-      card.dataset.id = product.id
-      
-      // Изображение с lazy load
-      const image = document.createElement('img')
-      if (product.img && !product.img.includes('placeholder')) {
-        image.dataset.src = product.img
-        image.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="300" height="200" viewBox="0 0 300 200"%3E%3Crect width="300" height="200" fill="%23f0f0f0"/%3E%3C/svg%3E'
-        image.classList.add('product-image', 'lazy-image')
-      } else {
-        image.src = product.img || 'https://via.placeholder.com/300'
-        image.className = 'product-image'
-      }
-      image.alt = product.name || 'Изображение товара'
-      image.onclick = () => openLightbox(image.src)
-      
-      // Наблюдатель для lazy loading
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting && image.dataset.src) {
-            image.src = image.dataset.src
-            image.classList.add('loaded')
-            observer.unobserve(image)
-          }
-        })
-      })
-      observer.observe(image)
-      
-      const productInfo = document.createElement('div')
-      productInfo.className = 'product-info'
-      
-      const name = document.createElement('div')
-      name.className = 'product-name'
-      name.contentEditable = isAdmin
-      name.textContent = product.name || 'Без названия'
-      name.onblur = () => updateProduct(product.id, 'name', name.textContent)
-      
-      const price = document.createElement('div')
-      price.className = 'product-price'
-      price.contentEditable = isAdmin
-      price.textContent = product.price ? `${product.price.toLocaleString('ru-RU')} ₸` : 'Цена не указана'
-      price.onblur = () => updateProduct(product.id, 'price', price.textContent)
-      
-      const description = document.createElement('div')
-      description.className = 'product-description'
-      description.contentEditable = isAdmin
-      description.textContent = product.description || ''
-      description.onblur = () => updateProduct(product.id, 'description', description.textContent)
-      
-      productInfo.appendChild(name)
-      productInfo.appendChild(price)
-      productInfo.appendChild(description)
-      
-      // Кнопка для открытия улучшенного модального окна
-     // УДАЛИТЕ ЭТОТ БЛОК (примерно строки 2230-2245):
-const moreLink = document.createElement('a')
-moreLink.href = '#'
-moreLink.onclick = (e) => {
-  e.preventDefault()
-  openProductModal(product)
-}
-moreLink.textContent = 'Подробнее'
-moreLink.style.display = 'inline-block'
-moreLink.style.marginLeft = '10px'
-moreLink.style.color = '#007bff'
-moreLink.style.textDecoration = 'underline'
-moreLink.style.cursor = 'pointer'
-
-productInfo.appendChild(moreLink)
-
-// ЗАМЕНИТЕ НА:
-const moreBtn = document.createElement('button')
-moreBtn.className = 'more-details-btn'
-moreBtn.textContent = '🔍 Подробнее'
-moreBtn.onclick = (e) => {
-  e.preventDefault()
-  e.stopPropagation()
-  openProductModal(product)
-}
-productInfo.appendChild(moreBtn)
-      
-      const actions = document.createElement('div')
-      actions.className = 'product-actions'
-      
-      const addToCartBtn = document.createElement('button')
-      addToCartBtn.className = 'add-to-cart'
-      addToCartBtn.textContent = 'В корзину'
-      addToCartBtn.onclick = () => addToCart(product.id)
-      
-      actions.appendChild(addToCartBtn)
-      
-      if (inCart) {
-        const quantityControls = document.createElement('div')
-        quantityControls.className = 'quantity-controls'
-        
-        const decreaseBtn = document.createElement('button')
-        decreaseBtn.className = 'quantity-btn'
-        decreaseBtn.textContent = '-'
-        decreaseBtn.onclick = () => updateCartItem(product.id, 'decrease')
-        
-        const quantityInput = document.createElement('input')
-        quantityInput.type = 'number'
-        quantityInput.className = 'quantity-input'
-        quantityInput.value = quantity
-        quantityInput.min = 1
-        quantityInput.onchange = (e) => updateCartItem(product.id, 'set', e.target.value)
-        
-        const increaseBtn = document.createElement('button')
-        increaseBtn.className = 'quantity-btn'
-        increaseBtn.textContent = '+'
-        increaseBtn.onclick = () => updateCartItem(product.id, 'increase')
-        
-        quantityControls.appendChild(decreaseBtn)
-        quantityControls.appendChild(quantityInput)
-        quantityControls.appendChild(increaseBtn)
-        actions.appendChild(quantityControls)
-      }
-      
-      productInfo.appendChild(actions)
-      
-      if (isAdmin) {
-        const adminControls = document.createElement('div')
-        adminControls.className = 'admin-controls'
-        
-        const archiveBtn = document.createElement('button')
-        archiveBtn.className = isArchived ? 'archive-btn' : 'delete-btn'
-        archiveBtn.textContent = isArchived ? 'Восстановить' : 'Архив'
-        archiveBtn.onclick = () => isArchived ? restoreFromArchive(product.id) : moveToArchive(product.id)
-        
-        const deleteBtn = document.createElement('button')
-        deleteBtn.className = 'delete-btn'
-        deleteBtn.textContent = 'Удалить'
-        deleteBtn.onclick = () => deleteProduct(product.id)
-        
-        adminControls.appendChild(archiveBtn)
-        adminControls.appendChild(deleteBtn)
-        productInfo.appendChild(adminControls)
-        
-        if (!isArchived) {
-          const moveBtns = document.createElement('div')
-          moveBtns.className = 'move-btns'
-          
-          const upBtn = document.createElement('button')
-          upBtn.textContent = '↑ Вверх'
-          upBtn.onclick = () => moveProduct(product.id, 'up')
-          
-          const downBtn = document.createElement('button')
-          downBtn.textContent = '↓ Вниз'
-          downBtn.onclick = () => moveProduct(product.id, 'down')
-          
-          moveBtns.appendChild(upBtn)
-          moveBtns.appendChild(downBtn)
-          productInfo.appendChild(moveBtns)
-        }
-      }
-      
-      card.appendChild(image)
-      card.appendChild(productInfo)
-      
-      return card
-    }
-    
-    // ================== ИМПОРТ/ЭКСПОРТ EXCEL ==================
-    async function exportToExcel() {
-      try {
-        const { data } = await supabase
-          .from('products')
-          .select('*')
-        
-        if (!data || data.length === 0) {
-          alert('Нет данных для экспорта')
-          return
-        }
-        
-        // Создаем CSV
-        const headers = ['ID', 'Название', 'Цена', 'Категория', 'Тип', 'Подкатегория', 'Описание', 'Изображение', 'Архивирован', 'Порядок']
-        const csv = [
-          headers.join(','),
-          ...data.map(p => [
-            p.id,
-            `"${(p.name || '').replace(/"/g, '""')}"`,
-            p.price || '',
-            p.category || '',
-            p.type || '',
-            p.subcategory || '',
-            `"${(p.description || '').replace(/"/g, '""')}"`,
-            p.img || '',
-            p.archived ? 'Да' : 'Нет',
-            p.order || 0
-          ].join(','))
-        ].join('\n')
-        
-        // Создаем и скачиваем файл
-        const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' })
-        const link = document.createElement('a')
-        link.href = URL.createObjectURL(blob)
-        link.download = `products_${new Date().toISOString().slice(0, 10)}.csv`
-        link.click()
-        
-        alert(`Экспортировано ${data.length} товаров`)
-        
-      } catch (error) {
-        console.error('Ошибка экспорта:', error)
-        alert('Ошибка при экспорте данных')
-      }
-    }
-    
-    function importFromExcel() {
-      document.getElementById('excelFileInput').click()
-    }
-    
-    // Обработчик загрузки файла Excel
-    document.getElementById('excelFileInput').addEventListener('change', async (e) => {
-      const file = e.target.files[0]
-      if (!file) return
-      
-      // Проверяем расширение файла
-      if (!file.name.match(/\.(xlsx|xls|csv)$/i)) {
-        alert('Пожалуйста, выберите файл Excel (.xlsx, .xls) или CSV')
-        return
-      }
-      
-      try {
-        // Используем библиотеку SheetJS (уже подключена)
-        const reader = new FileReader()
-        reader.onload = async (event) => {
-          try {
-            const data = new Uint8Array(event.target.result)
-            const workbook = XLSX.read(data, { type: 'array' })
-            const worksheet = workbook.Sheets[workbook.SheetNames[0]]
-            const jsonData = XLSX.utils.sheet_to_json(worksheet)
-            
-            if (jsonData.length === 0) {
-              alert('Файл пустой или неверного формата')
-              return
-            }
-            
-            // Преобразуем данные для Supabase
-            const productsToImport = jsonData.map((row, index) => {
-              // Определяем названия столбцов
-              const id = row.ID || row.id || row.Id || `import_${Date.now()}_${index}`
-              const name = row.Название || row.name || row.Name || ''
-              const price = row.Цена || row.price || row.Price || null
-              const category = row.Категория || row.category || row.Category || ''
-              const type = row.Тип || row.type || row.Type || ''
-              const subcategory = row.Подкатегория || row.subcategory || row.Subcategory || ''
-              const description = row.Описание || row.description || row.Description || ''
-              const img = row.Изображение || row.image || row.Image || ''
-              const archived = (row.Архивирован || row.archived || row.Archived) === 'Да' || false
-              const order = row.Порядок || row.order || row.Order || index + 1
-              
-              return {
-                id: typeof id === 'string' ? id : String(id),
-                name: typeof name === 'string' ? name : String(name),
-                price: price ? parseInt(price) : null,
-                category: typeof category === 'string' ? category : String(category),
-                type: typeof type === 'string' ? type : String(type),
-                subcategory: typeof subcategory === 'string' ? subcategory : String(subcategory),
-                description: typeof description === 'string' ? description : String(description),
-                img: typeof img === 'string' ? img : String(img),
-                archived: Boolean(archived),
-                order: parseInt(order) || index + 1
-              }
-            }).filter(p => p.name) // Фильтруем товары без названия
-            
-            if (productsToImport.length === 0) {
-              alert('Нет данных для импорта. Проверьте формат файла.')
-              return
-            }
-            
-            // Запрашиваем подтверждение
-            if (!confirm(`Импортировать ${productsToImport.length} товаров?`)) {
-              return
-            }
-            
-            // Импортируем в Supabase
-            const { error } = await supabase
-              .from('products')
-              .upsert(productsToImport, { onConflict: 'id' })
-            
-            if (error) throw error
-            
-            alert(`Успешно импортировано ${productsToImport.length} товаров!`)
-            await loadProducts()
-            
-          } catch (error) {
-            console.error('Ошибка обработки файла:', error)
-            alert('Ошибка при обработке файла. Проверьте формат данных.')
-          }
-        }
-        
-        reader.readAsArrayBuffer(file)
-        
-      } catch (error) {
-        console.error('Ошибка импорта:', error)
-        alert('Ошибка при импорте данных')
-      }
-    })
-    
-    // ================== ОСТАЛЬНЫЕ ФУНКЦИИ (из вашего кода) ==================
     
     // Настройка навигации в боковом меню
     function setupSidebarNavigation() {
       const sidebarLinks = document.querySelectorAll('.sidebar-link')
       const mobileToggle = document.getElementById('mobileInfoToggle')
       
+      // Обработка кликов по ссылкам в боковом меню
       sidebarLinks.forEach(link => {
         link.addEventListener('click', function(e) {
           e.preventDefault()
           const targetId = this.getAttribute('href').substring(1)
           
+          // Убираем активный класс у всех ссылок
           sidebarLinks.forEach(l => l.classList.remove('active'))
+          
+          // Добавляем активный класс текущей ссылке
           this.classList.add('active')
           
+          // Прокручиваем к нужной секции
           const targetElement = document.getElementById(targetId)
           if (targetElement) {
             targetElement.scrollIntoView({ behavior: 'smooth' })
           }
           
+          // На мобильных скрываем боковое меню после клика
           if (window.innerWidth <= 768) {
             document.getElementById('sidebar').classList.remove('active')
           }
         })
       })
       
+      // Обработка кнопки на мобильных
       if (mobileToggle) {
         mobileToggle.addEventListener('click', function() {
           const sidebar = document.getElementById('sidebar')
           sidebar.classList.toggle('active')
+          
+          // Прокручиваем к началу информационных секций
           if (sidebar.classList.contains('active')) {
             document.getElementById('reviews').scrollIntoView({ behavior: 'smooth' })
           }
         })
       }
       
+      // Выделение активной секции при скролле
       window.addEventListener('scroll', function() {
         const sections = document.querySelectorAll('.info-section')
         const sidebarLinks = document.querySelectorAll('.sidebar-link')
@@ -2691,6 +1768,7 @@ productInfo.appendChild(moreBtn)
           }
         })
         
+        // Обновляем активную ссылку
         sidebarLinks.forEach(link => {
           link.classList.remove('active')
           if (link.getAttribute('href') === `#${currentSection}`) {
@@ -3043,7 +2121,6 @@ ${actionText}
         renderProducts()
         updateBreadcrumbs()
         updateProductSelect()
-        updateMobileCategoriesList()
       } catch (error) {
         console.error('Ошибка загрузки товаров:', error)
         alert('Ошибка загрузки товаров. Проверьте консоль.')
@@ -3337,7 +2414,336 @@ ${actionText}
       }
     }
     
-    // ================== ДОПОЛНИТЕЛЬНЫЕ ФУНКЦИИ ==================
+    function createProductCard(product, isArchived) {
+      const inCart = cart.find(item => item.id === product.id)
+      const quantity = inCart ? inCart.quantity : 1
+      
+      const card = document.createElement('div')
+      card.className = 'product-card'
+      card.dataset.id = product.id
+      
+      const image = document.createElement('img')
+      image.src = product.img || 'https://via.placeholder.com/150'
+      image.className = 'product-image'
+      image.alt = product.name || 'Изображение товара'
+      image.onclick = () => openLightbox(image.src)
+      
+      const productInfo = document.createElement('div')
+      productInfo.className = 'product-info'
+      
+      const name = document.createElement('div')
+      name.className = 'product-name'
+      name.contentEditable = isAdmin
+      name.textContent = product.name || 'Без названия'
+      name.onblur = () => updateProduct(product.id, 'name', name.textContent)
+      
+      const price = document.createElement('div')
+      price.className = 'product-price'
+      price.contentEditable = isAdmin
+      price.textContent = product.price ? `${product.price.toLocaleString('ru-RU')} ₸` : 'Цена не указана'
+      price.onblur = () => updateProduct(product.id, 'price', price.textContent)
+      
+      const description = document.createElement('div')
+      description.className = 'product-description'
+      description.contentEditable = isAdmin
+      description.textContent = product.description || ''
+      description.onblur = () => updateProduct(product.id, 'description', description.textContent)
+      
+      productInfo.appendChild(name)
+      productInfo.appendChild(price)
+      productInfo.appendChild(description)
+      
+      if (isAdmin) {
+        const adminInfo = document.createElement('div')
+        adminInfo.style.margin = '5px 0'
+        adminInfo.style.fontSize = '12px'
+        
+        const categoryRow = document.createElement('div')
+        categoryRow.textContent = 'Категория: '
+        const categorySelector = createCategorySelector(product, 'category')
+        categoryRow.appendChild(categorySelector)
+        
+        const typeRow = document.createElement('div')
+        typeRow.style.marginTop = '5px'
+        typeRow.textContent = 'Тип: '
+        const typeSelector = createCategorySelector(product, 'type')
+        typeRow.appendChild(typeSelector)
+        
+        adminInfo.appendChild(categoryRow)
+        adminInfo.appendChild(typeRow)
+        productInfo.appendChild(adminInfo)
+      }
+      
+      const actions = document.createElement('div')
+      actions.className = 'product-actions'
+      
+      const addToCartBtn = document.createElement('button')
+      addToCartBtn.className = 'add-to-cart'
+      addToCartBtn.textContent = 'В корзину'
+      addToCartBtn.onclick = () => addToCart(product.id)
+      
+      actions.appendChild(addToCartBtn)
+      
+      const moreLink = document.createElement('a')
+      moreLink.href = '#'
+      moreLink.onclick = (e) => {
+        e.preventDefault()
+        openProductModal(product)
+        if (product.slug) {
+          window.history.pushState({ productId: product.id }, '', `/product/${product.slug}`)
+        }
+      }
+      moreLink.textContent = 'Подробнее'
+      moreLink.style.display = 'inline-block'
+      moreLink.style.marginLeft = '10px'
+      moreLink.style.color = '#007bff'
+      moreLink.style.textDecoration = 'underline'
+      if (product.slug) {
+        moreLink.title = `${product.name} - купить в Караганде`
+      }
+      
+      actions.appendChild(moreLink)
+      
+      if (inCart) {
+        const quantityControls = document.createElement('div')
+        quantityControls.className = 'quantity-controls'
+        
+        const decreaseBtn = document.createElement('button')
+        decreaseBtn.className = 'quantity-btn'
+        decreaseBtn.textContent = '-'
+        decreaseBtn.onclick = () => updateCartItem(product.id, 'decrease')
+        
+        const quantityInput = document.createElement('input')
+        quantityInput.type = 'number'
+        quantityInput.className = 'quantity-input'
+        quantityInput.value = quantity
+        quantityInput.min = 1
+        quantityInput.onchange = (e) => updateCartItem(product.id, 'set', e.target.value)
+        
+        const increaseBtn = document.createElement('button')
+        increaseBtn.className = 'quantity-btn'
+        increaseBtn.textContent = '+'
+        increaseBtn.onclick = () => updateCartItem(product.id, 'increase')
+        
+        quantityControls.appendChild(decreaseBtn)
+        quantityControls.appendChild(quantityInput)
+        quantityControls.appendChild(increaseBtn)
+        actions.appendChild(quantityControls)
+      }
+      
+      productInfo.appendChild(actions)
+      
+      const quickViewBtn = document.createElement('button')
+      quickViewBtn.className = 'quick-view-btn'
+      quickViewBtn.textContent = 'Быстрый просмотр'
+      quickViewBtn.style.marginTop = '10px'
+      quickViewBtn.style.background = '#f1f1f1'
+      quickViewBtn.style.border = 'none'
+      quickViewBtn.style.padding = '5px 10px'
+      quickViewBtn.style.borderRadius = '5px'
+      quickViewBtn.style.cursor = 'pointer'
+      quickViewBtn.onclick = () => openQuickView(product.id)
+      
+      productInfo.appendChild(quickViewBtn)
+      
+      if (isAdmin) {
+        const adminControls = document.createElement('div')
+        adminControls.className = 'admin-controls'
+        
+        const archiveBtn = document.createElement('button')
+        archiveBtn.className = isArchived ? 'archive-btn' : 'delete-btn'
+        archiveBtn.textContent = isArchived ? 'Восстановить' : 'Архив'
+        archiveBtn.onclick = () => isArchived ? restoreFromArchive(product.id) : moveToArchive(product.id)
+        
+        const deleteBtn = document.createElement('button')
+        deleteBtn.className = 'delete-btn'
+        deleteBtn.textContent = 'Удалить'
+        deleteBtn.onclick = () => deleteProduct(product.id)
+        
+        adminControls.appendChild(archiveBtn)
+        adminControls.appendChild(deleteBtn)
+        productInfo.appendChild(adminControls)
+        
+        if (!isArchived) {
+          const moveBtns = document.createElement('div')
+          moveBtns.className = 'move-btns'
+          
+          const upBtn = document.createElement('button')
+          upBtn.textContent = '↑ Вверх'
+          upBtn.onclick = () => moveProduct(product.id, 'up')
+          
+          const downBtn = document.createElement('button')
+          downBtn.textContent = '↓ Вниз'
+          downBtn.onclick = () => moveProduct(product.id, 'down')
+          
+          moveBtns.appendChild(upBtn)
+          moveBtns.appendChild(downBtn)
+          productInfo.appendChild(moveBtns)
+        }
+      }
+      
+      card.appendChild(image)
+      card.appendChild(productInfo)
+      
+      return card
+    }
+    
+    function createCategorySelector(product, field) {
+      const container = document.createElement('div')
+      container.className = 'category-selector'
+      
+      const display = document.createElement('div')
+      display.className = 'category-display'
+      display.textContent = product[field] || 'Не указано'
+      display.title = 'Кликните для изменения'
+      
+      const input = document.createElement('input')
+      input.type = 'text'
+      input.className = 'category-edit-input'
+      input.value = product[field] || ''
+      input.style.display = 'none'
+      
+      const suggestions = document.createElement('div')
+      suggestions.className = 'smart-suggestions'
+      
+      display.addEventListener('click', function() {
+        if (!isAdmin) return
+        display.style.display = 'none'
+        input.style.display = 'block'
+        input.focus()
+        
+        showCardSuggestions(input, suggestions, field)
+      })
+      
+      input.addEventListener('blur', function() {
+        setTimeout(() => {
+          display.style.display = 'block'
+          input.style.display = 'none'
+          suggestions.classList.remove('visible')
+          
+          const newValue = input.value.trim()
+          display.textContent = newValue || 'Не указано'
+          
+          if (newValue !== product[field]) {
+            updateProduct(product.id, field, newValue)
+          }
+        }, 200)
+      })
+      
+      input.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          input.blur()
+        }
+      })
+      
+      container.appendChild(display)
+      container.appendChild(input)
+      container.appendChild(suggestions)
+      
+      return container
+    }
+    
+    function showCardSuggestions(input, suggestions, fieldType) {
+      const existingValues = [...new Set(allProducts.map(p => p[fieldType]).filter(Boolean))]
+      
+      suggestions.innerHTML = ''
+      
+      const filtered = existingValues.filter(value => 
+        value.toLowerCase().includes(input.value.toLowerCase())
+      )
+      
+      filtered.forEach(value => {
+        const item = document.createElement('div')
+        item.className = 'suggestion-item'
+        item.textContent = value
+        item.onclick = () => {
+          input.value = value
+          suggestions.classList.remove('visible')
+          input.blur()
+        }
+        suggestions.appendChild(item)
+      })
+      
+      if (input.value && !existingValues.includes(input.value)) {
+        const newItem = document.createElement('div')
+        newItem.className = 'suggestion-item add-new-option'
+        newItem.textContent = `+ Создать "${input.value}"`
+        newItem.onclick = () => {
+          suggestions.classList.remove('visible')
+        }
+        suggestions.appendChild(newItem)
+      }
+      
+      suggestions.classList.add('visible')
+    }
+    
+    // Lightbox функции
+    window.openLightbox = function(imgSrc) {
+      const lightbox = document.getElementById('lightbox')
+      const lightboxImg = document.getElementById('lightboxImg')
+      lightboxImg.src = imgSrc
+      lightbox.classList.add('active')
+    }
+    
+    window.closeLightbox = function() {
+      document.getElementById('lightbox').classList.remove('active')
+    }
+    
+    // Быстрый просмотр
+    window.openQuickView = function(productId) {
+      const product = allProducts.find(p => p.id === productId)
+      if (!product) return
+      
+      const quickView = document.getElementById('quickView')
+      const quickViewContent = document.getElementById('quickViewContent')
+      
+      quickViewContent.innerHTML = `
+        <h3>${product.name || 'Без названия'}</h3>
+        <img src="${product.img || 'https://via.placeholder.com/150'}" style="width: 100%; max-height: 200px; object-fit: contain; margin: 10px 0;">
+        <div class="product-price">${product.price ? `${product.price.toLocaleString('ru-RU')} ₸` : 'Цена не указана'}</div>
+        <div class="product-description">${product.description || ''}</div>
+        <button class="add-to-cart" onclick="addToCart('${productId}'); closeQuickView()" style="margin-top: 15px; width: 100%;">Добавить в корзину</button>
+      `
+      
+      quickView.classList.add('active')
+    }
+    
+    window.closeQuickView = function() {
+      document.getElementById('quickView').classList.remove('active')
+    }
+    
+    // ================== ФУНКЦИИ ДЛЯ МОДАЛЬНОГО ОКНА ТОВАРА ==================
+    let currentProductForModal = null;
+    
+    function openProductModal(product) {
+      currentProductForModal = product;
+    
+      document.getElementById('modalName').textContent = product.name || 'Без названия';
+      document.getElementById('modalPrice').textContent = 
+        product.price ? `${product.price.toLocaleString('ru-RU')} ₸` : 'Цена не указана';
+      document.getElementById('modalDescription').textContent = product.description || '';
+      document.getElementById('modalImage').src = 
+        product.img || 'https://via.placeholder.com/300';
+      document.getElementById('modalImage').alt = product.name || '';
+    
+      document.getElementById('productModal').style.display = 'block';
+    }
+    
+    function closeProductModal() {
+      document.getElementById('productModal').style.display = 'none';
+      currentProductForModal = null;
+    }
+    
+    function orderFromModal() {
+      if (!currentProductForModal) return;
+      
+      const message = `Здравствуйте! Хочу заказать: ${currentProductForModal.name || 'Товар'}`;
+      window.open(
+        'https://wa.me/77780855478?text=' + encodeURIComponent(message),
+        '_blank'
+      );
+    }
+    // ================== КОНЕЦ ФУНКЦИЙ МОДАЛЬНОГО ОКНА ==================
     
     function setupEventListeners() {
       // Админ-доступ
@@ -3398,43 +2804,7 @@ ${actionText}
       
       // Очистка фильтров
       document.getElementById('clearFilters').addEventListener('click', resetFilters)
-      
-      // Закрытие модального окна при клике на фон
-      document.getElementById('productModal').addEventListener('click', function(e) {
-        if (e.target === this) {
-          closeProductModal()
-        }
-      })
     }
-     // Добавьте это после существующих слушателей:
-  
-  // Кнопка для развертывания шапки на мобильных
-  if (window.innerWidth <= 768) {
-    const headerToggle = document.createElement('button')
-    headerToggle.className = 'header-toggle-btn'
-    headerToggle.innerHTML = '▼'
-    headerToggle.onclick = toggleMobileHeader
-    document.querySelector('.header-top').appendChild(headerToggle)
-    
-    // Скрываем features по умолчанию на мобильных
-    document.querySelector('.header-features').classList.remove('active')
-  }
-}
-
-function toggleMobileHeader() {
-  const header = document.querySelector('.main-header')
-  const features = document.querySelector('.header-features')
-  const toggleBtn = document.querySelector('.header-toggle-btn')
-  
-  header.classList.toggle('expanded')
-  features.classList.toggle('active')
-  
-  if (header.classList.contains('expanded')) {
-    toggleBtn.innerHTML = '▲'
-  } else {
-    toggleBtn.innerHTML = '▼'
-  }
-}
     
     function setupQuickAddFields() {
       const container = document.getElementById('quickAddItemsContainer')
@@ -3672,7 +3042,7 @@ function toggleMobileHeader() {
       }
     }
     
-    window.moveProduct = async function(id, direction) {
+    window.moveProduct = async (id, direction) => {
       try {
         const product = allProducts.find(p => p.id === id)
         if (!product) return
@@ -3885,45 +3255,17 @@ function toggleMobileHeader() {
       document.body.classList.toggle('cart-visible', cartVisible)
     }
     
-    // Lightbox функции
-    window.openLightbox = function(imgSrc) {
-      const lightbox = document.getElementById('lightbox')
-      const lightboxImg = document.getElementById('lightboxImg')
-      lightboxImg.src = imgSrc
-      lightbox.classList.add('active')
-    }
-    
-    window.closeLightbox = function() {
-      document.getElementById('lightbox').classList.remove('active')
-    }
-    
-    // Быстрый просмотр
-    window.openQuickView = function(productId) {
-      const product = allProducts.find(p => p.id === productId)
-      if (!product) return
-      
-      const quickView = document.getElementById('quickView')
-      const quickViewContent = document.getElementById('quickViewContent')
-      
-      quickViewContent.innerHTML = `
-        <h3>${product.name || 'Без названия'}</h3>
-        <img src="${product.img || 'https://via.placeholder.com/150'}" style="width: 100%; max-height: 200px; object-fit: contain; margin: 10px 0;">
-        <div class="product-price">${product.price ? `${product.price.toLocaleString('ru-RU')} ₸` : 'Цена не указана'}</div>
-        <div class="product-description">${product.description || ''}</div>
-        <button class="add-to-cart" onclick="addToCart('${productId}'); closeQuickView()" style="margin-top: 15px; width: 100%;">Добавить в корзину</button>
-      `
-      
-      quickView.classList.add('active')
-    }
-    
-    window.closeQuickView = function() {
-      document.getElementById('quickView').classList.remove('active')
-    }
+    // Закрытие модального окна при клике на фон
+    document.getElementById('productModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeProductModal();
+      }
+    });
     
     // ================== ФУНКЦИИ ДЛЯ SEO-ССЫЛОК (SLUG) ==================
     
     function createSlug(text) {
-      if (!text || typeof text !== 'string') return ''
+      if (!text || typeof text !== 'string') return '';
       
       const translitMap = {
         'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd',
@@ -3934,69 +3276,69 @@ function toggleMobileHeader() {
         'ш': 'sh', 'щ': 'sch', 'ъ': '', 'ы': 'y', 'ь': '',
         'э': 'e', 'ю': 'yu', 'я': 'ya',
         ' ': '-', '_': '-'
-      }
+      };
       
-      let result = ''
+      let result = '';
       
       for (let char of text.toLowerCase()) {
         if (translitMap[char] !== undefined) {
-          result += translitMap[char]
+          result += translitMap[char];
         } else if (/[a-z0-9-]/.test(char)) {
-          result += char
+          result += char;
         }
       }
       
-      result = result.replace(/-+/g, '-')
-      result = result.replace(/^-+/, '').replace(/-+$/, '')
+      result = result.replace(/-+/g, '-');
+      result = result.replace(/^-+/, '').replace(/-+$/, '');
       
-      return result
+      return result;
     }
     
     // Генерация slug для всех товаров
     window.generateAllSlugs = async function() {
-      const statusEl = document.getElementById('slugStatus')
+      const statusEl = document.getElementById('slugStatus');
       
       if (!confirm('Создать SEO-ссылки для всех товаров? Это обновит поле "slug" в Supabase.')) {
-        return
+        return;
       }
       
       try {
-        statusEl.textContent = '⏳ Генерация SEO-ссылок...'
-        statusEl.style.color = '#666'
+        statusEl.textContent = '⏳ Генерация SEO-ссылок...';
+        statusEl.style.color = '#666';
         
-        let updatedCount = 0
+        let updatedCount = 0;
         
         for (const product of allProducts) {
-          if (!product.name) continue
+          if (!product.name) continue;
           
-          const slug = createSlug(product.name)
-          if (!slug) continue
+          const slug = createSlug(product.name);
+          if (!slug) continue;
           
           const { error } = await supabase
             .from('products')
             .update({ slug: slug })
-            .eq('id', product.id)
+            .eq('id', product.id);
           
           if (error) {
-            console.error(`Ошибка для товара ${product.id}:`, error)
-            continue
+            console.error(`Ошибка для товара ${product.id}:`, error);
+            continue;
           }
           
-          product.slug = slug
-          updatedCount++
+          product.slug = slug;
+          updatedCount++;
         }
         
-        statusEl.textContent = `✅ Создано ${updatedCount} SEO-ссылок!`
-        statusEl.style.color = '#2ecc71'
+        statusEl.textContent = `✅ Создано ${updatedCount} SEO-ссылок!`;
+        statusEl.style.color = '#2ecc71';
         
-        logAdminAction(`Сгенерированы SEO-ссылки для ${updatedCount} товаров`)
+        logAdminAction(`Сгенерированы SEO-ссылки для ${updatedCount} товаров`);
         
-        await loadProducts()
+        await loadProducts();
         
       } catch (error) {
-        console.error('Ошибка генерации slug:', error)
-        statusEl.textContent = '❌ Ошибка генерации'
-        statusEl.style.color = '#ff4757'
+        console.error('Ошибка генерации slug:', error);
+        statusEl.textContent = '❌ Ошибка генерации';
+        statusEl.style.color = '#ff4757';
       }
     }
     
@@ -4004,19 +3346,19 @@ function toggleMobileHeader() {
     
     // Проверка текущего URL при загрузке
     function checkURLForProduct() {
-      const path = window.location.pathname
+      const path = window.location.pathname;
       
       if (path.startsWith('/product/')) {
-        const slug = path.replace('/product/', '')
+        const slug = path.replace('/product/', '');
         
         if (slug) {
-          const product = allProducts.find(p => p.slug === slug)
+          const product = allProducts.find(p => p.slug === slug);
           
           if (product) {
-            openProductModal(product)
+            openProductModal(product);
           } else {
-            console.log('Товар не найден по slug:', slug)
-            window.history.replaceState({}, '', '/')
+            console.log('Товар не найден по slug:', slug);
+            window.history.replaceState({}, '', '/');
           }
         }
       }
@@ -4024,43 +3366,29 @@ function toggleMobileHeader() {
     
     // Обработка кнопки "Назад" в браузере
     window.addEventListener('popstate', function(event) {
-      const path = window.location.pathname
+      const path = window.location.pathname;
       
       if (path === '/' || path === '/index.html' || path === '') {
-        closeProductModal()
+        closeProductModal();
       } else if (path.startsWith('/product/')) {
-        checkURLForProduct()
+        checkURLForProduct();
       }
-    })
+    });
     
-   // ========== ИСПРАВЛЕННЫЙ КОД ДЛЯ БЕЗОПАСНОЙ РАБОТЫ ==========
-
-// Отключаем проблемную проверку URL
-console.log('Загрузка завершена. Проблемные URL отключены.');
-
-// Просто показываем товары без проверки URL
-renderProducts();
-
-// Если нужно вернуть работу с URL позже, раскомментируйте:
-// setTimeout(checkURLForProduct, 1000);
+    // Обновляем closeProductModal чтобы сбрасывать URL
+    const originalCloseProductModal = closeProductModal;
+    window.closeProductModal = function() {
+      originalCloseProductModal();
+      if (window.location.pathname.startsWith('/product/')) {
+        window.history.pushState({}, '', '/');
+      }
+    };
     
-    // ================== ГЛОБАЛЬНЫЕ ФУНКЦИИ ==================
+    // Запускаем проверку URL
+    setTimeout(checkURLForProduct, 500);
+    // ================== КОНЕЦ ОБРАБОТКИ SEO-URL ==================
     
-    window.openMobileCategories = openMobileCategories
-    window.closeMobileCategories = closeMobileCategories
-    window.openProductModal = openProductModal
-    window.openProductModalFromList = openProductModalFromList
-    window.closeProductModal = closeProductModal
-    window.orderFromModal = orderFromModal
-    window.addToCartFromModal = addToCartFromModal
-    window.selectSearchSuggestion = selectSearchSuggestion
-    window.exportToExcel = exportToExcel
-    window.importFromExcel = importFromExcel
-    window.updateManualSlug = updateManualSlug
-    window.updateFreeShipping = updateFreeShipping
+    window.updateManualSlug = updateManualSlug;
   </script>
-  
-  <!-- Библиотека для работы с Excel -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </body>
 </html>
